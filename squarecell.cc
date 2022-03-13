@@ -7,7 +7,7 @@
 //#include "carre.h"
 
 using namespace std;
-enum {VIDE, CARRE, POINT};
+enum {VIDE, CARRE};
 typedef array<array<unsigned int, 10> ,10> Grille;
 typedef vector<vector<unsigned int>> Carre;
 struct Point {
@@ -15,18 +15,19 @@ struct Point {
 	unsigned int y;
 };
 void initalise(Grille& grille);
-void initialise1(Point point, Grille& grille);
+//void initialise1(Point point, Grille& grille);
 void affiche(Grille grille);
 
-void test_validation_carre(Carre carre, Grille grille, Point point); 
+void test_validation_carre(Carre carre, Grille& grille, Point point); 
 int main() {
 	Grille grille;
-	Carre carre(5, vector<unsigned int> (5));
-	Point point{2,3};
+	Carre carre(4, vector<unsigned int> (4));
+	Point point{2,5};
 	initalise(grille);
-	initialise1(point, grille);
-	affiche(grille);
+	//initialise1(point, grille);
+	
 	test_validation_carre(carre, grille, point);
+	affiche(grille);
 
 	
 
@@ -40,28 +41,33 @@ void initalise(Grille& grille) {
 		}
 	}
 }
-void initialise1(Point point, Grille& grille) {
+
+void test_validation_carre(Carre carre, Grille& grille, Point point) {
 	for(size_t i(0); i < grille.size(); ++i) {
 		for(size_t j(0); j < grille[i].size(); ++j) {
-			if( j+1 == point.x and i == 10-point.y) {
-				grille[i][j] = POINT;
+			if( j == point.x and i == 9-point.y) {
+				for(size_t k(0); k < carre.size(); ++k) {
+					for(size_t l(0); l < carre[k].size(); ++l) {
+						grille[10-point.y-carre.size()+k][point.x+l] = CARRE;
+					}
+				}
 			}
-			
 		}
 	}
 }
+
+
 void affiche(Grille grille) {
 	for(auto ligne : grille) {
 		for(auto kase : ligne) {
 			if( kase == VIDE) {
 				cout << "|___";
-			} else if ( kase == POINT) {
+			} else if ( kase == CARRE) {
 				cout << "|_X_";
 			}
 		}
 		cout << endl;
 	}
 }
-void test_validation_carre(Carre carre, Grille grille, Point point) {
-}
+
 	
