@@ -17,8 +17,8 @@ struct Point {
 void initalise(Grille& grille);
 //void initialise1(Point point, Grille& grille);
 void affiche(Grille grille);
-
 void test_validation_carre(Carre carre, Grille& grille, Point point); 
+
 int main() {
 	Grille grille;
 	Carre carre(7, vector<unsigned int> (7));
