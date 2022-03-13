@@ -21,8 +21,8 @@ void affiche(Grille grille);
 void test_validation_carre(Carre carre, Grille& grille, Point point); 
 int main() {
 	Grille grille;
-	Carre carre(4, vector<unsigned int> (4));
-	Point point{2,5};
+	Carre carre(7, vector<unsigned int> (7));
+	Point point{1,1};
 	initalise(grille);
 	//initialise1(point, grille);
 	
@@ -48,7 +48,12 @@ void test_validation_carre(Carre carre, Grille& grille, Point point) {
 			if( j == point.x and i == 9-point.y) {
 				for(size_t k(0); k < carre.size(); ++k) {
 					for(size_t l(0); l < carre[k].size(); ++l) {
-						grille[10-point.y-carre.size()+k][point.x+l] = CARRE;
+						if ( carre.size()+point.y > grille.size()
+						 or carre[k].size()+point.x > grille[i].size() ) {
+							 exit (0);
+						 } else {
+							grille[10-point.y-carre.size()+k][point.x+l] = CARRE;
+						}
 					}
 				}
 			}
