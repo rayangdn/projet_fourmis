@@ -1,107 +1,136 @@
 #include <iostream>
-#include <array>
 #include <vector>
 
-#include "Code_source/constantes.h"
-#include  "Code_source/error_squarecell.h"
-//CLASSE OU STRUCTURE???
-using namespace std;
-enum {VIDE, CARRE};
+#include "Code_source/error_squarecell.h"
 
-typedef array<array<unsigned int, 10> ,10> Grille; // remplacer 10 par g_max après
+using namespace std;
+
+typedef vector<vector<unsigned int>> Grille; // necessité??
 typedef vector<vector<unsigned int>> Carre;
-typedef vector<vector<bool>> Test;
+typedef vector<vector<bool>> Grid;
 struct Point {
 	unsigned int x;
 	unsigned int y;
 };
-
-
-/*struct Squarcell{
-	Grille grille;
-	Carre carre;
+/*struct Carre {
+	Carre_ carre_;
 	Point point;
-};*/
+};
+	 mieux comme ça?? pls besoin appel de point dans les fcts
+*/
 
-void initalise(Grille& grille);
-//void initialise0(Test& test);
-void affiche(Test test);
+void initialise_grid(Grid& grid, const unsigned int g_max);
 
-void test_validation_carre(Carre carre, Grille& grille, Point point,Test& test);
+void test_validation_carre(Grid grid, Point point, Carre carre);
 
-void test_superposition(Carre carre, Carre carre1, Grille grille, Point point, Point point1, Test test); 
+void initialise_carre(Grid& grid, Point point, Carre carre);
+
+void supprimer_carre(Grid& grid, Point point, Carre carre);
+
+bool test_superposition(Grid& grid, Point point, Point autre_point, Carre carre, Carre autre_carre);
+// faire un vecteur de carre, vecteur de point??
+
+void affiche_grid(Grid grid);
+
+
 int main() {
-	//Squarcell squarcell;
-	Grille grille;
-	Carre carre(4, vector<unsigned int> (4));
-	Carre carre1(3, vector<unsigned int> (3));
-	Point point{1,1};
-	Point point1{4,4}; //carre, carre1, point, point1 à changer pour faire des tests
-	Test test(10, vector<bool>(10));
-	initalise(grille);
-	//initialise0(test); besoin d'initaliser ou par défaut à false??
+	const unsigned int g_max(20);
+	Grid grid;
+	Carre carre(4, vector<unsigned int> (4)); // appelé depuis main dans projet??
+	Point point{6, 7};
+	Carre carre1(4, vector<unsigned int> (4));
+	Point point1{0, 0};
+	initialise_grid(grid, g_max);
+	test_validation_carre(grid, point, carre);
+	initialise_carre(grid, point, carre);
+	initialise_carre(grid, point1, carre1);
 	
-	test_validation_carre(carre, grille, point, test);
-	test_validation_carre(carre1, grille, point1, test);
-	test_superposition(carre,carre1, grille, point, point1, test);
-	affiche(test);
+	test_superposition(grid, point, point1, carre, carre1);
+	
+	affiche_grid(grid);
 	return 0;
-}
-void initalise(Grille& grille) {
-	for(auto& ligne : grille) {
-		for(auto& kase : ligne) {
-			kase = VIDE;
+} 
+
+void initialise_grid(Grid& grid, const unsigned int g_max) {
+	for(int i(0); i < g_max; i++) {
+		grid.push_back(vector<bool>());
+		for(int j(0); j < g_max; j++) {
+			grid[i].push_back(false);   
 		}
 	}
 }
-/*
-void initialise0(Test& test) {
-	for(size_t i(0); i < test.size(); ++i) {
-		for(size_t j(0); j < test[i].size(); ++j) {
-			test[i][j] = false;
-			cout << test[i][j];
-		}
+
+void test_validation_carre(Grid grid, Point point, Carre carre) {
+	if(carre.size() > (grid.size()-1)) {
+		cout << ".";
 	}
-}*/
-void test_validation_carre(Carre carre, Grille& grille, Point point, Test& test) {
-	for(size_t i(0); i < grille.size(); ++i) {
-		for(size_t j(0); j < grille[i].size(); ++j) {
+	if(point.x > (grid.size()-1)) {
+		//cout << print_index( point.x, grid.size());// marche pas pq?
+		std::exit(EXIT_FAILURE); //ca fait quoi??
+	}
+	if(point.y > (grid.size()-1)) {
+		cout << ".";
+	}
+	for(size_t i(0); i < grid.size(); ++i) {
+		for(size_t j(0); j < grid[i].size(); ++j) {
+			if( j == point.x and i == grid.size()-1-point.y) {
+				if (((carre.size()+point.y) > (grid.size()-1))
+					or ((carre.size()+point.x) > (grid[i].size()-1))) {
+						 cout << "No succes square";
+						 exit(0);		 //message error_squarecell
+				}
+			}
+		}
+	 }
+}
+
+void initialise_carre(Grid& grid, Point point, Carre carre) {
+	for(size_t i(0); i < grid.size(); ++i) {
+		for(size_t j(0); j < grid[i].size(); ++j) {
 			if( j == point.x and i == 9-point.y) {
 				for(size_t k(0); k < carre.size(); ++k) {
 					for(size_t l(0); l < carre[k].size(); ++l) {
-						if ( carre.size()+point.y > grille.size()-1
-						 or carre[k].size()+point.x > grille[i].size()-1 ) {
-							 cout << "No succes square";
-							 exit (0);
-						 } else {
-							//grille[10-point.y-carre.size()+k][point.x+l] = CARRE; // utile pour l'affichage uniquement!!, plus besoin après
-							test[10-point.y-carre.size()+k][point.x+l] = true;
-						}
+						grid[grid.size()-point.y-carre.size()+k][point.x+l] = true;
 					}
 				}
 			}
 		}
 	}
 }
-void test_superposition(Carre carre, Carre carre1, Grille grille, Point point, Point point1, Test test) {
+
+void supprimer_carre(Grid& grid, Point point, Carre carre) {
+	for(size_t i(0); i < grid.size(); ++i) {
+		for(size_t j(0); j < grid[i].size(); ++j) {
+			if( j == point.x and i == 9-point.y) {
+				for(size_t k(0); k < carre.size(); ++k) {
+					for(size_t l(0); l < carre[k].size(); ++l) {
+						grid[grid.size()-point.y-carre.size()+k][point.x+l] = false;
+					}
+				}
+			}
+		}
+	}
+}
+
+bool test_superposition(Grid& grid, Point point, Point autre_point, Carre carre, Carre autre_carre) {
 	unsigned int compteur(0);
-	for(auto ligne : test) {
+	for(auto ligne : grid) {
 		for(auto kase : ligne) {
 			if(kase == true){
 				compteur += 1;
 			}
 		}
 	}
-	if ( compteur < carre.size()*carre.size() + carre1.size() *carre1.size()) {
-		cout << "Superposition";
-		//exit (0);
-		cout << endl;
+	if ( compteur < (carre.size()*carre.size() + autre_carre.size() *autre_carre.size())) {
+		supprimer_carre(grid, autre_point, autre_carre);
+		initialise_carre(grid, point, carre); // good?
+		return false;
 	}
-	
+	return true;
 }
 
-void affiche(Test test) {
-	for(auto ligne : test) {
+void affiche_grid(Grid grid) {
+	for(auto ligne : grid) {
 		for(auto kase : ligne) {
 			if( kase == false) {
 				cout << "|___";
@@ -113,4 +142,3 @@ void affiche(Test test) {
 	}
 }
 
-	
