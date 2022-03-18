@@ -1,9 +1,10 @@
 #include <iostream>
 #include <vector>
-
+#include <cmath>
 //#include "Code_source/error_squarecell.h"
 
 using namespace std;
+constexpr short unsigned g_dim(7);
 
 typedef vector<vector<unsigned int>> Grille; // necessité??
 // mettre en unsigned int??
@@ -34,10 +35,11 @@ void affiche_grid(Grid grid);
 
 
 int main() {
-	const unsigned int g_max(20);
+	//const unsigned int g_max = pow(2, g_dim);
+	unsigned int g_max(20);
 	Grid grid;
-	unsigned int carre(5); // appelé depuis main dans projet??
-	Point point{13, 10};
+	unsigned int carre(1); // appelé depuis main dans projet??
+	Point point{18, 18};
 	unsigned int carre1(4);
 	Point point1{10, 10};
 	
@@ -76,49 +78,32 @@ void test_validation_carre(Grid grid, Point point, unsigned int carre) {
 		cout << ".";
 		exit(0);
 	}
-	for(size_t i(0); i < grid.size(); ++i) {
-		for(size_t j(0); j < grid[i].size(); ++j) {
-			if( j == point.x and i == grid.size()-1-point.y) {
-				if (((carre + point.y) > (grid.size()-1))
-					or ((carre + point.x) > (grid[i].size()-1))) {
-						 cout << "No succes square";
-						 exit(0);		 //message error_squarecell
-				}
-			}
-		}
-	 }
+	if(point.x + carre > grid.size()-1){
+		cout << "No succes square";
+		exit(0);
+	}
+	if (point.y + carre > grid.size()-1) {
+		cout << "No succes square";
+		exit(0);
+	}
 }
 
 void initialise_carre(Grid& grid, Point point, unsigned int carre) {
-	
-	for(size_t i(0); i < grid.size(); ++i) {
-		for(size_t j(0); j < grid[i].size(); ++j) {
-			if( j == point.x and i == grid.size()-point.y) {
-				for(int k(0); k < carre; ++k) {
-					for(int l(0); l < carre; ++l) {
-						grid[grid.size()-point.y-carre+k][point.x+l] = true;
-					}
-				}
-			}
+	for(size_t i(point.y); i < point.y + carre ; ++i) {
+		for(size_t j(point.x); j < point.x + carre; ++j) {
+			grid[grid.size()-1-i][j] = true;
 		}
 	}
 }
 
 void supprimer_carre(Grid& grid, Point point, unsigned int carre) {
-	
-	for(size_t i(0); i < grid.size(); ++i) {
-		for(size_t j(0); j < grid[i].size(); ++j) {
-			if( j == point.x and i == grid.size()-point.y) {
-				for(int k(0); k < carre ; ++k) {
-					for(size_t l(0); l < carre; ++l) {
-						grid[grid.size()-point.y-carre+k][point.x+l] = false;
-					}
-				}
-			}
+	for(size_t i(point.y); i < point.y + carre ; ++i) {
+		for(size_t j(point.x); j < point.x + carre; ++j) {
+			grid[grid.size()-1-i][j] = false;
 		}
 	}
 }
-
+			
 bool test_superposition(Grid& grid, Point point, Point autre_point, unsigned int carre, unsigned int autre_carre) {
 	unsigned int compteur(0);
 	for(auto ligne : grid) {
