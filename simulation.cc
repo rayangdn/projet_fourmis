@@ -1,9 +1,11 @@
-#include "simulation.h"
 #include <cstdlib>
 #include <string>
 #include <iostream>
 #include <fstream>
 #include <sstream>
+
+#include "simulation.h"
+#include "squarecell.h"
 using namespace std;
 
 void lecture(char * nom_fichier)
