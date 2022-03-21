@@ -6,10 +6,12 @@
 
 #include "simulation.h"
 #include "squarecell.h"
+#include "message.h"
+#include "food.h"
 using namespace std;
 
 void lecture(char * nom_fichier)
-{
+{	
     string line;
     ifstream fichier(nom_fichier); 
     if(!fichier.fail()) 
@@ -20,7 +22,8 @@ void lecture(char * nom_fichier)
        
 			decodage_ligne(line);
         }
-        cout << "fin de la lecture" << endl;
+       cout << message::success();
+       exit(0);
 	}
 	else {
 		exit(0);
@@ -50,7 +53,7 @@ void decodage_ligne(string line){
 			etat =FOOD;
 		}
 		//Mettre dans une classe
-		cout << "Nombre nourriture : " << total << endl;
+		//cout << "Nombre nourriture : " << total << endl;
 		break;
 		
 	case FOOD:
@@ -60,7 +63,7 @@ void decodage_ligne(string line){
 			etat = NBF;
 		}
 		//Mettre dans une classe
-		cout << "Nourriture " << count << " : " << x << " " << y << endl;
+		//cout << "Nourriture " << count << " : " << x << " " << y << endl;
 		break;
 		
 	case NBF:
@@ -81,7 +84,7 @@ void decodage_ligne(string line){
 		//Une fois que countC = nbC, on passe a Def
 		//Quand Pro est fini, si encore fourmiliere on revient ici
 		
-		cout << "Fourmiliere " << count << " : " << x << " " << y << " " << side << " " << xg << " " << yg << " " << total_food << " " << nbC << " " << nbD << " " << nbP << endl;
+	//	cout << "Fourmiliere " << count << " : " << x << " " << y << " " << side << " " << xg << " " << yg << " " << total_food << " " << nbC << " " << nbD << " " << nbP << endl;
 		
 		countC=0; countD=0; countP=0;
 		if(nbC!=0) {
@@ -109,7 +112,7 @@ void decodage_ligne(string line){
 			etat = DEFNS;
 		}
 		//Mettre dans une classe
-		cout << "Collector " << countC << " : " <<  x << " " << y << " " << age << " " << food << endl;
+		//cout << "Collector " << countC << " : " <<  x << " " << y << " " << age << " " << food << endl;
 		break;
 		
 	case DEFNS:
@@ -123,7 +126,7 @@ void decodage_ligne(string line){
 			etat = PREDAT;
 		}
 		//Mettre dans une classe
-		cout << "Defensor " << countD << " : " <<  x << " " << y << " " << age << endl;
+		//cout << "Defensor " << countD << " : " <<  x << " " << y << " " << age << endl;
 		break;
 
 	case PREDAT:
@@ -137,7 +140,7 @@ void decodage_ligne(string line){
 			etat = FRMI;
 		}
 		//Mettre dans une classe
-		cout << "Prédateur " << countP << " : " <<  x << " " << y << " " << age << endl;
+		//cout << "Prédateur " << countP << " : " <<  x << " " << y << " " << age << endl;
 		break;
 		
 	default : exit(0);
