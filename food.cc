@@ -4,10 +4,6 @@
 #include "food.h"
 using namespace std;
 
-Food::Food(Carre carre) 
-:carre(carre) {}
-	
-
 
 
 

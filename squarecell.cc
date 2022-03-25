@@ -46,7 +46,7 @@ void initialise_carre(Grid& grid, Carre carre) {
 		for(size_t j(carre.point.x); j < carre.point.x + carre.longeur; ++j) {
 			grid[grid.size()-1-i][j] = true;
 		}
-	} //a chaque fois on test le dernier élément ajouté en tant que carre
+	}
 }
 
 void supprime_carre(Grid& grid, Carre carre) {
@@ -55,9 +55,25 @@ void supprime_carre(Grid& grid, Carre carre) {
 		for(size_t j(carre.point.x); j < carre.point.x + carre.longeur; ++j) {
 			grid[grid.size()-1-i][j] = false;
 		}
-	} //a caque fois on test le dernier élément ajouté en tant que carre
+	} 
 }
 
+bool test_superposition_2_carres(Grid grid, Carre carre, Carre autre_carre) {
+	unsigned int compteur(0);
+	initialise_carre(grid, carre);
+	initialise_carre(grid, autre_carre);
+	for(auto ligne : grid) {
+		for(auto kase : ligne) {
+			if(kase == true){
+				++compteur;
+			}
+		}
+	}
+	if(compteur < carre.longeur*carre.longeur + autre_carre.longeur*autre_carre.longeur) {
+		return false;
+	}
+	return true;
+}
 bool test_superposition(Grid grid, Carre autre_carre, Ensemble_carre ensemble_carre) {
 	unsigned int compteur(0);
 	unsigned int compteur_carre(0);

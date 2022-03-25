@@ -4,14 +4,19 @@
 #include <fstream>
 #include <sstream>
 
+
 #include "simulation.h"
-#include "squarecell.h"
-#include "message.h"
-#include "food.h"
+
+
 using namespace std;
 
-void lecture(char * nom_fichier)
+Simulation::Simulation(Grid grid, Ensemble_carre ensemble_carre) 
+: grid(grid), ensemble_carre(ensemble_carre) {}
+void Simulation::lecture(char * nom_fichier)
 {	
+
+	
+	
     string line;
     ifstream fichier(nom_fichier); 
     if(!fichier.fail()) 
@@ -23,14 +28,15 @@ void lecture(char * nom_fichier)
 			decodage_ligne(line);
         }
        cout << message::success();
-       exit(0);
+       //exit(0);
 	}
 	else {
-		exit(0);
+		//exit(0);
 	}	
+	//affiche_grid(grid);
 }
 
-void decodage_ligne(string line){
+void Simulation::decodage_ligne(string line){
 	
 	enum Etat_lecture {NBN, FOOD, NBF,FRMI, NBC, COLLECT, NBD, DEFNS, NBP, PREDAT };
 	
@@ -38,9 +44,11 @@ void decodage_ligne(string line){
 	
 	static int etat(NBN);
 	static int count(0),total(0);
-	int x, y, age, xg, yg, side, total_food;
+	unsigned int x, y, age, xg, yg, side, total_food;
 	static int countC(0), countD(0), countP(0), nbC, nbD, nbP;
-	string food;
+	string have_food;
+	Carre carre;
+	
 	
 	switch(etat)
 	{
@@ -62,7 +70,16 @@ void decodage_ligne(string line){
 		if(count == total) {
 			etat = NBF;
 		}
-		//Mettre dans une classe
+		carre={1, {x,y}};
+		test_validation_carre(grid, carre);
+			
+		
+		if(!test_superposition(grid, carre, ensemble_carre)) {
+				cout << message::food_overlap(x,y);
+				std::exit(EXIT_FAILURE);
+		}
+		initialise_carre(grid,carre);
+		ensemble_carre.push_back(carre);
 		//cout << "Nourriture " << count << " : " << x << " " << y << endl;
 		break;
 		
@@ -73,6 +90,7 @@ void decodage_ligne(string line){
 		} else {
 			etat = FRMI;
 		}
+		
 		//Mettre dans une classe
 		break;
 		
@@ -85,7 +103,7 @@ void decodage_ligne(string line){
 		//Quand Pro est fini, si encore fourmiliere on revient ici
 		
 	//	cout << "Fourmiliere " << count << " : " << x << " " << y << " " << side << " " << xg << " " << yg << " " << total_food << " " << nbC << " " << nbD << " " << nbP << endl;
-		
+		// lecture fichier dans fourmilière
 		countC=0; countD=0; countP=0;
 		if(nbC!=0) {
 			etat=COLLECT ;
@@ -107,7 +125,7 @@ void decodage_ligne(string line){
 			etat = DEFNS;
 			break;
 		}
-		data >> x >> y >> age >> food; ++countC;
+		data >> x >> y >> age >> have_food; ++countC;
 		if(countC == nbC) {
 			etat = DEFNS;
 		}
