@@ -28,11 +28,17 @@ clean:
 # -- Regles de dependances generees automatiquement
 #
 # DO NOT DELETE THIS LINE
-squarecell.o: squarecell.cc squarecell.h error_squarecell.h
+squarecell.o: squarecell.cc squarecell.h constantes.h message.h \
+  error_squarecell.h
 error_squarecell.o: error_squarecell.cc error_squarecell.h
-prog.o: prog.cc simulation.h message.h food.h constantes.h squarecell.h
-simulation.o: simulation.cc simulation.h message.h food.h constantes.h \
-  squarecell.h
+prog.o: prog.cc simulation.h fourmiliere.h fourmis.h food.h squarecell.h \
+  constantes.h message.h error_squarecell.h
+simulation.o: simulation.cc simulation.h fourmiliere.h fourmis.h food.h \
+  squarecell.h constantes.h message.h error_squarecell.h
 message.o: message.cc message.h
-food.o: food.cc food.h constantes.h squarecell.h
-fourmiliere.o: fourmiliere.cc
+food.o: food.cc food.h squarecell.h constantes.h message.h \
+  error_squarecell.h
+fourmiliere.o: fourmiliere.cc fourmiliere.h fourmis.h food.h squarecell.h \
+  constantes.h message.h error_squarecell.h
+fourmis.o: fourmis.cc fourmis.h food.h squarecell.h constantes.h \
+  message.h error_squarecell.h
