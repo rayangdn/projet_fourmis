@@ -1,15 +1,19 @@
-#include <iostream>
-#include "squarecell.h"
-#include "message.h"
+
+
+#include "fourmiliere.h"
 #include "food.h"
-#include "constantes.h"
+
 class Simulation {
 	public :
-	Simulation(Grid, Ensemble_carre);
-	void lecture(char * mon_fichier);
-	void decodage_ligne(std::string line);
+	Simulation(Grid);
+	~Simulation() {};
+	void lecture(char *);
+	void decodage_ligne(std::string);
 	private :
 	Grid grid;
-	Ensemble_carre ensemble_carre;
+	Ensemble_food ensemble_food;
+	Ensemble_fourmiliere ensemble_fourmiliere;
+	
 };
+
 
