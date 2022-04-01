@@ -9,13 +9,12 @@
 #include "message.h"
 #include "error_squarecell.h"
 
-using namespace std;
-
 constexpr short unsigned g_dim(7);
 const short unsigned g_max(pow(2, g_dim));
 
+typedef std::vector<std::vector<bool>> Grid;
+static Grid grid;
 
-typedef vector<vector<bool>> Grid;
 
 struct Point {
 	unsigned int x;
@@ -26,23 +25,23 @@ struct Carre {
 	Point point;
 };
 
-void initialise_grid(Grid&, const unsigned int);
+void initialise_grid(const unsigned int&);
 
-void test_validation_carre(const Grid&, const Carre&);
+void test_validation_carre(const Carre&);
 
-void initialise_carre_non_centre(Grid&,const Carre&);
+void initialise_carre_non_centre(const Carre&);
 
-void initialise_carre_centre(Grid&,const Carre&);
+void initialise_carre_centre(const Carre&);
 
-void supprimer_carre_non_centre(Grid&, const Carre&);
+void supprimer_carre_non_centre(const Carre&);
 
-void supprimer_carre_centre(Grid&, const Carre&);
+void supprimer_carre_centre(const Carre&);
 
-bool test_superposition_2_carres(const Carre& ,const Carre&);
+bool test_superposition_2_carres(const Carre&, const Carre&);
 
-bool test_superposition(const Grid&, const Carre&);
+bool test_superposition_avec_coord(const Carre&, unsigned int&, unsigned int&);
 
-void affiche_grid(Grid);
+bool test_superposition_sans_coord(const Carre&);
 
 #endif
 

@@ -16,19 +16,16 @@
 class Food {
 	public :
 	Food(Carre, unsigned int);
-	~Food() {};
-	void initialise_food_on_grid(Grid&);
-	void test_superposition_food(Grid&);
+	void initialise_food_on_grid();
+	void superposition_food();
 	
 	private :
 	Carre carre;
 	unsigned int val_food;
-	
-	
-
 };
-typedef vector<Food> Ensemble_food;
 
-void decodage_line_food(std::string, Grid&, Ensemble_food&);
+typedef std::vector<Food> Ensemble_food;
+
+void decodage_line_food(std::string, Ensemble_food&);
 
 #endif

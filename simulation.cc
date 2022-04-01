@@ -1,15 +1,11 @@
-
-
+#ifndef SIMULATION_H_INCLUDED
+#define SIMULATION_H_INCLUDED
 
 #include "simulation.h"
 
-
 using namespace std;
 
-Simulation::Simulation(Grid grid) : grid(grid) {}
-
-void Simulation::lecture(char * nom_fichier)
-{	
+void Simulation::lecture(char * nom_fichier) {	
     string line;
     ifstream fichier(nom_fichier); 
     if(!fichier.fail()) 
@@ -21,24 +17,15 @@ void Simulation::lecture(char * nom_fichier)
 			decodage_ligne(line);
         }
 		cout << message::success();
-      // exit(0);
 	}
-	else {
-		//exit(0);
-	}	
-	
 }
 
-void Simulation::decodage_ligne(string line){
-
+void Simulation::decodage_ligne(string line) {
 	istringstream data(line);
-	
 	enum Etat_lecture {NBN, FOOD, NBF, FRMIL};
 	static int etat(NBN);
-	static int count(0),total(0);
-	
-	switch(etat)
-	{
+	static int count(0), total(0);
+	switch(etat) {
 		case NBN :
 			data >> total; count = 0;
 			if(total == 0) {
@@ -49,8 +36,7 @@ void Simulation::decodage_ligne(string line){
 			break;
 		
 		case FOOD :
-			decodage_line_food(line, grid, ensemble_food);
-			//ensemble_food existe pas dans prog normal???
+			decodage_line_food(line, ensemble_food);
 			++count;
 			if(count == total) {
 				etat = NBF;
@@ -67,9 +53,11 @@ void Simulation::decodage_ligne(string line){
 			break;
 		
 		case FRMIL :
-			decodage_line_fourmiliere(line, grid, total, ensemble_fourmiliere);
+			decodage_line_fourmiliere(line, total, ensemble_fourmiliere);
 			break;
 			
-			default : exit(0);
+		default : exit(0);
 	}
 }
+
+#endif
