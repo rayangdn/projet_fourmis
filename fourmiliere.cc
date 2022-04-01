@@ -17,14 +17,14 @@ unsigned int countF, unsigned int i) {
 void decodage_line_fourmiliere(string line, Grid& grid,unsigned int total, Ensemble_fourmiliere& ensemble_fourmiliere) {
 	istringstream data(line);
 	
-	enum Etat_lecture{FRMIL, FRMI};
+	enum Etat_lecture{FRMIL, COLLECT, DEFNS, PREDAT};
 	static unsigned int etat(FRMIL);
-	static unsigned int countF(0);
+	static unsigned int countF(0), countC(0), countD(0), countP(0), i(0);
 	unsigned int x, y, side, xg, yg, total_food;
 	static unsigned int nbC, nbD, nbP;
 	if(etat==FRMIL) {
 	data >> x >> y >> side >> xg >> yg >> total_food >> nbC >> nbD >> nbP;
-	cout << "Fourmiliere "  << countF << " : "  << x << " " << y << " " << side << " " << xg << " " << yg << " " << total_food << " " << nbC << " " << nbD << " " << nbP << endl;
+	//cout << "Fourmiliere "  << countF << " : "  << x << " " << y << " " << side << " " << xg << " " << yg << " " << total_food << " " << nbC << " " << nbD << " " << nbP << endl;
 	Carre carre{side, {x, y}};
 	Fourmiliere fourmiliere(carre, nbC, nbD, nbP);
 	test_validation_carre(grid, carre);
@@ -33,19 +33,76 @@ void decodage_line_fourmiliere(string line, Grid& grid,unsigned int total, Ensem
 	}
 	Carre carre_generator{sizeG, {xg, yg}};
 	fourmiliere.ajouter_fourmis(new Generator(carre_generator, total_food));
-	fourmiliere.test_fourmis(grid, countF);
-	//ensemble_fourmiliere.push_back(fourmiliere);
+	fourmiliere.test_fourmis(grid, countF, i);
+	++i;
+	++countF;
+	ensemble_fourmiliere.push_back(std::move(fourmiliere));
+	countC=0; countD=0; countP=0;
 	
-	etat=FRMI;
+	if(nbC!=0) {
+		etat=COLLECT ;
+		return;
+		}
+	if(nbD!=0) {
+		etat=DEFNS;
+		return;
+		}
+	if(nbP!=0) {
+		etat=PREDAT;
+		return;
 	}
-	if(decodage_line_fourmis(line, grid, nbC, nbD, nbP)==0) { // FRMI est le nombre 0 
-		etat=FRMIL;
-	}
+	
 	
 	if(countF==total) {
 		return;
+		}
 	}
-	++countF;
+	Carre carre_collect{0,{ 0,0}};
+	Collector collector(carre_collect, 0, "");
+	Carre carre_defens{0, {0,0}};
+	Defensor defensor(carre_defens, 0);
+	Carre carre_predat{0,{0,0}};
+	Predator predator(carre_predat, 0);
+	switch(etat) {
+		case COLLECT :
+			decodage_line_fourmis(line, grid, etat, collector, defensor, predator);
+			ensemble_fourmiliere[countF-1].ajouter_fourmis(new Collector(collector));
+			ensemble_fourmiliere[countF-1].test_fourmis(grid, countF-1, i);
+			++i;
+			++countC;
+			if(countC==nbC) {
+				etat=DEFNS;
+			}
+			break;
+		
+		case DEFNS :
+			decodage_line_fourmis(line, grid, etat, collector, defensor, predator);
+			ensemble_fourmiliere[countF-1].ajouter_fourmis(new Defensor(defensor));
+			ensemble_fourmiliere[countF-1].test_fourmis(grid, countF-1, i);
+			++i;
+			++countD;
+			if(countD==nbD) {
+				etat=PREDAT;
+			}
+			break;
+		case PREDAT :
+			decodage_line_fourmis(line, grid, etat, collector, defensor, predator);
+			ensemble_fourmiliere[countF-1].ajouter_fourmis(new Predator(predator));
+			ensemble_fourmiliere[countF-1].test_fourmis(grid, countF-1, i);
+			++i;
+			++countP;
+			if(countP==nbP) {
+				etat=FRMIL;
+				i=0;
+			}
+			break;
+		}
+	
+	/*if(decodage_line_fourmis(fourmiliere, line, grid, nbC, nbD, nbP)==0) { // FRMI est le nombre 0 
+		etat=FRMIL;
+	}*/
+	
+	
 	
 }
 	
@@ -67,10 +124,12 @@ void Fourmiliere::ajouter_fourmis(Fourmi* nouveau) {
 		fourmi->initialise_fourmi(grid);
 	}
 }*/
-void Fourmiliere::test_fourmis(Grid& grid, unsigned  int countF) {
-	for(const auto& fourmi : ensemble_fourmis) {
+void Fourmiliere::test_fourmis(Grid& grid, unsigned  int countF, unsigned int i) {
+	/*for(const auto& fourmi : ensemble_fourmis) {
 		fourmi->test_chaque_fourmi(grid, countF, carre);
-	}
+		
+	}*/
+	ensemble_fourmis[i]-> test_chaque_fourmi(grid, countF, carre);
 }
 /*
 		

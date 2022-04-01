@@ -5,7 +5,7 @@ using namespace std;
 Food::Food(Carre carre, unsigned int val_food) : carre(carre), val_food(val_food) {}
 
 void Food::initialise_food_on_grid(Grid& grid) {
-	initialise_carre_non_centre(grid, carre);
+	initialise_carre_centre(grid, carre);
 }
 
 void Food::test_superposition_food(Grid& grid) {
@@ -22,7 +22,7 @@ void decodage_line_food(string line, Grid& grid, Ensemble_food& ensemble_food) {
 		unsigned int x, y;
 		
 		data >> x >> y;
-		cout << "Nourriture "  << " : " << x << " " << y << endl;
+		//cout << "Nourriture "  << " : " << x << " " << y << endl;
 		Carre carre{1, {x, y}};
 		Food food(carre, val_food);
 		test_validation_carre(grid, carre);

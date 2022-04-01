@@ -1,9 +1,9 @@
 #include "squarecell.h"
 
 void initialise_grid(Grid& grid, const unsigned int g_max) {
-	for(int i(0); i < g_max; i++) {
+	for(size_t i(0); i < g_max; i++) {
 		grid.push_back(vector<bool>());
-		for(int j(0); j < g_max; j++) {
+		for(size_t j(0); j < g_max; j++) {
 			grid[i].push_back(false);   
 		}
 	}
@@ -79,15 +79,26 @@ bool test_superposition_2_carres(const Carre& carre,const Carre& autre_carre) {
 }
 
 bool test_superposition(const Grid& grid, const Carre& carre) {
-	for(int i(carre.point.y); i < carre.point.y + carre.longeur; ++i) {
-		for(int j(carre.point.x); j < carre.point.x + carre.longeur; ++j) {
-			if(grid[grid.size()-1-i][j]==true) {
+	for(size_t i(carre.point.y-carre.longeur/2); i <carre.point.y + carre.longeur/2+1 ; ++i) {
+		for(size_t j(carre.point.x-carre.longeur/2); j < carre.point.x + carre.longeur/2+1; ++j) {
+			if(grid[grid.size()-1-i][j] == true) {
 				return true;
-			}
 			
+			}
 		}
 	}
 	return false;	
-	
+}
+void affiche_grid(Grid grid) {
+		for(auto ligne : grid) {
+		for(auto kase : ligne) {
+			if( kase == false) {
+				cout << "|___";
+			} else if ( kase == true) {
+				cout << "|_X_";
+			}
+		}
+		cout << endl;
+	}
 }
 

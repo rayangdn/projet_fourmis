@@ -1,6 +1,14 @@
 #ifndef FOOD_H_INCLUDED
 #define FOOD_H_INCLUDED
 
+#include <cstdlib>
+#include <string>
+#include <iostream>
+#include <fstream>
+#include <sstream>
+#include <vector>
+#include <string>
+#include <memory>
 
 #include "squarecell.h"
 #include "message.h"

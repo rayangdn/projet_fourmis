@@ -1,6 +1,15 @@
 #ifndef FOURMILIERE_H_INCLUDED
 #define FOURMILIERE_H_INCLUDED
 
+#include <cstdlib>
+#include <string>
+#include <iostream>
+#include <fstream>
+#include <sstream>
+#include <vector>
+#include <string>
+#include <memory>
+#include <utility>
 
 #include "fourmis.h"
 #include "squarecell.h"
@@ -12,11 +21,11 @@
 class Fourmiliere {
 	public :
 	Fourmiliere(Carre ,unsigned int, unsigned int ,unsigned int);
-	~Fourmiliere() {};
+	//~Fourmiliere() {};
 	void test_superposition_fourmiliere(const Fourmiliere&, unsigned int, unsigned int);
 	
 	void ajouter_fourmis(Fourmi*);
-	void test_fourmis(Grid&, unsigned int);
+	void test_fourmis(Grid&, unsigned int, unsigned int);
 	
 	private :
 	Carre carre; 
