@@ -1,4 +1,16 @@
+#include <cstdlib>
+#include <string>
+#include <iostream>
+#include <fstream>
+#include <sstream>
+#include <vector>
+#include <string>
+#include <memory>
+
 #include "fourmis.h"
+
+//membre1: 60%
+//membre 2: 40%
 
 using namespace std;
 
@@ -21,8 +33,10 @@ void Fourmi::initialise_fourmi() {
 bool Fourmi::fourmis_in_house(const Carre& autre_carre) { //autre_carre = carre fourmiliere
 	if(((carre.point.x-carre.longeur/2) <= (autre_carre.point.x)) or
 		((carre.point.y-carre.longeur/2) <= (autre_carre.point.y)) or
-		((carre.point.x+carre.longeur/2+1) >= (autre_carre.point.x + autre_carre.longeur)) or
-		((carre.point.y+carre.longeur/2+1) >= (autre_carre.point.y + autre_carre.longeur))) {
+		((carre.point.x+carre.longeur/2+1) >= 
+		(autre_carre.point.x + autre_carre.longeur)) or
+		((carre.point.y+carre.longeur/2+1) >= 
+		(autre_carre.point.y + autre_carre.longeur))) {
 			return true;
 		}
 	return false;
@@ -44,12 +58,14 @@ void Generator::superposition_fourmi_G() {
 
 void Generator::fourmis_in_house_G(unsigned int countF, const Carre& autre_carre) {
 	if(fourmis_in_house(autre_carre)) {
-		cout << message::generator_not_within_home(carre.point.x, carre.point.y, countF);
+		cout << message::generator_not_within_home(carre.point.x, carre.point.y,
+		countF);
 		exit(EXIT_FAILURE); 
 	}
 }
 
-void Collector::initialise_collect(const Carre& autre_carre, unsigned int autre_age, string autre_have_food) {
+void Collector::initialise_collect(const Carre& autre_carre, unsigned int autre_age,
+string autre_have_food) {
 	carre.longeur = autre_carre.longeur;
 	carre.point.x = autre_carre.point.x;
 	carre.point.y = autre_carre.point.y;
@@ -93,7 +109,8 @@ void Defensor::superposition_fourmi_D() {
 
 void Defensor::fourmis_in_house_D(unsigned int countF, const Carre& autre_carre) {
 	if(fourmis_in_house(autre_carre)) {
-		cout << message::defensor_not_within_home(carre.point.x, carre.point.y, countF);
+		cout << message::defensor_not_within_home(carre.point.x, carre.point.y,
+		countF);
 		exit(EXIT_FAILURE); 
 	}
 }

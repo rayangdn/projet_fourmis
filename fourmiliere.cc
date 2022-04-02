@@ -1,10 +1,21 @@
-
+#include <cstdlib>
+#include <iostream>
+#include <fstream>
+#include <sstream>
+#include <string>
+#include <vector>
+#include <memory>
+#include <utility>
 
 #include "fourmiliere.h"
+
+//membre 1: 50%
+//membre 2: 50%
 using namespace std;
 
 
-Fourmiliere::Fourmiliere(Carre carre, unsigned int nbC, unsigned int nbD, unsigned int nbP)
+Fourmiliere::Fourmiliere(Carre carre, unsigned int nbC, unsigned int nbD,
+unsigned int nbP)
 : carre(carre),  nbC(nbC), nbD(nbD), nbP(nbP) {}
 
 void Fourmiliere::test_superposition_fourmiliere(const Fourmiliere& autre_fourmiliere,
@@ -15,7 +26,8 @@ unsigned int countF, unsigned int i) {
 	}
 }
 
-void decodage_line_fourmiliere(string line, unsigned int total, Ensemble_fourmiliere& ensemble_fourmiliere) {
+void decodage_line_fourmiliere(string line, unsigned int total,
+Ensemble_fourmiliere& ensemble_fourmiliere) {
 	istringstream data(line);
 	enum Etat_lecture{FRMIL, COLLECT, DEFNS, PREDAT};
 	static unsigned int etat(FRMIL);
@@ -28,13 +40,13 @@ void decodage_line_fourmiliere(string line, unsigned int total, Ensemble_fourmil
 		test_validation_carre(carre);
 		Fourmiliere fourmiliere(carre, nbC, nbD, nbP);
 		for(size_t i(0); i < ensemble_fourmiliere.size() ; ++i) {
-			fourmiliere.test_superposition_fourmiliere(ensemble_fourmiliere[i], countF, i);
+			fourmiliere.test_superposition_fourmiliere(ensemble_fourmiliere[i],
+			countF, i);
 		}
 		Carre carre_generator{sizeG, {xg, yg}};
 		fourmiliere.ajouter_fourmis(new Generator(carre_generator, total_food));
 		fourmiliere.test_fourmis(countF, count_fourmis);
 		++count_fourmis;
-		++countF;
 		ensemble_fourmiliere.push_back(std::move(fourmiliere));
 		countC=0; countD=0; countP=0;
 		if(nbC!=0) {
@@ -55,9 +67,8 @@ void decodage_line_fourmiliere(string line, unsigned int total, Ensemble_fourmil
 	switch(etat) {
 		case COLLECT :
 			decodage_line_fourmis(line, etat, collector, defensor, predator);
-			ensemble_fourmiliere[countF-1].ajouter_fourmis(new Collector(collector));
-			//countF-1 car on l'a incrémenter dans la boucle d'avant
-			ensemble_fourmiliere[countF-1].test_fourmis(countF-1, count_fourmis);
+			ensemble_fourmiliere[countF].ajouter_fourmis(new Collector(collector));
+			ensemble_fourmiliere[countF].test_fourmis(countF, count_fourmis);
 			++count_fourmis;
 			++countC;
 			if(countC==nbC) {
@@ -67,8 +78,8 @@ void decodage_line_fourmiliere(string line, unsigned int total, Ensemble_fourmil
 		
 		case DEFNS :
 			decodage_line_fourmis(line, etat, collector, defensor, predator);
-			ensemble_fourmiliere[countF-1].ajouter_fourmis(new Defensor(defensor));
-			ensemble_fourmiliere[countF-1].test_fourmis(countF-1, count_fourmis);
+			ensemble_fourmiliere[countF].ajouter_fourmis(new Defensor(defensor));
+			ensemble_fourmiliere[countF].test_fourmis(countF, count_fourmis);
 			++count_fourmis;;
 			++countD;
 			if(countD==nbD) {
@@ -78,13 +89,14 @@ void decodage_line_fourmiliere(string line, unsigned int total, Ensemble_fourmil
 			
 		case PREDAT :
 			decodage_line_fourmis(line, etat, collector, defensor, predator);
-			ensemble_fourmiliere[countF-1].ajouter_fourmis(new Predator(predator));
-			ensemble_fourmiliere[countF-1].test_fourmis(countF-1, count_fourmis);
+			ensemble_fourmiliere[countF].ajouter_fourmis(new Predator(predator));
+			ensemble_fourmiliere[countF].test_fourmis(countF, count_fourmis);
 			++count_fourmis;;
 			++countP;
 			if(countP==nbP) {
 				etat=FRMIL;
 				count_fourmis=0;
+				++countF;
 			}
 			break;
 	}

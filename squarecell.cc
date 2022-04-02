@@ -1,4 +1,10 @@
+#include <iostream>
+#include <vector>
+
 #include "squarecell.h"
+
+//Membre 1: 75%
+//Menbre 2: 25%
 
 using namespace std;
 
@@ -25,11 +31,13 @@ void test_validation_carre(const Carre& carre) {
 		exit(EXIT_FAILURE);
 	}
 	if(carre.point.x + carre.longeur > grid.size()){
-		cout << error_squarecell::print_outside(carre.point.x, carre.longeur, grid.size()-1);
+		cout << error_squarecell::print_outside(carre.point.x, carre.longeur,
+		grid.size()-1);
 		exit(EXIT_FAILURE);
 	}
 	if (carre.point.y + carre.longeur > grid.size()) {
-		cout << error_squarecell::print_outside(carre.point.x, carre.longeur, grid.size()-1);
+		cout << error_squarecell::print_outside(carre.point.x, carre.longeur,
+		grid.size()-1);
 		exit(EXIT_FAILURE);
 	}
 }
@@ -43,8 +51,10 @@ void initialise_carre_non_centre(const Carre& carre) {
 }
 
 void initialise_carre_centre(const Carre& carre) {
-	for(size_t i(carre.point.y-carre.longeur/2); i < carre.point.y + (carre.longeur/2+1) ; ++i) {
-		for(size_t j(carre.point.x-carre.longeur/2); j < carre.point.x + (carre.longeur/2+1); ++j) {
+	for(size_t i(carre.point.y-carre.longeur/2);
+		i < carre.point.y + (carre.longeur/2+1) ; ++i) {
+		for(size_t j(carre.point.x-carre.longeur/2);
+			j < carre.point.x + (carre.longeur/2+1); ++j) {
 			grid[grid.size()-1-i][j] = true;
 		}
 	}
@@ -59,8 +69,10 @@ void supprime_carre_non_centre(const Carre& carre) {
 }
 
 void supprime_carre_centre(const Carre& carre) {
-	for(size_t i(carre.point.y-carre.longeur/2); i < carre.point.y + (carre.longeur/2+1); ++i) {
-		for(size_t j(carre.point.x-carre.longeur/2); j < carre.point.x + (carre.longeur/2+1); ++j) {
+	for(size_t i(carre.point.y-carre.longeur/2);
+	    i < carre.point.y + (carre.longeur/2+1); ++i) {
+		for(size_t j(carre.point.x-carre.longeur/2);
+		    j < carre.point.x + (carre.longeur/2+1); ++j) {
 			grid[grid.size()-1-i][j] = true;
 		}
 	}
@@ -76,9 +88,12 @@ bool test_superposition_2_carres(const Carre& carre, const Carre& autre_carre) {
    return false;
 }
 
-bool test_superposition_avec_coord(const Carre& carre, unsigned int& x, unsigned int& y) {
-	for(size_t i(carre.point.y-carre.longeur/2); i < carre.point.y + (carre.longeur/2+1); ++i) {
-		for(size_t j(carre.point.x-carre.longeur/2); j < carre.point.x + (carre.longeur/2+1); ++j) {
+bool test_superposition_avec_coord(const Carre& carre, unsigned int& x,
+unsigned int& y) {
+	for(size_t i(carre.point.y-carre.longeur/2);
+	    i < carre.point.y + (carre.longeur/2+1); ++i) {
+		for(size_t j(carre.point.x-carre.longeur/2); 
+		    j < carre.point.x + (carre.longeur/2+1); ++j) {
 			if(grid[grid.size()-1-i][j] == true) {
 				x = j;
 				y = i;
@@ -90,8 +105,10 @@ bool test_superposition_avec_coord(const Carre& carre, unsigned int& x, unsigned
 }
 
 bool test_superposition_sans_coord(const Carre& carre) {
-	for(size_t i(carre.point.y-carre.longeur/2); i < carre.point.y + (carre.longeur/2+1); ++i) {
-		for(size_t j(carre.point.x-carre.longeur/2); j < carre.point.x + (carre.longeur/2+1); ++j) {
+	for(size_t i(carre.point.y-carre.longeur/2);
+	    i < carre.point.y + (carre.longeur/2+1); ++i) {
+		for(size_t j(carre.point.x-carre.longeur/2); 
+		    j < carre.point.x + (carre.longeur/2+1); ++j) {
 			if(grid[grid.size()-1-i][j] == true) {
 				return true;
 			}

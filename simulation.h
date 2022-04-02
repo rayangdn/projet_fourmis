@@ -1,23 +1,16 @@
-
-#include <cstdlib>
-#include <string>
-#include <iostream>
-#include <fstream>
-#include <sstream>
-#include <vector>
-#include <string>
-#include <memory>
+#ifndef SIMULATION_H_INCLUDED
+#define SIMULATION_H_INCLUDED
 
 #include "fourmiliere.h"
 #include "food.h"
 
 class Simulation {
-	public :
+public :
 	void lecture(char *);
 	void decodage_ligne(std::string);
-	private :
+private :
 	Ensemble_food ensemble_food;
 	Ensemble_fourmiliere ensemble_fourmiliere;
 };
 
-
+#endif

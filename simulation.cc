@@ -1,8 +1,15 @@
-#ifndef SIMULATION_H_INCLUDED
-#define SIMULATION_H_INCLUDED
+#include <cstdlib>
+#include <string>
+#include <iostream>
+#include <fstream>
+#include <sstream>
+#include <vector>
+#include <string>
 
 #include "simulation.h"
 
+//membre 1: 30%
+//menbre 2: 70%
 using namespace std;
 
 void Simulation::lecture(char * nom_fichier) {	
@@ -60,4 +67,3 @@ void Simulation::decodage_ligne(string line) {
 	}
 }
 
-#endif

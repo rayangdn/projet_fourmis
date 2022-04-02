@@ -3,6 +3,9 @@
 
 #include "simulation.h"
 
+//membre 1: 100%
+//membre 2: 0%
+
 using namespace std;
 
 int main(int argc, char * argv[]) {

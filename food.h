@@ -1,25 +1,17 @@
 #ifndef FOOD_H_INCLUDED
 #define FOOD_H_INCLUDED
 
-#include <cstdlib>
-#include <string>
-#include <iostream>
-#include <fstream>
-#include <sstream>
-#include <vector>
-#include <string>
-#include <memory>
 
 #include "squarecell.h"
 #include "message.h"
 
 class Food {
-	public :
+public :
 	Food(Carre, unsigned int);
 	void initialise_food_on_grid();
 	void superposition_food();
 	
-	private :
+private :
 	Carre carre;
 	unsigned int val_food;
 };

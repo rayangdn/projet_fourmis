@@ -1,8 +1,7 @@
 #ifndef SQUARECELL_H_INCLUDED
 #define SQUARECELL_H_INCLUDED
 
-#include <iostream>
-#include <vector>
+
 #include <cmath>
 
 #include "constantes.h"
