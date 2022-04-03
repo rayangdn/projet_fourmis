@@ -1,5 +1,9 @@
 #include <cstdlib>
 #include <string>
+//simulation.cc
+//Rayan Gauderon membre 1: 30%
+//Maxime Luyet membre 2: 70%
+
 #include <iostream>
 #include <fstream>
 #include <sstream>
@@ -8,8 +12,7 @@
 
 #include "simulation.h"
 
-//membre 1: 30%
-//menbre 2: 70%
+
 using namespace std;
 
 void Simulation::lecture(char * nom_fichier) {	

@@ -10,7 +10,6 @@ public :
 	Food(Carre, unsigned int);
 	void initialise_food_on_grid();
 	void superposition_food();
-	
 private :
 	Carre carre;
 	unsigned int val_food;

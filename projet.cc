@@ -1,10 +1,13 @@
+//projet.cc
+//Rayan Gauderon membre 1: 100%
+//Maxime Luyet membre 2: 0%
+
+
+
 #include <iostream>
 #include <vector>
 
 #include "simulation.h"
-
-//membre 1: 100%
-//membre 2: 0%
 
 using namespace std;
 

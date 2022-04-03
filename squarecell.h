@@ -26,7 +26,9 @@ struct Carre {
 
 void initialise_grid(const unsigned int&);
 
-void test_validation_carre(const Carre&);
+void test_validation_carre_non_centre(const Carre&);
+
+void test_validation_carre_centre(const Carre&);
 
 void initialise_carre_non_centre(const Carre&);
 

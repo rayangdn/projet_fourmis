@@ -1,6 +1,10 @@
 #include <cstdlib>
 #include <iostream>
 #include <fstream>
+//fourmiliere.cc
+//Rayan Gauderon membre 1: 50%
+//Maxime Luyet membre 2: 50%
+
 #include <sstream>
 #include <string>
 #include <vector>
@@ -9,10 +13,7 @@
 
 #include "fourmiliere.h"
 
-//membre 1: 50%
-//membre 2: 50%
 using namespace std;
-
 
 Fourmiliere::Fourmiliere(Carre carre, unsigned int nbC, unsigned int nbD,
 unsigned int nbP)
@@ -37,13 +38,14 @@ Ensemble_fourmiliere& ensemble_fourmiliere) {
 	if(etat==FRMIL) {
 		data >> x >> y >> side >> xg >> yg >> total_food >> nbC >> nbD >> nbP;
 		Carre carre{side, {x, y}};
-		test_validation_carre(carre);
+		test_validation_carre_non_centre(carre);
 		Fourmiliere fourmiliere(carre, nbC, nbD, nbP);
 		for(size_t i(0); i < ensemble_fourmiliere.size() ; ++i) {
 			fourmiliere.test_superposition_fourmiliere(ensemble_fourmiliere[i],
 			countF, i);
 		}
 		Carre carre_generator{sizeG, {xg, yg}};
+		test_validation_carre_centre(carre_generator);
 		fourmiliere.ajouter_fourmis(new Generator(carre_generator, total_food));
 		fourmiliere.test_fourmis(countF, count_fourmis);
 		++count_fourmis;

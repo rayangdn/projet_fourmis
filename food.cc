@@ -1,3 +1,7 @@
+//food.cc
+//Rayan Gauderon membre1: 40%
+//Maxime Luyet membre 2: 60%
+
 #include <cstdlib>
 #include <string>
 #include <iostream>
@@ -6,11 +10,7 @@
 #include <vector>
 #include <string>
 
-
 #include "food.h"
-
-//membre1: 40%
-//membre 2: 60%
 
 using namespace std;
 
@@ -32,7 +32,7 @@ void decodage_line_food(string line, Ensemble_food& ensemble_food) {
 		unsigned int x, y;
 		data >> x >> y;
 		Carre carre{1, {x, y}};
-		test_validation_carre(carre);
+		test_validation_carre_non_centre(carre);
 		Food food(carre, val_food);
 		food.superposition_food();
 		food.initialise_food_on_grid();

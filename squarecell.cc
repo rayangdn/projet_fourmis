@@ -1,10 +1,11 @@
+//squarecell.cc
+//Rayan Gauderon Membre 1: 75%
+//Maxime Luyet Membre 2: 25%
+
 #include <iostream>
 #include <vector>
 
 #include "squarecell.h"
-
-//Membre 1: 75%
-//Menbre 2: 25%
 
 using namespace std;
 
@@ -17,11 +18,7 @@ void initialise_grid(const unsigned int& g_max) {
 	}
 }
 
-void test_validation_carre(const Carre& carre) {
-	if(carre.longeur > (grid.size()-1)) {
-		cout << error_squarecell:: print_index(carre.longeur, grid.size());
-		exit(EXIT_FAILURE);
-	}
+void test_validation_carre_non_centre(const Carre& carre) {
 	if(carre.point.x > (grid.size()-1)) {
 		cout << error_squarecell:: print_index(carre.point.x, grid.size()-1);
 		exit(EXIT_FAILURE);
@@ -42,6 +39,27 @@ void test_validation_carre(const Carre& carre) {
 	}
 }
 
+void test_validation_carre_centre(const Carre& carre) {
+	if(carre.point.x > (grid.size()-1)) {
+		cout << error_squarecell:: print_index(carre.point.x, grid.size()-1);
+		exit(EXIT_FAILURE);
+	}
+	if(carre.point.y > (grid.size()-1)) {
+		cout << error_squarecell:: print_index(carre.point.y, grid.size()-1);
+		exit(EXIT_FAILURE);
+	}
+	if(carre.point.x + (carre.longeur/2+1) > grid.size()){
+		cout << error_squarecell::print_outside(carre.point.x, carre.longeur,
+		grid.size()-1);
+		exit(EXIT_FAILURE);
+	}
+	if (carre.point.y + (carre.longeur/2+1) > grid.size()) {
+		cout << error_squarecell::print_outside(carre.point.x, carre.longeur,
+		grid.size()-1);
+		exit(EXIT_FAILURE);
+	}
+}
+	
 void initialise_carre_non_centre(const Carre& carre) {
 	for(size_t i(carre.point.y); i < carre.point.y + carre.longeur ; ++i) {
 		for(size_t j(carre.point.x); j < carre.point.x + carre.longeur; ++j) {

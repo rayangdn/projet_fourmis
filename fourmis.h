@@ -12,6 +12,7 @@ public :
 	Fourmi(Carre);
 	virtual ~Fourmi() {};
 	virtual void test_chaque_fourmi(unsigned int, const Carre&)=0;
+	//carre=carre_fourmiliere
 	void initialise_fourmi();
 	bool fourmis_in_house(const Carre&);
 protected :

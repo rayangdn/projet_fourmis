@@ -1,6 +1,10 @@
 #include <cstdlib>
 #include <string>
 #include <iostream>
+//fourmi.cc
+//Rayan Gauderon membre1: 60%
+//Maxime Luyet membre 2: 40%
+
 #include <fstream>
 #include <sstream>
 #include <vector>
@@ -8,9 +12,6 @@
 #include <memory>
 
 #include "fourmis.h"
-
-//membre1: 60%
-//membre 2: 40%
 
 using namespace std;
 
@@ -29,8 +30,8 @@ Predator::Predator(Carre carre, unsigned int age) : Fourmi(carre), age(age) {}
 void Fourmi::initialise_fourmi() {
 	initialise_carre_centre(carre);
 }
-
-bool Fourmi::fourmis_in_house(const Carre& autre_carre) { //autre_carre = carre fourmiliere
+//autre_carre = carre fourmiliere
+bool Fourmi::fourmis_in_house(const Carre& autre_carre) { 
 	if(((carre.point.x-carre.longeur/2) <= (autre_carre.point.x)) or
 		((carre.point.y-carre.longeur/2) <= (autre_carre.point.y)) or
 		((carre.point.x+carre.longeur/2+1) >= 
@@ -42,9 +43,9 @@ bool Fourmi::fourmis_in_house(const Carre& autre_carre) { //autre_carre = carre 
 	return false;
 }
 
-void Generator::test_chaque_fourmi(unsigned int countF, const Carre& carre) {
+void Generator::test_chaque_fourmi(unsigned int countF, const Carre& autre_carre) {
 	superposition_fourmi_G();
-	fourmis_in_house_G(countF, carre);
+	fourmis_in_house_G(countF, autre_carre);
 	initialise_fourmi();
 }
 
@@ -94,8 +95,8 @@ void Defensor::initialise_defens(const Carre& autre_carre, unsigned int autre_ag
 }
 
 void Defensor::test_chaque_fourmi(unsigned int countF, const Carre& autre_carre) {
-	fourmis_in_house_D(countF, autre_carre);
 	superposition_fourmi_D();
+	fourmis_in_house_D(countF, autre_carre);
 	initialise_fourmi();
 }
 
@@ -142,7 +143,7 @@ Defensor& defensor, Predator& predator) {
 	if(etat==1) {
 		data >> x >> y >> age >> have_food;
 		Carre carre{sizeC, {x, y}};
-		test_validation_carre(carre);
+		test_validation_carre_centre(carre);
 		collector.initialise_collect(carre, age, have_food);
 		return;
 	}
@@ -150,14 +151,14 @@ Defensor& defensor, Predator& predator) {
 	if(etat==2) {
 		data >> x >> y >> age;
 		Carre carre{sizeC, {x, y}};
-		test_validation_carre(carre);
+		test_validation_carre_centre(carre);
 		defensor.initialise_defens(carre, age);
 		return;
 	}
 	if(etat==3) {
 		data >> x >> y >> age;
 		Carre carre{sizeC, {x, y}};
-		test_validation_carre(carre);
+		test_validation_carre_centre(carre);
 		predator.initialise_predat(carre, age);
 		return;
 	}
