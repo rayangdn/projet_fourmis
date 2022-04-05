@@ -32,7 +32,7 @@ void decodage_line_food(string line, Ensemble_food& ensemble_food) {
 		unsigned int x, y;
 		data >> x >> y;
 		Carre carre{1, {x, y}};
-		test_validation_carre_non_centre(carre);
+		test_validation_carre_centre(carre);
 		Food food(carre, val_food);
 		food.superposition_food();
 		food.initialise_food_on_grid();

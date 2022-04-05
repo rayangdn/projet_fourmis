@@ -26,9 +26,18 @@ unsigned int countF, unsigned int i) {
 		exit(EXIT_FAILURE);
 	}
 }
+	
+void Fourmiliere::ajouter_fourmis(Fourmi* nouveau) {
+	if(nouveau!= nullptr) {
+		ensemble_fourmis.push_back(unique_ptr<Fourmi>(nouveau));
+	}
+}
 
-void decodage_line_fourmiliere(string line, unsigned int total,
-Ensemble_fourmiliere& ensemble_fourmiliere) {
+void Fourmiliere::test_fourmis(unsigned  int countF, unsigned int i) {
+	ensemble_fourmis[i]->test_chaque_fourmi(countF, carre);
+}
+
+void decodage_line_fourmiliere(string line, Ensemble_fourmiliere& ensemble_fourmiliere) {
 	istringstream data(line);
 	enum Etat_lecture{FRMIL, COLLECT, DEFNS, PREDAT};
 	static unsigned int etat(FRMIL);
@@ -102,14 +111,4 @@ Ensemble_fourmiliere& ensemble_fourmiliere) {
 			}
 			break;
 	}
-}
-	
-void Fourmiliere::ajouter_fourmis(Fourmi* nouveau) {
-	if(nouveau!= nullptr) {
-		ensemble_fourmis.push_back(unique_ptr<Fourmi>(nouveau));
-	}
-}
-
-void Fourmiliere::test_fourmis(unsigned  int countF, unsigned int i) {
-	ensemble_fourmis[i]-> test_chaque_fourmi(countF, carre);
 }

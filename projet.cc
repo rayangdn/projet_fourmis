@@ -2,8 +2,6 @@
 //Rayan Gauderon membre 1: 100%
 //Maxime Luyet membre 2: 0%
 
-
-
 #include <iostream>
 #include <vector>
 

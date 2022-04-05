@@ -23,6 +23,6 @@ private :
 
 typedef std::vector<Fourmiliere> Ensemble_fourmiliere;
 
-void decodage_line_fourmiliere(std::string, unsigned int, Ensemble_fourmiliere&);
+void decodage_line_fourmiliere(std::string, Ensemble_fourmiliere&);
 
 #endif

@@ -63,7 +63,7 @@ void Simulation::decodage_ligne(string line) {
 			break;
 		
 		case FRMIL :
-			decodage_line_fourmiliere(line, total, ensemble_fourmiliere);
+			decodage_line_fourmiliere(line, ensemble_fourmiliere);
 			break;
 			
 		default : exit(0);
