@@ -6,6 +6,7 @@
 #include <vector>
 
 #include "simulation.h"
+#include "gui.h"
 
 using namespace std;
 

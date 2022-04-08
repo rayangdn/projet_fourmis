@@ -1,10 +1,10 @@
-#include <cstdlib>
-#include <string>
-#include <iostream>
 //fourmi.cc
 //Rayan Gauderon membre1: 60%
 //Maxime Luyet membre 2: 40%
 
+#include <cstdlib>
+#include <string>
+#include <iostream>
 #include <fstream>
 #include <sstream>
 #include <vector>

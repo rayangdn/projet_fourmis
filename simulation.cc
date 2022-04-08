@@ -1,9 +1,9 @@
-#include <cstdlib>
-#include <string>
 //simulation.cc
 //Rayan Gauderon membre 1: 30%
 //Maxime Luyet membre 2: 70%
 
+#include <cstdlib>
+#include <string>
 #include <iostream>
 #include <fstream>
 #include <sstream>

@@ -1,10 +1,10 @@
-#include <cstdlib>
-#include <iostream>
-#include <fstream>
 //fourmiliere.cc
 //Rayan Gauderon membre 1: 50%
 //Maxime Luyet membre 2: 50%
 
+#include <cstdlib>
+#include <iostream>
+#include <fstream>
 #include <sstream>
 #include <string>
 #include <vector>
