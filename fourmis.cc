@@ -30,22 +30,22 @@ Predator::Predator(Carre carre, unsigned int age) : Fourmi(carre), age(age) {}
 void Fourmi::initialise_fourmi() {
 	initialise_carre_centre(carre);
 }
-//autre_carre = carre fourmiliere
-bool Fourmi::fourmis_in_house(const Carre& autre_carre) { 
-	if(((carre.point.x-carre.longeur/2) <= (autre_carre.point.x)) or
-		((carre.point.y-carre.longeur/2) <= (autre_carre.point.y)) or
+
+bool Fourmi::fourmis_in_house(const Carre& carre_fourmiliere) { 
+	if(((carre.point.x-carre.longeur/2) <= (carre_fourmiliere.point.x)) or
+		((carre.point.y-carre.longeur/2) <= (carre_fourmiliere.point.y)) or
 		((carre.point.x+carre.longeur/2+1) >= 
-		(autre_carre.point.x + autre_carre.longeur)) or
+		(carre_fourmiliere.point.x + carre_fourmiliere.longeur)) or
 		((carre.point.y+carre.longeur/2+1) >= 
-		(autre_carre.point.y + autre_carre.longeur))) {
+		(carre_fourmiliere.point.y +carre_fourmiliere.longeur))) {
 			return true;
 		}
 	return false;
 }
 
-void Generator::test_chaque_fourmi(unsigned int countF, const Carre& autre_carre) {
+void Generator::test_chaque_fourmi(unsigned int countF, const Carre&carre_fourmiliere) {
 	superposition_fourmi_G();
-	fourmis_in_house_G(countF, autre_carre);
+	fourmis_in_house_G(countF, carre_fourmiliere);
 	initialise_fourmi();
 }
 
@@ -57,8 +57,8 @@ void Generator::superposition_fourmi_G() {
 	}
 }
 
-void Generator::fourmis_in_house_G(unsigned int countF, const Carre& autre_carre) {
-	if(fourmis_in_house(autre_carre)) {
+void Generator::fourmis_in_house_G(unsigned int countF, const Carre& carre_fourmiliere) {
+	if(fourmis_in_house(carre_fourmiliere)) {
 		cout << message::generator_not_within_home(carre.point.x, carre.point.y,
 		countF);
 		exit(EXIT_FAILURE); 
@@ -74,7 +74,7 @@ string autre_have_food) {
 	have_food = autre_have_food;
 }
 
-void Collector::test_chaque_fourmi(unsigned int countF, const Carre& autre_carre) {
+void Collector::test_chaque_fourmi(unsigned int countF, const Carre& carre_fourmiliere) {
 	superposition_fourmi_C();
 	initialise_fourmi();
 }
@@ -94,9 +94,9 @@ void Defensor::initialise_defens(const Carre& autre_carre, unsigned int autre_ag
 	age = autre_age;
 }
 
-void Defensor::test_chaque_fourmi(unsigned int countF, const Carre& autre_carre) {
+void Defensor::test_chaque_fourmi(unsigned int countF, const Carre& carre_fourmiliere) {
 	superposition_fourmi_D();
-	fourmis_in_house_D(countF, autre_carre);
+	fourmis_in_house_D(countF, carre_fourmiliere);
 	initialise_fourmi();
 }
 
@@ -108,8 +108,8 @@ void Defensor::superposition_fourmi_D() {
 	}
 }
 
-void Defensor::fourmis_in_house_D(unsigned int countF, const Carre& autre_carre) {
-	if(fourmis_in_house(autre_carre)) {
+void Defensor::fourmis_in_house_D(unsigned int countF, const Carre& carre_fourmiliere) {
+	if(fourmis_in_house(carre_fourmiliere)) {
 		cout << message::defensor_not_within_home(carre.point.x, carre.point.y,
 		countF);
 		exit(EXIT_FAILURE); 
@@ -123,7 +123,7 @@ void Predator::initialise_predat(const Carre& autre_carre, unsigned int autre_ag
 	age = autre_age;
 }
 
-void Predator::test_chaque_fourmi(unsigned int countF, const Carre& autre_carre) {
+void Predator::test_chaque_fourmi(unsigned int countF, const Carre& carre_fourmiliere) {
 	superposition_fourmi_P();
 	initialise_fourmi();
 }

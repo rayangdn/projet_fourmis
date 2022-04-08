@@ -7,6 +7,7 @@
 #include "constantes.h"
 #include "message.h"
 #include "error_squarecell.h"
+#include "graphic.h"
 
 constexpr short unsigned g_dim(7);
 const short unsigned g_max(pow(2, g_dim));

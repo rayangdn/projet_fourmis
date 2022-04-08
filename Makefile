@@ -1,44 +1,40 @@
-# Definitions de macros
+OUT = projet
+CXX = g++
+CXXFLAGS = -Wall -std=c++11
+LINKING = `pkg-config --cflags gtkmm-3.0`
+LDLIBS = `pkg-config --libs gtkmm-3.0`
+OFILES = projet.o simulation.o food.o fourmiliere.o fourmi.o squarecell.o error_squarecell.o message.o constantes.o
 
-CXX     = g++
-CXXFLAGS = -g -Wall -std=c++11
-CXXFILES = projet.cc  simulation.cc food.cc fourmiliere.cc fourmis.cc message.cc squarecell.cc error_squarecell.cc     
-OFILES = $(CXXFILES:.cc=.o)
+all: $(OUT)
 
-# Definition de la premiere regle
+projet.o: projet.cc simulation.h fourmiliere.h fourmis.h food.h squarecell.h constantes.h message.h error_squarecell.h
+	$(CXX) $(CXXFLAGS) $(LINKING) -c $< -o $@ $(LINKING)
 
-prog: $(OFILES)
-	$(CXX) $(OFILES) -o projet
+simulation.o: simulation.cc simulation.h fourmiliere.h fourmis.h food.h squarecell.h constantes.h message.h error_squarecell.h
+	$(CXX) $(CXXFLAGS) $(LINKING) -c $< -o $@ $(LINKING)
 
-# Definitions de cibles particulieres
+food.o: food.cc food.h squarecell.h constantes.h message.h error_squarecell.h
+	$(CXX) $(CXXFLAGS) $(LINKING) -c $< -o $@ $(LINKING)
 
-depend:
-	@echo " *** MISE A JOUR DES DEPENDANCES ***"
-	@(sed '/^# DO NOT DELETE THIS LINE/q' Makefile && \
-	  $(CXX) -MM $(CXXFLAGS) $(CXXFILES) | \
-	  egrep -v "/usr/include" \
-	 ) >Makefile.new
-	@mv Makefile.new Makefile
+fourmiliere.o: fourmiliere.o: fourmiliere.cc fourmiliere.h fourmis.h food.h squarecell.h  constantes.h message.h error_squarecell.h
+	$(CXX) $(CXXFLAGS) $(LINKING) -c $< -o $@ $(LINKING)
+
+fourmis.o: fourmis.cc fourmis.h food.h squarecell.h constantes.h message.h error_squarecell.h
+	$(CXX) $(CXXFLAGS) $(LINKING) -c $< -o $@ $(LINKING)
+
+message.o: message.cc message.h
+	$(CXX) $(CXXFLAGS) $(LINKING) -c $< -o $@ $(LINKING)
+
+squarecell.o: squarecell.cc squarecell.h constantes.h message.h error_squarecell.h
+	$(CXX) $(CXXFLAGS) $(LINKING) -c $< -o $@ $(LINKING)
+
+error_squarecell.o: error_squarecell.cc error_squarecell.h
+	$(CXX) $(CXXFLAGS) $(LINKING) -c $< -o $@ $(LINKING)
+
+$(OUT): $(OFILES)
+	$(CXX) $(CXXFLAGS) $(LINKING) $(OFILES) -o $@ $(LDLIBS)
 
 clean:
 	@echo " *** EFFACE MODULES OBJET ET EXECUTABLE ***"
 	@/bin/rm -f *.o *.x *.cc~ *.h~ prog
 
-#
-# -- Regles de dependances generees automatiquement
-#
-# DO NOT DELETE THIS LINE
-projet.o: projet.cc simulation.h fourmiliere.h fourmis.h food.h \
-  squarecell.h constantes.h message.h error_squarecell.h
-simulation.o: simulation.cc simulation.h fourmiliere.h fourmis.h food.h \
-  squarecell.h constantes.h message.h error_squarecell.h
-food.o: food.cc food.h squarecell.h constantes.h message.h \
-  error_squarecell.h
-fourmiliere.o: fourmiliere.cc fourmiliere.h fourmis.h food.h squarecell.h \
-  constantes.h message.h error_squarecell.h
-fourmis.o: fourmis.cc fourmis.h food.h squarecell.h constantes.h \
-  message.h error_squarecell.h
-message.o: message.cc message.h
-squarecell.o: squarecell.cc squarecell.h constantes.h message.h \
-  error_squarecell.h
-error_squarecell.o: error_squarecell.cc error_squarecell.h
