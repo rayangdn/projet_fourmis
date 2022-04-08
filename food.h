@@ -9,7 +9,7 @@ class Food {
 public :
 	Food(Carre, unsigned int);
 	void initialise_food_on_grid();
-	void superposition_food();
+	void superposition_food(bool&);
 private :
 	Carre carre;
 	unsigned int val_food;
@@ -17,6 +17,6 @@ private :
 
 typedef std::vector<Food> Ensemble_food;
 
-void decodage_line_food(std::string, Ensemble_food&);
+void decodage_line_food(std::string, Ensemble_food&, bool&);
 
 #endif

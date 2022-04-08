@@ -20,21 +20,21 @@ void Food::initialise_food_on_grid() {
 	initialise_carre_centre(carre);
 }
 
-void Food::superposition_food() {
+void Food::superposition_food(bool& erreur) {
 	if(test_superposition_sans_coord(carre)) {
 		cout << message::food_overlap(carre.point.x,carre.point.y);
-		exit(EXIT_FAILURE);
+		erreur = true;
 		}
 }
 
-void decodage_line_food(string line, Ensemble_food& ensemble_food) {
+void decodage_line_food(string line, Ensemble_food& ensemble_food, bool& erreur) {
 		istringstream data(line);
 		unsigned int x, y;
 		data >> x >> y;
 		Carre carre{1, {x, y}};
-		test_validation_carre_centre(carre);
+		test_validation_carre_centre(carre, erreur);
 		Food food(carre, val_food);
-		food.superposition_food();
+		food.superposition_food(erreur);
 		food.initialise_food_on_grid();
 		ensemble_food.push_back(food);
 }

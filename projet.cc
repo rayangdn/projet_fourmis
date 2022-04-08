@@ -16,6 +16,11 @@ int main(int argc, char * argv[]) {
 	if(argc != 2){
 		exit(0);
 	 }
-	simulation.lecture(argv[1]); 
+	if(simulation.lecture(argv[1])){
+		//affiche drawing
+	} else { 
+		simulation.supprimer_structs();
+	}
+		
 	return EXIT_SUCCESS;
 }

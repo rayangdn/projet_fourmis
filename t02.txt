@@ -19,7 +19,7 @@
 	50 50 3 true
 	35 35 10 false
 	16 16 1 false
-	70 70 1 false
+	18 14 1 false
 	
 	# defensors:
 	108 102 2

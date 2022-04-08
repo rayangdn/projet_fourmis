@@ -15,8 +15,9 @@
 
 using namespace std;
 
-void Simulation::lecture(char * nom_fichier) {	
+bool Simulation::lecture(char * nom_fichier) {	
     string line;
+    bool erreur(false); // détection erreur problème avec t13.txt meilleur manière??
     ifstream fichier(nom_fichier); 
     if(!fichier.fail()) 
     {
@@ -24,13 +25,17 @@ void Simulation::lecture(char * nom_fichier) {
         {
 			if(line[0]=='#')  continue;  
        
-			decodage_ligne(line);
+			decodage_ligne(line, erreur);
+			if(erreur) {
+				return false;
+			}
         }
-		cout << message::success();
+		//cout << message::success();
 	}
+	return true;
 }
 
-void Simulation::decodage_ligne(string line) {
+void Simulation::decodage_ligne(string line, bool& erreur) {
 	istringstream data(line);
 	enum Etat_lecture {NBN, FOOD, NBF, FRMIL};
 	static int etat(NBN);
@@ -46,7 +51,7 @@ void Simulation::decodage_ligne(string line) {
 			break;
 		
 		case FOOD :
-			decodage_line_food(line, ensemble_food);
+			decodage_line_food(line, ensemble_food, erreur);
 			++count;
 			if(count == total) {
 				etat = NBF;
@@ -56,17 +61,21 @@ void Simulation::decodage_ligne(string line) {
 		case NBF :
 			data >> total; count = 0;
 			if(total == 0) {
-				exit(EXIT_FAILURE);
+				break;
 			} else {
 				etat = FRMIL;
 			}
 			break;
 		
 		case FRMIL :
-			decodage_line_fourmiliere(line, ensemble_fourmiliere);
+			decodage_line_fourmiliere(line, ensemble_fourmiliere, erreur);
 			break;
 			
 		default : exit(0);
 	}
 }
-
+void Simulation::supprimer_structs() {
+		initialise_grid(g_max);
+		ensemble_food.clear();
+		ensemble_fourmiliere.clear(); // détruit aussi les fourmis??
+}

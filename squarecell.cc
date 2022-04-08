@@ -18,45 +18,53 @@ void initialise_grid(const unsigned int& g_max) {
 	}
 }
 
-void test_validation_carre_non_centre(const Carre& carre) {
+void test_validation_carre_non_centre(const Carre& carre, bool& erreur) {
 	if(carre.point.x > (grid.size()-1)) {
 		cout << error_squarecell:: print_index(carre.point.x, grid.size()-1);
-		exit(EXIT_FAILURE);
+		erreur = true;
+		return;
 	}
 	if(carre.point.y > (grid.size()-1)) {
 		cout << error_squarecell:: print_index(carre.point.y, grid.size()-1);
-		exit(EXIT_FAILURE);
+		erreur = true;
+		return;
 	}
 	if(carre.point.x + carre.longeur > grid.size()){
 		cout << error_squarecell::print_outside(carre.point.x, carre.longeur,
 		grid.size()-1);
-		exit(EXIT_FAILURE);
+		erreur = true;
+		return;
 	}
 	if (carre.point.y + carre.longeur > grid.size()) {
 		cout << error_squarecell::print_outside(carre.point.x, carre.longeur,
 		grid.size()-1);
-		exit(EXIT_FAILURE);
+		erreur = true;
+		return;
 	}
 }
 
-void test_validation_carre_centre(const Carre& carre) {
+void test_validation_carre_centre(const Carre& carre, bool& erreur) {
 	if(carre.point.x > (grid.size()-1)) {
 		cout << error_squarecell:: print_index(carre.point.x, grid.size()-1);
-		exit(EXIT_FAILURE);
+		erreur = true;
+		return;
 	}
 	if(carre.point.y > (grid.size()-1)) {
 		cout << error_squarecell:: print_index(carre.point.y, grid.size()-1);
-		exit(EXIT_FAILURE);
+		erreur = true;
+		return;
 	}
 	if(carre.point.x + (carre.longeur/2+1) > grid.size()){
 		cout << error_squarecell::print_outside(carre.point.x, carre.longeur,
 		grid.size()-1);
-		exit(EXIT_FAILURE);
+		erreur = true;
+		return;
 	}
 	if (carre.point.y + (carre.longeur/2+1) > grid.size()) {
 		cout << error_squarecell::print_outside(carre.point.x, carre.longeur,
 		grid.size()-1);
-		exit(EXIT_FAILURE);
+		erreur = true;
+		return;
 	}
 }
 	

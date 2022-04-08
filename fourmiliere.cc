@@ -20,10 +20,10 @@ unsigned int nbP)
 : carre(carre),  nbC(nbC), nbD(nbD), nbP(nbP) {}
 
 void Fourmiliere::test_superposition_fourmiliere(const Fourmiliere& autre_fourmiliere,
-unsigned int countF, unsigned int i) {
+unsigned int countF, unsigned int i, bool& erreur) {
 	if(test_superposition_2_carres(carre, autre_fourmiliere.carre)) {
 		cout << message::homes_overlap(i, countF);
-		exit(EXIT_FAILURE);
+		erreur = true;
 	}
 }
 	
@@ -33,11 +33,12 @@ void Fourmiliere::ajouter_fourmis(Fourmi* nouveau) {
 	}
 }
 
-void Fourmiliere::test_fourmis(unsigned  int countF, unsigned int i) {
-	ensemble_fourmis[i]->test_chaque_fourmi(countF, carre);
+void Fourmiliere::test_fourmis(unsigned  int countF, unsigned int i, bool& erreur) {
+	ensemble_fourmis[i]->test_chaque_fourmi(countF, carre, erreur);
 }
 
-void decodage_line_fourmiliere(string line, Ensemble_fourmiliere& ensemble_fourmiliere) {
+void decodage_line_fourmiliere(string line, Ensemble_fourmiliere& ensemble_fourmiliere, 
+bool& erreur) {
 	istringstream data(line);
 	enum Etat_lecture{FRMIL, COLLECT, DEFNS, PREDAT};
 	static unsigned int etat(FRMIL);
@@ -47,16 +48,16 @@ void decodage_line_fourmiliere(string line, Ensemble_fourmiliere& ensemble_fourm
 	if(etat==FRMIL) {
 		data >> x >> y >> side >> xg >> yg >> total_food >> nbC >> nbD >> nbP;
 		Carre carre{side, {x, y}};
-		test_validation_carre_non_centre(carre);
+		test_validation_carre_non_centre(carre, erreur);
 		Fourmiliere fourmiliere(carre, nbC, nbD, nbP);
 		for(size_t i(0); i < ensemble_fourmiliere.size() ; ++i) {
 			fourmiliere.test_superposition_fourmiliere(ensemble_fourmiliere[i],
-			countF, i);
+			countF, i, erreur);
 		}
 		Carre carre_generator{sizeG, {xg, yg}};
-		test_validation_carre_centre(carre_generator);
+		test_validation_carre_centre(carre_generator, erreur);
 		fourmiliere.ajouter_fourmis(new Generator(carre_generator, total_food));
-		fourmiliere.test_fourmis(countF, count_fourmis);
+		fourmiliere.test_fourmis(countF, count_fourmis, erreur);
 		++count_fourmis;
 		ensemble_fourmiliere.push_back(std::move(fourmiliere));
 		countC=0; countD=0; countP=0;
@@ -77,9 +78,9 @@ void decodage_line_fourmiliere(string line, Ensemble_fourmiliere& ensemble_fourm
 	Defensor defensor(carre, 0); Predator predator(carre, 0);
 	switch(etat) {
 		case COLLECT :
-			decodage_line_fourmis(line, etat, collector, defensor, predator);
+			decodage_line_fourmis(line, etat, collector, defensor, predator, erreur);
 			ensemble_fourmiliere[countF].ajouter_fourmis(new Collector(collector));
-			ensemble_fourmiliere[countF].test_fourmis(countF, count_fourmis);
+			ensemble_fourmiliere[countF].test_fourmis(countF, count_fourmis, erreur);
 			++count_fourmis;
 			++countC;
 			if(countC==nbC) {
@@ -88,9 +89,9 @@ void decodage_line_fourmiliere(string line, Ensemble_fourmiliere& ensemble_fourm
 			break;
 		
 		case DEFNS :
-			decodage_line_fourmis(line, etat, collector, defensor, predator);
+			decodage_line_fourmis(line, etat, collector, defensor, predator, erreur);
 			ensemble_fourmiliere[countF].ajouter_fourmis(new Defensor(defensor));
-			ensemble_fourmiliere[countF].test_fourmis(countF, count_fourmis);
+			ensemble_fourmiliere[countF].test_fourmis(countF, count_fourmis, erreur);
 			++count_fourmis;;
 			++countD;
 			if(countD==nbD) {
@@ -99,9 +100,9 @@ void decodage_line_fourmiliere(string line, Ensemble_fourmiliere& ensemble_fourm
 			break;
 			
 		case PREDAT :
-			decodage_line_fourmis(line, etat, collector, defensor, predator);
+			decodage_line_fourmis(line, etat, collector, defensor, predator, erreur);
 			ensemble_fourmiliere[countF].ajouter_fourmis(new Predator(predator));
-			ensemble_fourmiliere[countF].test_fourmis(countF, count_fourmis);
+			ensemble_fourmiliere[countF].test_fourmis(countF, count_fourmis, erreur);
 			++count_fourmis;;
 			++countP;
 			if(countP==nbP) {

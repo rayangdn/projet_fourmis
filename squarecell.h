@@ -1,7 +1,6 @@
 #ifndef SQUARECELL_H_INCLUDED
 #define SQUARECELL_H_INCLUDED
 
-
 #include <cmath>
 
 #include "constantes.h"
@@ -27,9 +26,9 @@ struct Carre {
 
 void initialise_grid(const unsigned int&);
 
-void test_validation_carre_non_centre(const Carre&);
+void test_validation_carre_non_centre(const Carre&, bool&);
 
-void test_validation_carre_centre(const Carre&);
+void test_validation_carre_centre(const Carre&, bool&);
 
 void initialise_carre_non_centre(const Carre&);
 

@@ -6,8 +6,9 @@
 
 class Simulation {
 public :
-	void lecture(char *);
-	void decodage_ligne(std::string);
+	bool lecture(char *);
+	void decodage_ligne(std::string, bool&);
+	void supprimer_structs();
 private :
 	Ensemble_food ensemble_food;
 	Ensemble_fourmiliere ensemble_fourmiliere;
