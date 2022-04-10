@@ -20,7 +20,7 @@ Fourmi::Fourmi(Carre carre) : carre(carre) {}
 Generator::Generator(Carre carre, unsigned int total_food) 
 : Fourmi(carre), total_food(total_food) {}
 
-Collector::Collector(Carre carre, unsigned int age, string have_food)
+Collector::Collector(Carre carre, unsigned int age, bool have_food)
 : Fourmi(carre), age(age), have_food(have_food) {}
 
 Defensor::Defensor(Carre carre, unsigned int age) : Fourmi(carre), age(age) {}
@@ -45,8 +45,13 @@ bool Fourmi::fourmis_in_house(const Carre& carre_fourmiliere) {
 
 void Generator::test_chaque_fourmi(unsigned int countF, const Carre& carre_fourmiliere,
 bool& erreur) {
-	superposition_fourmi_G(erreur);
-	fourmis_in_house_G(countF, carre_fourmiliere, erreur);
+	test_validation_carre_centre(carre, erreur);
+	if(erreur==false) {
+		superposition_fourmi_G(erreur);
+	}
+	if(erreur==false) {
+		fourmis_in_house_G(countF, carre_fourmiliere, erreur);
+	}
 	initialise_fourmi();
 }
 
@@ -67,26 +72,46 @@ bool& erreur) {
 	}
 }
 
+void Generator::draw_fourmis(Graphic graphic, Couleur couleur) {
+	draw_carre_gene_predat(carre, graphic, couleur);
+}
+
 void Collector::initialise_collect(const Carre& autre_carre, unsigned int autre_age,
 string autre_have_food) {
 	carre.longeur = autre_carre.longeur;
 	carre.point.x = autre_carre.point.x;
 	carre.point.y = autre_carre.point.y;
 	age = autre_age;
-	have_food = autre_have_food;
+	if(autre_have_food == "true") {
+		have_food=true;
+	} else { 
+		have_food=false;
+	}
 }
 
 void Collector::test_chaque_fourmi(unsigned int countF, const Carre& carre_fourmiliere,
 bool& erreur) {
-	superposition_fourmi_C(erreur);
+	test_validation_carre_centre(carre, erreur);
+	if(erreur==false) {
+		superposition_fourmi_C(erreur);
+	}
 	initialise_fourmi();
-}
 
+}
 void Collector::superposition_fourmi_C(bool& erreur) {
 	unsigned int x(0), y(0);
 	if(test_superposition_avec_coord(carre, x, y)) {
 		cout << message::collector_overlap( carre.point.x, carre.point.y, x, y);
 		erreur = true;
+	}
+}
+
+void Collector::draw_fourmis(Graphic graphic, Couleur couleur) {
+	draw_carre_collector(carre, graphic, couleur);
+	if(have_food) {
+		Carre carre_food{1, {carre.point.x, 
+		carre.point.y}};
+		draw_carre_food(carre_food, graphic);
 	}
 }
 
@@ -99,10 +124,16 @@ void Defensor::initialise_defens(const Carre& autre_carre, unsigned int autre_ag
 
 void Defensor::test_chaque_fourmi(unsigned int countF, const Carre& carre_fourmiliere, 
 bool& erreur) {
-	superposition_fourmi_D(erreur);
-	fourmis_in_house_D(countF, carre_fourmiliere, erreur);
+	test_validation_carre_centre(carre, erreur);
+	if(erreur==false) {
+		superposition_fourmi_D(erreur);
+	}
+	if(erreur==false) {
+		fourmis_in_house_D(countF, carre_fourmiliere, erreur);
+	}
 	initialise_fourmi();
 }
+
 
 void Defensor::superposition_fourmi_D(bool& erreur) {
 	unsigned int x(0), y(0);
@@ -121,6 +152,10 @@ bool& erreur) {
 	}
 }
 
+void Defensor::draw_fourmis(Graphic graphic, Couleur couleur) {
+	draw_carre_defensor(carre, graphic, couleur);
+}
+
 void Predator::initialise_predat(const Carre& autre_carre, unsigned int autre_age) {
 	carre.longeur = autre_carre.longeur;
 	carre.point.x = autre_carre.point.x;
@@ -130,7 +165,10 @@ void Predator::initialise_predat(const Carre& autre_carre, unsigned int autre_ag
 
 void Predator::test_chaque_fourmi(unsigned int countF, const Carre& carre_fourmiliere, 
 bool& erreur) {
-	superposition_fourmi_P(erreur);
+	test_validation_carre_centre(carre, erreur);
+	if(erreur==false) {
+		superposition_fourmi_P(erreur);
+	}
 	initialise_fourmi();
 }
 
@@ -141,6 +179,10 @@ void Predator::superposition_fourmi_P(bool& erreur) {
 	}
 }
 
+void Predator::draw_fourmis(Graphic graphic, Couleur couleur) {
+	draw_carre_gene_predat(carre, graphic, couleur);
+}
+
 void decodage_line_fourmis(string line, unsigned int etat, Collector& collector,
 Defensor& defensor, Predator& predator, bool& erreur) {
 	istringstream data(line);
@@ -149,22 +191,19 @@ Defensor& defensor, Predator& predator, bool& erreur) {
 	if(etat==1) {
 		data >> x >> y >> age >> have_food;
 		Carre carre{sizeC, {x, y}};
-		test_validation_carre_centre(carre, erreur);
 		collector.initialise_collect(carre, age, have_food);
 		return;
 	}
 	
 	if(etat==2) {
 		data >> x >> y >> age;
-		Carre carre{sizeC, {x, y}};
-		test_validation_carre_centre(carre, erreur);
+		Carre carre{sizeD, {x, y}};
 		defensor.initialise_defens(carre, age);
 		return;
 	}
 	if(etat==3) {
 		data >> x >> y >> age;
-		Carre carre{sizeC, {x, y}};
-		test_validation_carre_centre(carre, erreur);
+		Carre carre{sizeP, {x, y}};
 		predator.initialise_predat(carre, age);
 		return;
 	}

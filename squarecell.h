@@ -44,5 +44,15 @@ bool test_superposition_avec_coord(const Carre&, unsigned int&, unsigned int&);
 
 bool test_superposition_sans_coord(const Carre&);
 
+void draw_carre_food(const Carre&, Graphic);
+
+void draw_carre_fourmiliere(const Carre&, Graphic, Couleur couleur);
+
+void draw_carre_gene_predat(const Carre&, Graphic, Couleur couleur);
+
+void draw_carre_collector(const Carre&, Graphic, Couleur couleur);
+
+void draw_carre_defensor(const Carre&, Graphic, Couleur couleur);
+
 #endif
 

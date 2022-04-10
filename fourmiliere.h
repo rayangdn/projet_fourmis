@@ -15,14 +15,15 @@ public :
 	unsigned int, bool&);
 	void ajouter_fourmis(Fourmi*);
 	void test_fourmis(unsigned int, unsigned int, bool&);
+	void draw_fourmiliere(Graphic, Couleur couleur);
 private :
 	Carre carre; 
 	unsigned int nbC, nbD, nbP;
 	Ensemble_fourmis ensemble_fourmis;
 };
 
-typedef std::vector<Fourmiliere> Ensemble_fourmiliere;
+typedef std::vector<Fourmiliere> Ensemble_fourmilieres;
 
-void decodage_line_fourmiliere(std::string, Ensemble_fourmiliere&, bool&);
+void decodage_line_fourmiliere(std::string, Ensemble_fourmilieres&, bool&);
 
 #endif

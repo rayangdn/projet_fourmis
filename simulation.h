@@ -9,9 +9,12 @@ public :
 	bool lecture(char *);
 	void decodage_ligne(std::string, bool&);
 	void supprimer_structs();
+	void draw_simulation(Graphic);
+	void initialise_ensemble_couleurs();
 private :
 	Ensemble_food ensemble_food;
-	Ensemble_fourmiliere ensemble_fourmiliere;
+	Ensemble_fourmilieres ensemble_fourmilieres;
+	Ensemble_couleurs ensemble_couleurs;
 };
 
 #endif

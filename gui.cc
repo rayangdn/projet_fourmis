@@ -5,12 +5,99 @@
 #include <sstream>
 #include <vector>
 #include <string>
+#include <cairomm/context.h>
+#include <utility>
 
 #include "gui.h"
 
 using namespace std;
 
-Interface::Interface () :
+static Frame default_frame = {-64., 64., -64., 64, 1, 128, 128};
+ 
+Gui::Gui (Simulation simulation) : simulation(std::move(simulation))
+{
+
+	set_frame(default_frame);
+}
+Gui::~Gui() {}
+
+void Gui::set_frame(Frame f)
+{
+	if((f.xMin <= f.xMax) and (f.yMin <= f.yMax) and (f.height > 0))
+	{
+		f.asp = f.width/f.height;
+		frame = f;
+	}
+	else
+		std::cout << "incorrect Model framing or window parameters" << std::endl;
+} 
+void Gui::adjust_frame()
+{
+	Gtk::Allocation allocation = get_allocation();
+	const int width = allocation.get_width();
+	const int height = allocation.get_height();
+	
+	frame.width  = width;
+	frame.height = height;
+
+	// Preventing distorsion by adjusting the frame (cadrage)
+	// to have the same proportion as the graphical area
+	
+    // use the reference framing as a guide for preventing distortion
+    double new_aspect_ratio((double)width/height);
+    if( new_aspect_ratio > default_frame.asp)
+    { // keep yMax and yMin. Adjust xMax and xMin
+	    frame.yMax = default_frame.yMax ;
+	    frame.yMin = default_frame.yMin ;	
+	  
+	    double delta(default_frame.xMax - default_frame.xMin);
+	    double mid((default_frame.xMax + default_frame.xMin)/2);
+        // the new frame is centered on the mid-point along X
+	    frame.xMax = mid + 0.5*(new_aspect_ratio/default_frame.asp)*delta ;
+	    frame.xMin = mid - 0.5*(new_aspect_ratio/default_frame.asp)*delta ;		  	  
+    }
+    else
+    { // keep xMax and xMin. Adjust yMax and yMin
+	    frame.xMax = default_frame.xMax ;
+	    frame.xMin = default_frame.xMin ;
+	  	  
+ 	    double delta(default_frame.yMax - default_frame.yMin);
+	    double mid((default_frame.yMax + default_frame.yMin)/2);
+        // the new frame is centered on the mid-point along Y
+	    frame.yMax = mid + 0.5*(default_frame.asp/new_aspect_ratio)*delta ;
+	    frame.yMin = mid - 0.5*(default_frame.asp/new_aspect_ratio)*delta ;		  	  
+    }
+}
+static void orthographic_projection(const Cairo::RefPtr<Cairo::Context>& cr, Frame frame) {
+	
+	// déplace l'origine au centre de la fenêtre
+	cr->translate(frame.width/2, frame.height/2);
+ 
+	// normalise la largeur et hauteur aux valeurs fournies par le cadrage
+	// ET inverse la direction de l'axe Y
+	
+	cr->scale(frame.width/(frame.xMax - frame.xMin), 
+           -frame.height/(frame.yMax - frame.yMin));
+  
+	// décalage au centre du cadrage
+	cr->translate(-(frame.xMin + frame.xMax)/2, -(frame.yMin + frame.yMax)/2);
+	cr->translate(-64, -64); //origine de notre grille
+
+
+}
+
+bool Gui::on_draw(const Cairo::RefPtr<Cairo::Context>& cr) {
+		
+	adjust_frame();
+	orthographic_projection(cr, frame);
+	
+	Graphic graphic;
+	graphic.set_context(cr);
+	simulation.draw_simulation(graphic);
+	return true;
+}
+
+/*Interface::Interface () :
   m_Box_Top(Gtk::ORIENTATION_VERTICAL, 10),
   m_Box1(Gtk::ORIENTATION_VERTICAL, 10),
   m_Box2(Gtk::ORIENTATION_VERTICAL, 10),
@@ -125,3 +212,5 @@ void Interface::on_button_clicked_Next()
 {
   cout << "Next" << endl;
 }
+*/
+

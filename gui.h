@@ -1,11 +1,37 @@
 #ifndef GUI_H_INCLUDED
 #define GUI_H_INCLUDED
 
+#include <gtkmm/drawingarea.h>
 
 #include "simulation.h"
-#include <gtkmm.h>
+#include "graphic.h"
 
-class Interface : public Gtk::Window
+struct Frame // Model Framing and window parameters
+{
+	double xMin; // frame parameters
+	double xMax;
+	double yMin;
+	double yMax;
+	double asp;  // frame aspect ratio
+	int height;  // window height
+	int width;   // window width
+};
+
+
+class Gui : public Gtk::DrawingArea {
+public:
+	Gui(Simulation);
+	virtual ~Gui();
+	void set_frame(Frame); 
+	void adjust_frame();
+private:
+	Frame frame;
+	Simulation simulation;
+protected:
+	bool on_draw(const Cairo::RefPtr<Cairo::Context>& cr) override;
+};
+
+/*class Interface : public Gtk::Window
 {
 public:
   Interface();
@@ -39,5 +65,6 @@ protected:
   Gtk::Button m_Button_Previous;
   Gtk::Button m_Button_Next;
 };
+*/
 
 #endif
