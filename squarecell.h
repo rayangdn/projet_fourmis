@@ -23,7 +23,7 @@ struct Carre {
 	unsigned int longeur;
 	Point point;
 };
-
+void affiche_grid();
 void initialise_grid(const unsigned int&);
 
 void test_validation_carre_non_centre(const Carre&, bool&);

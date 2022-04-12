@@ -11,6 +11,7 @@ public :
 	void supprimer_structs();
 	void draw_simulation(Graphic);
 	void initialise_ensemble_couleurs();
+	unsigned int get_Nb_food() const;
 private :
 	Ensemble_food ensemble_food;
 	Ensemble_fourmilieres ensemble_fourmilieres;

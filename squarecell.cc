@@ -78,9 +78,9 @@ void initialise_carre_non_centre(const Carre& carre) {
 
 void initialise_carre_centre(const Carre& carre) {
 	for(size_t i(carre.point.y-carre.longeur/2);
-		i < carre.point.y + (carre.longeur/2) ; ++i) {
-		for(size_t j(carre.point.x-carre.longeur/2+1);
-			j < carre.point.x + (carre.longeur/2)+1; ++j) {
+		i < carre.point.y+carre.longeur/2+1; ++i) {
+		for(size_t j(carre.point.x-carre.longeur/2);
+			j < carre.point.x + (carre.longeur/2+1); ++j) {
 			grid[grid.size()-1-i][j] = true;
 		}
 	}
@@ -141,6 +141,17 @@ bool test_superposition_sans_coord(const Carre& carre) {
 		}
 	}
 	return false;	
+}
+void affiche_grid() {
+	for(auto elem : grid) {
+		for(auto x : elem) {
+			if(x==true) {
+				cout << "|_X_ ";
+			} else {
+				cout << "|___" ;
+			}
+		}
+	}
 }
 
 void draw_carre_food(const Carre& carre, Graphic graphic) {

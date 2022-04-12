@@ -14,7 +14,9 @@
 
 
 using namespace std;
-
+unsigned int Simulation::get_Nb_food() const {
+	return ensemble_food.size();
+}
 bool Simulation::lecture(char * nom_fichier) {	
     string line;
     bool erreur(false);
