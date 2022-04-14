@@ -8,6 +8,7 @@
 class Food {
 public :
 	Food(Carre, unsigned int);
+	~Food() {};
 	void initialise_food_on_grid();
 	void superposition_food(bool&);
 	void draw_food(Graphic);

@@ -7,6 +7,7 @@
 #include <string>
 #include <cairomm/context.h>
 #include <utility>
+//#include <bits/stdc++.h> 
 
 #include "gui.h"
 
@@ -101,7 +102,7 @@ void Gui::on_button_clicked_Exit()
 
 void Gui::on_button_clicked_Open()
 {
-  cout << "Open"  << endl;
+ // cout << "Open"  << endl;
    Gtk::FileChooserDialog dialog("Please choose a file",
           Gtk::FILE_CHOOSER_ACTION_OPEN);
   dialog.set_transient_for(*this);
@@ -122,19 +123,20 @@ void Gui::on_button_clicked_Open()
   {
     case(Gtk::RESPONSE_OK):
     {
-      std::cout << "Open clicked." << std::endl;
+   //   std::cout << "Open clicked." << std::endl;
 
       //Notice that this is a std::string, not a Glib::ustring.
       std::string filename = dialog.get_filename();
       std::cout << "File selected: " <<  filename << std::endl;
-     /* if(simulation.lecture(argv[0])==false){
+	simulation.lecture(filename);
+    /* if(simulation.lecture(filename)==false){
 		simulation.supprimer_structs();
 	}*/
-      break;
+      
     }
     case(Gtk::RESPONSE_CANCEL):
     {
-      std::cout << "Cancel clicked." << std::endl;
+    //  std::cout << "Cancel clicked." << std::endl;
       break;
     }
     default:

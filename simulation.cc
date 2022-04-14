@@ -17,35 +17,39 @@ using namespace std;
 unsigned int Simulation::get_Nb_food() const {
 	return ensemble_food.size();
 }
-bool Simulation::lecture(char * nom_fichier) {	
+bool Simulation::lecture(string nom_fichier) {	
     string line;
     bool erreur(false);
-    ifstream fichier(nom_fichier); 
+    ifstream fichier(nom_fichier);
+     
     if(!fichier.fail()) 
     {
         while(getline(fichier >> ws,line)) 
-        {
+        {	
+			
 			if(line[0]=='#')  continue;  
-       
 			decodage_ligne(line, erreur);
 			if(erreur) {
+			//supprimer_structs();
+			//fichier.close(); //probleme passe autre fichier texte regler vendredi
 				return false;
 			}
         }
 	}
+	//fichier.close(); 
+	//supprimer_structs();
 	return true;
 }
 
-void Simulation::decodage_ligne(string line, bool& erreur) {
+void Simulation::decodage_ligne(string& line, bool& erreur) {
 	istringstream data(line);
 	enum Etat_lecture {NBN, FOOD, NBF, FRMIL};
 	static int etat(NBN);
-	static int count(0), total(0);
+	static unsigned int count(0), total(0);
 	switch(etat) {
 		case NBN :
 			data >> total; count = 0;
 			if(total == 0) {
-				
 				etat = NBF;
 			} else {
 				etat =FOOD;
@@ -63,6 +67,7 @@ void Simulation::decodage_ligne(string line, bool& erreur) {
 		case NBF :
 			data >> total; count = 0;
 			if(total == 0) {
+				etat = NBN;
 				break;
 			} else {
 				etat = FRMIL;
@@ -80,7 +85,11 @@ void Simulation::decodage_ligne(string line, bool& erreur) {
 void Simulation::supprimer_structs() {
 		initialise_grid(g_max);
 		ensemble_food.clear();
-		ensemble_fourmilieres.clear(); // détruit aussi les fourmis??
+		for(auto& fourmiliere : ensemble_fourmilieres) {
+			fourmiliere.supprimer_fourmis();
+			
+		}
+		ensemble_fourmilieres.clear();
 }
 
 void Simulation::draw_simulation(Graphic graphic) {

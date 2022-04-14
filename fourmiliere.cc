@@ -40,6 +40,14 @@ void Fourmiliere::test_fourmis(unsigned  int countF, unsigned int i, bool& erreu
 	ensemble_fourmis[i]->test_chaque_fourmi(countF, carre, erreur);
 }
 
+void Fourmiliere::supprimer_fourmis() {
+	for(auto& fourmi : ensemble_fourmis) {
+		
+		fourmi.reset();
+	}
+	ensemble_fourmis.clear();
+}
+
 void Fourmiliere::draw_fourmiliere(Graphic graphic, Couleur couleur) {
 	draw_carre_fourmiliere(carre, graphic, couleur);
 	for(const auto& fourmi : ensemble_fourmis) {

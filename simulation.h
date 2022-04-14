@@ -6,8 +6,8 @@
 
 class Simulation {
 public :
-	bool lecture(char *);
-	void decodage_ligne(std::string, bool&);
+	bool lecture(std::string);
+	void decodage_ligne(std::string&, bool&);
 	void supprimer_structs();
 	void draw_simulation(Graphic);
 	void initialise_ensemble_couleurs();
