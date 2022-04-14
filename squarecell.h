@@ -3,7 +3,7 @@
 
 #include <cmath>
 
-#include "constantes.h"
+
 #include "message.h"
 #include "error_squarecell.h"
 #include "graphic.h"

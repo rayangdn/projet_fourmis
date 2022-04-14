@@ -80,7 +80,7 @@ Interface::~Interface()
 void Interface::on_button_clicked_Exit()
 {
   cout << "Exit " << endl;			 
-  exit(0);							
+  hide();						
 }									
 
 void Interface::on_button_clicked_Open()

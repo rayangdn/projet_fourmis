@@ -18,16 +18,15 @@ int main(int argc, char * argv[]) {
 	Simulation simulation;
 	if(argc != 2){
 		exit(0);
-	 }
-	 if(simulation.lecture(argv[1])==false){
+	}
+	if(simulation.lecture(argv[1])==false){
 		simulation.supprimer_structs();
 	}
 	
 	//affiche_grid();
 	auto app = Gtk::Application::create();
-	//argc, argv, "org.gtkmm.example"
-		Gui gui(std::move(simulation));
-		
+		Gui gui(std::move(simulation));;
+		//Gui::Window tchankz;
 		return app->run(gui);
 		/*Gtk::Window tchankz;
 		tchankz.set_title("tchankz");

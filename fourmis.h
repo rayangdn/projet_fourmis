@@ -3,6 +3,7 @@
 
 #include <memory>
 
+#include "constantes.h"
 #include "food.h"
 #include "squarecell.h"
 #include "message.h"
