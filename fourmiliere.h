@@ -11,6 +11,7 @@
 class Fourmiliere {
 public :
 	Fourmiliere(Carre ,unsigned int, unsigned int ,unsigned int);
+	unsigned int getnbC() const { return nbC; }
 	void test_superposition_fourmiliere(const Fourmiliere&, unsigned int,
 	unsigned int, bool&);
 	void ajouter_fourmis(Fourmi*);

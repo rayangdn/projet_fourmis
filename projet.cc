@@ -26,7 +26,7 @@ int main(int argc, char * argv[]) {
 	//affiche_grid();
 	auto app = Gtk::Application::create();
 		Gui gui(std::move(simulation));;
-		//Gui::Window tchankz;
+		
 		return app->run(gui);
 		/*Gtk::Window tchankz;
 		tchankz.set_title("tchankz");

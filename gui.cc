@@ -208,12 +208,12 @@ void Gui::on_button_clicked_Step()
 }
 void Gui::on_button_clicked_Previous()
 {
-  cout << "Previous" << endl;
+  
 }
 
 void Gui::on_button_clicked_Next()
-{
-  cout << "Next" << endl;
+{	
+
 }
 /*void Gui::set_frame(Frame f)
 {
