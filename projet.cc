@@ -20,7 +20,7 @@ int main(int argc, char * argv[]) {
 		exit(0);
 	}
 	if(simulation.lecture(argv[1])==false){
-		simulation.supprimer_structs();
+	//	simulation.supprimer_structs();
 	}
 	
 	//affiche_grid();

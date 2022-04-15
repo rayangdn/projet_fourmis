@@ -57,6 +57,9 @@ Gui::Gui(Simulation simulation):
   m_Box_Top.pack_start(m_Frame_Info, Gtk::PACK_EXPAND_WIDGET, 10);
   m_Frame_Info.add(m_Box2);
   
+  m_Box2.pack_start(m_Label_Info);
+  maj_nbf();
+  
   m_Box_Top.pack_start(m_Frame_AnthillInfo, Gtk::PACK_EXPAND_WIDGET, 10);
   m_Frame_AnthillInfo.add(m_Box3);
   
@@ -215,6 +218,21 @@ void Gui::on_button_clicked_Next()
 {	
 
 }
+
+void Gui::maj_nbf() 
+{
+	unsigned int nb_food(simulation.get_Nb_food());
+	stringstream food;
+	string nbr;
+	string info("Nb food: ");
+	
+	food << nb_food;
+	food >> nbr;
+	info = info + nbr;
+	
+	m_Label_Info.set_text(info);
+}
+
 /*void Gui::set_frame(Frame f)
 {
 	if((f.xMin <= f.xMax) and (f.yMin <= f.yMax) and (f.height > 0))

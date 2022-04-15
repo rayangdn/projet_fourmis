@@ -31,7 +31,7 @@ private :
   
   
 protected:
-	 void on_button_clicked_Exit();
+  void on_button_clicked_Exit();
   void on_button_clicked_Open();
   void on_button_clicked_Save();
   void on_button_clicked_Start();
@@ -56,11 +56,13 @@ protected:
   Gtk::Button m_Button_Step;
   Gtk::Button m_Button_Previous;
   Gtk::Button m_Button_Next; 
- private :
- bool timer_added;
+private :
+  bool timer_added;
   bool disconnect;
   const int timeout_value;
-  unsigned int val;	   
+  unsigned int val;
+  unsigned int nb_food;	 
+  void maj_nbf();  
   //bool on_draw(const Cairo::RefPtr<Cairo::Context>& cr) override;
 
   //Frame frame;
