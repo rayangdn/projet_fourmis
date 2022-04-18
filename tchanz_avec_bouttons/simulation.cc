@@ -21,6 +21,7 @@ unsigned int Simulation::get_Nb_food() const {
 }
 
 unsigned int Simulation::get_ensemble_fourmilieres_size() const {
+	cout << ensemble_fourmilieres.size() << endl;
 	return ensemble_fourmilieres.size();
 }
 

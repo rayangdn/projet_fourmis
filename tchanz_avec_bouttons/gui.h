@@ -64,7 +64,7 @@ private :
   const int timeout_value;
   unsigned int val;
   unsigned int nb_food;	
-  unsigned int indice_frmi; 
+  int indice_frmi; 
   void maj_nbf(); 
   void maj_info_frmi(unsigned int indice);
   std::string convertion_unInt_to_strg(unsigned int&) const;
