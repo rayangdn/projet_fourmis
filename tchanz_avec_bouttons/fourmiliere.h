@@ -19,6 +19,9 @@ public :
 	void supprimer_fourmis();
 	void draw_fourmiliere(Graphic, Couleur couleur);
 	
+	unsigned int get_nbC(); 		//Encapsulation ok ??
+	unsigned int get_nbD();
+	unsigned int get_nbP();
 private :
 	Carre carre; 
 	unsigned int nbC, nbD, nbP;

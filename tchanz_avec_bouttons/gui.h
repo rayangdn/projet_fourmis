@@ -2,6 +2,7 @@
 #define GUI_H_INCLUDED
 
 #include <gtkmm.h>
+#include <string>
 
 #include "simulation.h"
 #include "graphic.h"
@@ -47,7 +48,8 @@ protected:
   Gtk::Frame m_Frame_Info;
   Gtk::Frame m_Frame_AnthillInfo;
   
-  Gtk::Label m_Label_Info;				// Peut-on utiliser Frame_Info ???
+  Gtk::Label m_Label_Info;
+  Gtk::Label m_Label_Frmi;				
   
   Gtk::Button m_Button_Exit;
   Gtk::Button m_Button_Open;
@@ -61,8 +63,11 @@ private :
   bool disconnect;
   const int timeout_value;
   unsigned int val;
-  unsigned int nb_food;	 
-  void maj_nbf();  
+  unsigned int nb_food;	
+  unsigned int indice_frmi; 
+  void maj_nbf(); 
+  void maj_info_frmi(unsigned int indice);
+  std::string convertion_unInt_to_strg(unsigned int&) const;
   //bool on_draw(const Cairo::RefPtr<Cairo::Context>& cr) override;
 
   //Frame frame;

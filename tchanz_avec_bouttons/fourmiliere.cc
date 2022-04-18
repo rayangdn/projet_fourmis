@@ -134,3 +134,16 @@ bool& erreur) {
 			break;
 	}
 }
+
+unsigned int Fourmiliere::get_nbC() {
+	return nbC;
+}
+
+unsigned int Fourmiliere::get_nbD() {
+	return nbD;
+}
+
+unsigned int Fourmiliere::get_nbP() {
+	return nbP;
+}
+

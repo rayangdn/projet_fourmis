@@ -17,7 +17,7 @@ using namespace std;
 //static Frame default_frame = {-150., 150, -100., 100 1.5, 300, 200};
  
 Gui::Gui(Simulation simulation): 
-	simulation(std::move(simulation)),
+  simulation(std::move(simulation)),
   m_Box_Top(Gtk::ORIENTATION_VERTICAL, 10),
   m_Box1(Gtk::ORIENTATION_VERTICAL, 10),
   m_Box2(Gtk::ORIENTATION_VERTICAL, 10),
@@ -26,6 +26,8 @@ Gui::Gui(Simulation simulation):
   m_Frame_General("General"),
   m_Frame_Info("Info"),
   m_Frame_AnthillInfo("Anthill info"),
+  
+  m_Label_Frmi("None selected"),
   
   m_Button_Exit("exit"),
   m_Button_Open("open"),
@@ -38,7 +40,8 @@ Gui::Gui(Simulation simulation):
   timer_added(false),
   disconnect(false),
   timeout_value(500),
-  val(1) 
+  val(1),
+  indice_frmi(simulation. get_ensemble_fourmilieres_size())
 {
   set_title("Tchanz");
   add(m_Box_Top);
@@ -65,7 +68,8 @@ Gui::Gui(Simulation simulation):
   
   m_Box3.pack_start(m_Button_Previous);
   m_Box3.pack_start(m_Button_Next);
-
+  m_Box3.pack_start(m_Label_Frmi);
+  
   // Connect the clicked signal of the button to
   // thier signal handler
 	m_Button_Exit.signal_clicked().connect(sigc::mem_fun(*this,
@@ -100,7 +104,6 @@ Gui::~Gui() {}
 
 void Gui::on_button_clicked_Exit()
 {
-  cout << "Exit" << endl;
   hide();
 }
 
@@ -128,7 +131,7 @@ void Gui::on_button_clicked_Open()
     {
        //Notice that this is a std::string, not a Glib::ustring.
     std::string filename = dialog.get_filename();
- std::cout << "File selected: " <<  filename << std::endl;
+    std::cout << "File selected: " <<  filename << std::endl;
 	simulation.lecture(filename);
     /* if(simulation.lecture(filename)==false){
 		simulation.supprimer_structs();
@@ -191,20 +194,48 @@ void Gui::on_button_clicked_Step()
 
 void Gui::on_button_clicked_Previous()
 {
-  
+	indice_frmi = indice_frmi - 1;
+	if(indice_frmi < 0) {
+		indice_frmi = simulation.get_ensemble_fourmilieres_size();
+	}
+	maj_info_frmi(indice_frmi);
 }
 
 void Gui::on_button_clicked_Next()
 {	
-
+	indice_frmi = indice_frmi + 1;
+	if(indice_frmi > simulation.get_ensemble_fourmilieres_size() ){
+		indice_frmi = 0;
+	}
+	maj_info_frmi(indice_frmi);
 }
+
+void Gui::maj_info_frmi(unsigned int indice) {
+	if (indice == simulation.get_ensemble_fourmilieres_size()){
+		m_Label_Frmi.set_text("None selected");
+	} else {
+		string info("id:");
+		info += convertion_unInt_to_strg(indice);
+		m_Label_Frmi.set_text(info);
+		
+	}
+}
+
+std::string Gui::convertion_unInt_to_strg(unsigned int& nbr) const {
+	stringstream tmp;
+	string rendu;
+	tmp << nbr;
+	tmp >> rendu;
+	return rendu;
+}
+	
 
 void Gui::maj_nbf() 
 {
 	unsigned int nb_food(simulation.get_Nb_food());
 	stringstream food;
 	string nbr;
-	string info("Nb food: ");
+	string info("nb food: ");
 	
 	food << nb_food;
 	food >> nbr;

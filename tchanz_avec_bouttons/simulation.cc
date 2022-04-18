@@ -9,13 +9,19 @@
 #include <sstream>
 #include <vector>
 #include <string>
+#include <memory>
 
 #include "simulation.h"
 
 
 using namespace std;
+
 unsigned int Simulation::get_Nb_food() const {
 	return ensemble_food.size();
+}
+
+unsigned int Simulation::get_ensemble_fourmilieres_size() const {
+	return ensemble_fourmilieres.size();
 }
 
 bool Simulation::lecture(string nom_fichier) {	
