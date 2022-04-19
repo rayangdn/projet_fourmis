@@ -7,7 +7,7 @@
 #include <string>
 #include <cairomm/context.h>
 #include <utility>
-//#include <bits/stdc++.h> 
+
 
 #include "gui.h"
 
@@ -41,8 +41,7 @@ Gui::Gui(Simulation simulation):
   disconnect(false),
   timeout_value(500),
   val(1),
-  //indice_frmi(simulation.get_ensemble_fourmilieres_size())
-  indice_frmi(-1)
+  indice_frmi(-1) // valeur avant l'indice de la premiere fourmiliere qui est 0
 {
   set_title("Tchanz");
   add(m_Box_Top);
@@ -198,7 +197,6 @@ void Gui::on_button_clicked_Previous()
 	indice_frmi = indice_frmi - 1;
 	if(indice_frmi < -1) {
 		cout << indice_frmi << endl;
-		//indice_frmi = simulation.get_ensemble_fourmilieres_size();
 		indice_frmi= 0;
 	}
 	maj_info_frmi(indice_frmi);
@@ -214,7 +212,6 @@ void Gui::on_button_clicked_Next()
 }
 
 void Gui::maj_info_frmi(unsigned int indice) {
-	//if (indice == simulation.get_ensemble_fourmilieres_size()){
 	if (indice == -1){
 		m_Label_Frmi.set_text("None selected");
 	} else {

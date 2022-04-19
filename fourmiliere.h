@@ -11,13 +11,17 @@
 class Fourmiliere {
 public :
 	Fourmiliere(Carre ,unsigned int, unsigned int ,unsigned int);
-	unsigned int getnbC() const { return nbC; }
+	unsigned int get_total_food() const;
+	unsigned int get_nbC() const;
+	unsigned int get_nbD() const;
+	unsigned int get_nbP() const;
 	void test_superposition_fourmiliere(const Fourmiliere&, unsigned int,
 	unsigned int, bool&);
 	void ajouter_fourmis(Fourmi*);
 	void test_fourmis(unsigned int, unsigned int, bool&);
 	void supprimer_fourmis();
 	void draw_fourmiliere(Graphic, Couleur couleur);
+	
 	
 private :
 	Carre carre; 

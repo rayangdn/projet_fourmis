@@ -9,6 +9,9 @@
 
 using namespace std;
 
+void supprimer_grid() {
+	grid.clear();
+}
 void initialise_grid(const unsigned int& g_max) {
 	for(size_t i(0); i < g_max; ++i) {
 		grid.push_back(vector<bool>());
@@ -141,17 +144,6 @@ bool test_superposition_sans_coord(const Carre& carre) {
 		}
 	}
 	return false;	
-}
-void affiche_grid() {
-	for(auto elem : grid) {
-		for(auto x : elem) {
-			if(x==true) {
-				cout << "|_X_ ";
-			} else {
-				cout << "|___" ;
-			}
-		}
-	}
 }
 
 void draw_carre_food(const Carre& carre, Graphic graphic) {

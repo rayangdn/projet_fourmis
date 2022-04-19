@@ -12,6 +12,7 @@ class Fourmi{
 public :
 	Fourmi(Carre);
 	virtual ~Fourmi() {};
+	virtual unsigned int get_total_food() const= 0;
 	virtual void test_chaque_fourmi(unsigned int, const Carre&, bool&)=0;
 	virtual void draw_fourmis(Graphic graphic, Couleur couleur)=0;
 protected :
@@ -26,6 +27,7 @@ class Generator : public Fourmi{
 public :
 	Generator(Carre, unsigned int);
 	~Generator() {};
+	virtual unsigned int get_total_food() const override;
 	virtual void test_chaque_fourmi(unsigned int, const Carre&, bool&) override;
 	virtual void draw_fourmis(Graphic graphic, Couleur couleur) override;
 	
@@ -39,6 +41,7 @@ class Collector : public Fourmi{
 public :
 	Collector(Carre,unsigned int, bool);
 	~Collector () {};
+	virtual unsigned int get_total_food() const override { return 0;}
 	void initialise_collect(const Carre&, unsigned int, std::string);
 	virtual void test_chaque_fourmi(unsigned int, const Carre&, bool&) override;
 	virtual void draw_fourmis(Graphic graphic, Couleur couleur) override;
@@ -53,6 +56,7 @@ class Defensor : public Fourmi{
 public :
 	Defensor(Carre, unsigned int);
 	~Defensor() {};
+	virtual unsigned int get_total_food() const override { return 0;}
 	void initialise_defens(const Carre&, unsigned int);
 	virtual void test_chaque_fourmi(unsigned int, const Carre&, bool&) override;
 	virtual void draw_fourmis(Graphic graphic, Couleur couleur) override;
@@ -66,6 +70,7 @@ class Predator: public Fourmi {
 public :
 	Predator(Carre, unsigned int);
 	~Predator() {};
+	virtual unsigned int get_total_food() const override { return 0;}
 	void initialise_predat(const Carre&, unsigned int);
 	virtual void test_chaque_fourmi(unsigned int, const Carre&, bool&) override;
 	virtual void draw_fourmis(Graphic graphic, Couleur couleur) override;

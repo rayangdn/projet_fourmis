@@ -13,23 +13,18 @@
 
 using namespace std;
 
-int main(int argc, char * argv[]) {
+int main(int argc, char* argv[]) {
 	initialise_grid(g_max);
-	Simulation simulation;
-	if(argc != 2){
+
+	/*if(argc != 2){
 		exit(0);
 	}
-	if(simulation.lecture(argv[1])==false){
-	//	simulation.supprimer_structs();
-	}
-	
-	//affiche_grid();
-	auto app = Gtk::Application::create();
-		Gui gui(std::move(simulation));;
+	simulation.lecture(argv[1]);
+	*/
+	Simulation simulation;
+	auto app = Gtk::Application::create(argc, argv, "org.gtkmm.example");
+		MyEvent myevent(std::move(simulation));
 		
-		return app->run(gui);
-		/*Gtk::Window tchankz;
-		tchankz.set_title("tchankz");
-		tchankz.add(gui);
-		gui.show();*/
+		
+		return app->run(myevent);
 }

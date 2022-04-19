@@ -17,11 +17,12 @@ using namespace std;
 Food::Food(Carre carre, unsigned int val_food) : carre(carre), val_food(val_food) {}
 
 void Food::initialise_food_on_grid() {
-	initialise_carre_non_centre(carre);
+	initialise_carre_centre(carre);
 }
 
 void Food::superposition_food(bool& erreur) {
 	test_validation_carre_centre(carre, erreur);
+	
 	if(erreur==false) {
 		if(test_superposition_sans_coord(carre)) {
 			cout << message::food_overlap(carre.point.x,carre.point.y);

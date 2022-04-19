@@ -43,6 +43,9 @@ bool Fourmi::fourmis_in_house(const Carre& carre_fourmiliere) {
 	return false;
 }
 
+unsigned int Generator::get_total_food() const {
+	return total_food;
+}
 void Generator::test_chaque_fourmi(unsigned int countF, const Carre& carre_fourmiliere,
 bool& erreur) {
 	test_validation_carre_centre(carre, erreur);

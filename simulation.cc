@@ -14,52 +14,72 @@
 
 
 using namespace std;
-unsigned int Simulation::get_Nb_food() const {
+unsigned int Simulation::get_nb_food() const {
 	return ensemble_food.size();
 }
 
-bool Simulation::lecture(string nom_fichier) {	
+unsigned int Simulation::get_ensemble_fourmilieres_size() const {
+	return ensemble_fourmilieres.size();
+}
+
+unsigned int Simulation::get_total_food(int i) const  {
+	return ensemble_fourmilieres[i].get_total_food();
+}
+unsigned int Simulation::get_nbC(int i) const {
+	return ensemble_fourmilieres[i].get_nbC();
+}
+unsigned int Simulation::get_nbD(int i) const {
+	return ensemble_fourmilieres[i].get_nbD();
+}
+unsigned int Simulation::get_nbP(int i) const {
+	return ensemble_fourmilieres[i].get_nbP();
+}
+
+void Simulation::lecture(string nom_fichier) {	
     string line;
     bool erreur(false);
     ifstream fichier(nom_fichier);
      
-    if(!fichier.fail()) 
-    {
-        while(getline(fichier >> ws,line)) 
-        {	
+    if(!fichier.fail()) {
+        while(getline(fichier >> ws,line)) {	
 			
 			if(line[0]=='#')  continue;  
 			decodage_ligne(line, erreur);
-			if(erreur) {
-			//supprimer_structs();
-			//fichier.close(); //probleme passe autre fichier texte regler vendredi
-				return false;
-			}
+			/*if(erreur) {
+				cout << "ERREUR" << endl;
+				//supprimer_structs();
+				fichier.close(); //probleme passe autre fichier texte regler vendredi
+				return;*/
+			//}
         }
 	}
-	//fichier.close(); 
+	cout << message::success();
 	//supprimer_structs();
-	return true;
+//	fichier.close(); 
+	//cout << ensemble_fourmilieres.size() << endl;
 }
 
 void Simulation::decodage_ligne(string& line, bool& erreur) {
 	istringstream data(line);
-	enum Etat_lecture {NBN, FOOD, NBF, FRMIL};
+	enum Etat_lecture {NBN, FOOD, NBF, FRMIL, SORTIE};
 	static int etat(NBN);
 	static unsigned int count(0), total(0);
 	switch(etat) {
 		case NBN :
+			total = 0;
 			data >> total; count = 0;
 			if(total == 0) {
 				etat = NBF;
 			} else {
-				etat =FOOD;
+				etat = FOOD;
 			}
 			break;
 		
 		case FOOD :
 			decodage_line_food(line, ensemble_food, erreur);
 			++count;
+			cout << ensemble_food.size() << " " << count << endl;
+			
 			if(count == total) {
 				etat = NBF;
 			} 
@@ -69,6 +89,7 @@ void Simulation::decodage_ligne(string& line, bool& erreur) {
 			data >> total; count = 0;
 			if(total == 0) {
 				etat = NBN;
+				
 				break;
 			} else {
 				etat = FRMIL;
@@ -77,6 +98,15 @@ void Simulation::decodage_ligne(string& line, bool& erreur) {
 		
 		case FRMIL :
 			decodage_line_fourmiliere(line, ensemble_fourmilieres, erreur);
+			if(ensemble_fourmilieres.size()==total) {  //probleme avec la derniere fourmilierer
+				etat = SORTIE;
+			}
+			break;
+		
+		case SORTIE :
+			total = 0;
+			count = 0;
+			etat = NBN;
 			break;
 			
 		default : exit(0);
@@ -84,13 +114,14 @@ void Simulation::decodage_ligne(string& line, bool& erreur) {
 }
 
 void Simulation::supprimer_structs() {
+		/*supprimer_grid();
 		initialise_grid(g_max);
 		ensemble_food.clear();
 		for(auto& fourmiliere : ensemble_fourmilieres) {
 			fourmiliere.supprimer_fourmis();
 			
 		}
-		ensemble_fourmilieres.clear();
+		//ensemble_fourmilieres.clear();*/
 }
 
 void Simulation::draw_simulation(Graphic graphic) {
