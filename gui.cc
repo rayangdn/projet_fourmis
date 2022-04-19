@@ -13,11 +13,9 @@
 
 using namespace std;
 
-static Distortion default_distortion = {-150, 150, -100, 100, 1.5, 300, 200};
+static Distortion default_distortion = {-70, 70, -70, 70, 1, 140, 140};
 
-//MyArea::MyArea(Simulation simulation) : simulation(std::move(simulation)) {}
-
-MyArea::MyArea() {
+MyArea::MyArea(Simulation simulation): simulation(std::move(simulation)) {
 	set_frame(default_distortion);
 }
 
@@ -32,8 +30,8 @@ void MyArea::set_frame(Distortion d) {
 	else
 		std::cout << "incorrect Model framing or window parameters" << std::endl;
 } 
-void MyArea::adjust_frame()
-{
+
+void MyArea::adjust_frame() {
 	Gtk::Allocation allocation = get_allocation();
 	const int width = allocation.get_width();
 	const int height = allocation.get_height();
@@ -69,6 +67,7 @@ void MyArea::adjust_frame()
 	    distortion.yMin = mid - 0.5*(default_distortion.asp/new_aspect_ratio)*delta ;		  	  
     }
 }
+
 static void orthographic_projection(const Cairo::RefPtr<Cairo::Context>& cr, Distortion distortion) {
 	
 	cr->translate(distortion.width/2, distortion.height/2);
@@ -96,7 +95,17 @@ bool MyArea::on_draw(const Cairo::RefPtr<Cairo::Context>& cr) {
 //=====================================================================================
 
 MyEvent::MyEvent(Simulation simulation): 
+	m_area(std::move(simulation)), //probleme avec unique ptr comment faire??
 	simulation(std::move(simulation)),
+	
+	timer_added(false),
+	disconnect(false),
+	timeout_value(500),
+	val(1),
+	indice_frmi(-1),  // valeur avant l'indice de la premiere fourmiliere qui est 0
+	m_Box(Gtk::ORIENTATION_HORIZONTAL,10),
+	m_Box_Left(Gtk::ORIENTATION_VERTICAL, 10),
+	m_Box_Right(Gtk::ORIENTATION_VERTICAL, 10),
 	m_Box_Top(Gtk::ORIENTATION_VERTICAL, 10),
 	m_Box1(Gtk::ORIENTATION_VERTICAL, 10),
 	m_Box2(Gtk::ORIENTATION_VERTICAL, 10),
@@ -114,16 +123,17 @@ MyEvent::MyEvent(Simulation simulation):
 	m_Button_Start("start"),
 	m_Button_Step("step"),
 	m_Button_Previous("previous"),
-	m_Button_Next("next"),
-  
-	timer_added(false),
-	disconnect(false),
-	timeout_value(500),
-	val(1),
-	indice_frmi(-1) // valeur avant l'indice de la premiere fourmiliere qui est 0
+	m_Button_Next("next")
 {
 	set_title("Tchanz");
-	add(m_Box_Top);
+	add(m_Box);
+	m_Box.pack_start(m_Box_Left);
+	m_Box.pack_start(m_Box_Right);
+	
+	m_Box_Left.pack_start(m_Box_Top);
+	
+	m_area.set_size_request(500,500.);
+	m_Box_Right.pack_start(m_area);
   
 	m_Box_Top.pack_start(m_Frame_General, Gtk::PACK_EXPAND_WIDGET, 10);
  
@@ -172,7 +182,6 @@ MyEvent::MyEvent(Simulation simulation):
 
 	add_events(Gdk::KEY_RELEASE_MASK);
 	
-
 	show_all_children();
 }
 MyEvent::~MyEvent() {}
@@ -195,6 +204,7 @@ void MyEvent::on_button_clicked_Open() {
 			std::string filename = dialog.get_filename();
 			std::cout << "File selected: " <<  filename << std::endl;
 			simulation.lecture(filename);
+			
     /* if(simulation.lecture(filename)==false){
 		simulation.supprimer_structs();
 	}*/
@@ -289,7 +299,7 @@ void MyEvent::maj_nbf() {
 	unsigned int nb_food(simulation.get_nb_food());
 	stringstream food;
 	string nbr;
-	string info("nb food: ");
+	string info("Nb food: ");
 	
 	food << nb_food;
 	food >> nbr;
@@ -307,10 +317,8 @@ string MyEvent::convertion_unInt_to_strg(int& nbr) const {
 }
 
 bool MyEvent::on_key_press_event(GdkEventKey * key_event) {
-	if(key_event->type == GDK_KEY_PRESS)
-	{
-		switch(gdk_keyval_to_unicode(key_event->keyval))
-		{
+	if(key_event->type == GDK_KEY_PRESS) {
+		switch(gdk_keyval_to_unicode(key_event->keyval)) {
 			case 's':
 				on_button_clicked_Start();
 				return true;

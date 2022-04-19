@@ -14,7 +14,7 @@ public :
 	unsigned int get_nbP(int) const;
 	void lecture(std::string);
 	void decodage_ligne(std::string&, bool&);
-	void supprimer_structs();
+	//void supprimer_structs();
 	void draw_simulation(Graphic);
 	void initialise_ensemble_couleurs();
 	

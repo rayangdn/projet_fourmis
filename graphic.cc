@@ -50,9 +50,9 @@ void Graphic::draw_carre_vide(unsigned int x, unsigned int y, unsigned int longe
 	(*ptcr)->set_line_width(0.4);
 	(*ptcr)->set_source_rgb(couleur.red, couleur.green, couleur.blue);
 	(*ptcr)->move_to(x,y);
-	(*ptcr)->line_to(x+longeur, y);
-	(*ptcr)->line_to(x+longeur,y + longeur);
-	(*ptcr)->line_to(x,y+longeur);
+	(*ptcr)->line_to(x+longeur-1, y);
+	(*ptcr)->line_to(x+longeur-1,y + longeur-1);
+	(*ptcr)->line_to(x,y+longeur-1);
 	(*ptcr)->line_to(x,y);
 	(*ptcr)->stroke();
 }

@@ -78,8 +78,6 @@ void Simulation::decodage_ligne(string& line, bool& erreur) {
 		case FOOD :
 			decodage_line_food(line, ensemble_food, erreur);
 			++count;
-			cout << ensemble_food.size() << " " << count << endl;
-			
 			if(count == total) {
 				etat = NBF;
 			} 
@@ -88,7 +86,7 @@ void Simulation::decodage_ligne(string& line, bool& erreur) {
 		case NBF :
 			data >> total; count = 0;
 			if(total == 0) {
-				etat = NBN;
+				etat = SORTIE;
 				
 				break;
 			} else {
@@ -98,9 +96,11 @@ void Simulation::decodage_ligne(string& line, bool& erreur) {
 		
 		case FRMIL :
 			decodage_line_fourmiliere(line, ensemble_fourmilieres, erreur);
-			if(ensemble_fourmilieres.size()==total) {  //probleme avec la derniere fourmilierer
-				etat = SORTIE;
-			}
+			//if(ensemble_fourmilieres.size()==total) {
+				//ensemble_fourmilieres.clear(); 
+				 //probleme avec la derniere fourmilierer
+				//etat = SORTIE;
+			//}
 			break;
 		
 		case SORTIE :
@@ -113,22 +113,23 @@ void Simulation::decodage_ligne(string& line, bool& erreur) {
 	}
 }
 
-void Simulation::supprimer_structs() {
-		/*supprimer_grid();
+/*void Simulation::supprimer_structs() {
+		supprimer_grid();
 		initialise_grid(g_max);
 		ensemble_food.clear();
 		for(auto& fourmiliere : ensemble_fourmilieres) {
 			fourmiliere.supprimer_fourmis();
 			
 		}
-		//ensemble_fourmilieres.clear();*/
-}
+		//ensemble_fourmilieres.clear();
+}*/
 
 void Simulation::draw_simulation(Graphic graphic) {
 	initialise_ensemble_couleurs();
 	graphic.draw_grille();
 	for(auto& food : ensemble_food) {
 		food.draw_food(graphic);
+		
 	}
 	unsigned int i(0);
 	for(auto& fourmiliere : ensemble_fourmilieres) {

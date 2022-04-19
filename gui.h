@@ -18,8 +18,7 @@ struct Distortion
 };
 class MyArea : public Gtk::DrawingArea {
 	public :
-	//MyArea(Simulation);
-	MyArea();
+	MyArea(Simulation);
 	~MyArea();
 	void set_frame(Distortion); 
 	void adjust_frame();
@@ -31,12 +30,12 @@ class MyArea : public Gtk::DrawingArea {
 };
 class MyEvent : public Gtk::Window {
 public:
-	MyEvent (Simulation);
+	MyEvent(Simulation);
 	virtual ~MyEvent();
 	void affiche_food();
 private :
-	Simulation simulation;
 	MyArea m_area;
+	Simulation simulation;
 	bool timer_added;
 	bool disconnect;
 	const int timeout_value;
@@ -58,7 +57,7 @@ protected:
 	bool on_key_press_event(GdkEventKey * key_event);
 	bool on_timeout();
     
-	Gtk::Box m_Box_Top, m_Box1, m_Box2, m_Box3;
+	Gtk::Box m_Box, m_Box_Left, m_Box_Right, m_Box_Top, m_Box1, m_Box2, m_Box3;
   
 	Gtk::Frame m_Frame_General;
 	Gtk::Frame m_Frame_Info;
