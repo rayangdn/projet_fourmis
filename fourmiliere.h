@@ -21,16 +21,16 @@ public :
 	void test_fourmis(unsigned int, unsigned int, bool&);
 	void supprimer_fourmis();
 	void draw_fourmiliere(Graphic, Couleur couleur);
-	
+	Ensemble_fourmis ensemble_fourmis;
 	
 private :
 	Carre carre; 
 	unsigned int nbC, nbD, nbP;
-	Ensemble_fourmis ensemble_fourmis;
+	
 };
 
 typedef std::vector<Fourmiliere> Ensemble_fourmilieres;
 
-void decodage_line_fourmiliere(std::string, Ensemble_fourmilieres&, bool&);
+bool decodage_line_fourmiliere(std::string, Ensemble_fourmilieres&, bool&, unsigned int);
 
 #endif

@@ -34,8 +34,9 @@ public:
 	virtual ~MyEvent();
 	void affiche_food();
 private :
+Simulation simulation;
 	MyArea m_area;
-	Simulation simulation;
+	
 	bool timer_added;
 	bool disconnect;
 	const int timeout_value;

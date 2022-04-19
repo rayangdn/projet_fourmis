@@ -31,6 +31,7 @@ unsigned int Fourmiliere::get_nbD() const {
 unsigned int Fourmiliere::get_nbP() const {
 	return nbP;
 }
+
 void Fourmiliere::test_superposition_fourmiliere(const Fourmiliere& autre_fourmiliere,
 unsigned int countF, unsigned int i, bool& erreur) {
 	if(erreur==false) {
@@ -52,16 +53,10 @@ void Fourmiliere::test_fourmis(unsigned  int countF, unsigned int i, bool& erreu
 }
 
 void Fourmiliere::supprimer_fourmis() {
-	cout << "YO"<< endl;
 	for(auto& fourmi : ensemble_fourmis) {
 		ensemble_fourmis.pop_back();
 		fourmi.reset();
-		for(auto& fourmi : ensemble_fourmis) {
-			cout << "Y" ;
-		}
-		cout << endl;
 	}
-	cout << ensemble_fourmis.size() << endl;
 }
 
 void Fourmiliere::draw_fourmiliere(Graphic graphic, Couleur couleur) {
@@ -70,9 +65,8 @@ void Fourmiliere::draw_fourmiliere(Graphic graphic, Couleur couleur) {
 		fourmi->draw_fourmis(graphic, couleur);
 	}
 }
-void decodage_line_fourmiliere(string line, Ensemble_fourmilieres& ensemble_fourmilieres, 
-bool& erreur) {
-	
+bool decodage_line_fourmiliere(string line, Ensemble_fourmilieres& ensemble_fourmilieres, 
+bool& erreur, unsigned int total) {
 	istringstream data(line);
 	enum Etat_lecture{FRMIL, COLLECT, DEFNS, PREDAT};
 	static unsigned int etat_f(FRMIL);
@@ -88,6 +82,7 @@ bool& erreur) {
 			fourmiliere.test_superposition_fourmiliere(ensemble_fourmilieres[i],
 			countF, i, erreur);
 		}
+		
 		Carre carre_generator{sizeG, {xg, yg}};
 		fourmiliere.ajouter_fourmis(new Generator(carre_generator, total_food));
 		fourmiliere.test_fourmis(countF, count_fourmis, erreur);
@@ -96,18 +91,22 @@ bool& erreur) {
 		countC=0; countD=0; countP=0;
 		if(nbC!=0) {
 			etat_f=COLLECT ;
-			return;
+			return false ;
 			}
 		if(nbD!=0) {
 			etat_f=DEFNS;
-			return;
+			return false;
 			}
 		if(nbP!=0) {
 			etat_f=PREDAT;
-			return;
+			return false;
 		} else {
 			count_fourmis=0;
-			return;
+			if(ensemble_fourmilieres.size()==total) {
+				countF = 0;
+				return true;
+			}
+			return false;
 		}
 	} 
 	Carre carre{0, {0, 0}}; Collector collector(carre, 0, "");
@@ -115,10 +114,18 @@ bool& erreur) {
 	switch(etat_f) {
 		case COLLECT :
 			decodage_line_fourmis(line, etat_f, collector, defensor, predator, erreur);
+				
 			ensemble_fourmilieres[countF].ajouter_fourmis(new Collector(collector));
+			
 			ensemble_fourmilieres[countF].test_fourmis(countF, count_fourmis, erreur);
 			++count_fourmis;
 			++countC;
+			if(erreur==true) {
+				etat_f = FRMIL;
+				countF=0;
+				count_fourmis=0;
+				break;
+			}
 			if(countC==nbC) {
 				etat_f=DEFNS;
 			}
@@ -131,6 +138,12 @@ bool& erreur) {
 			ensemble_fourmilieres[countF].test_fourmis(countF, count_fourmis, erreur);
 			++count_fourmis;
 			++countD;
+			if(erreur==true) {
+				etat_f = FRMIL;
+				countF=0;
+				count_fourmis=0;
+				break;
+			}
 			if(countD==nbD) {
 				etat_f=PREDAT;
 			}
@@ -143,15 +156,26 @@ bool& erreur) {
 			ensemble_fourmilieres[countF].test_fourmis(countF, count_fourmis, erreur);
 			++count_fourmis;
 			++countP;
+			if(erreur==true) {
+				etat_f = FRMIL;
+				countF=0;
+				count_fourmis=0;
+				break;
+			}
 			if(countP==nbP) {
 				count_fourmis=0;
 				++countF;
 				etat_f=FRMIL;
-				break;
+			}
+			break;
 		default :
 			exit(0);
-		}
 	}
-	
+	if(ensemble_fourmilieres.size()==total) {
+		countF = 0;
+		count_fourmis=0;
+		return true;
+	}
+	return false;
 }
 

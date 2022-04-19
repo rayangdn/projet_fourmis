@@ -18,7 +18,7 @@ unsigned int Simulation::get_nb_food() const {
 	return ensemble_food.size();
 }
 
-unsigned int Simulation::get_ensemble_fourmilieres_size() const {
+unsigned int Simulation::get_nb_fourmiliere() const {
 	return ensemble_fourmilieres.size();
 }
 
@@ -45,29 +45,27 @@ void Simulation::lecture(string nom_fichier) {
 			
 			if(line[0]=='#')  continue;  
 			decodage_ligne(line, erreur);
-			/*if(erreur) {
-				cout << "ERREUR" << endl;
-				//supprimer_structs();
+			if(erreur) {
+				supprimer_structs(); //supprime struct ici pour afficher la grille vide
 				fichier.close(); //probleme passe autre fichier texte regler vendredi
-				return;*/
-			//}
+				return;
+			}
         }
 	}
 	cout << message::success();
-	//supprimer_structs();
-//	fichier.close(); 
-	//cout << ensemble_fourmilieres.size() << endl;
+	fichier.close(); //on supprime les structs quand on clique sur open un autre fichier
 }
 
 void Simulation::decodage_ligne(string& line, bool& erreur) {
 	istringstream data(line);
-	enum Etat_lecture {NBN, FOOD, NBF, FRMIL, SORTIE};
+	enum Etat_lecture {NBN, FOOD, NBF, FRMIL};
 	static int etat(NBN);
 	static unsigned int count(0), total(0);
+	//cout << "etat: "<< etat << endl;
 	switch(etat) {
 		case NBN :
-			total = 0;
 			data >> total; count = 0;
+			
 			if(total == 0) {
 				etat = NBF;
 			} else {
@@ -78,6 +76,10 @@ void Simulation::decodage_ligne(string& line, bool& erreur) {
 		case FOOD :
 			decodage_line_food(line, ensemble_food, erreur);
 			++count;
+			if(erreur==true) {
+				etat = NBN;
+				break;
+			}
 			if(count == total) {
 				etat = NBF;
 			} 
@@ -86,8 +88,7 @@ void Simulation::decodage_ligne(string& line, bool& erreur) {
 		case NBF :
 			data >> total; count = 0;
 			if(total == 0) {
-				etat = SORTIE;
-				
+				etat = NBN;
 				break;
 			} else {
 				etat = FRMIL;
@@ -95,34 +96,28 @@ void Simulation::decodage_ligne(string& line, bool& erreur) {
 			break;
 		
 		case FRMIL :
-			decodage_line_fourmiliere(line, ensemble_fourmilieres, erreur);
-			//if(ensemble_fourmilieres.size()==total) {
-				//ensemble_fourmilieres.clear(); 
-				 //probleme avec la derniere fourmilierer
-				//etat = SORTIE;
-			//}
-			break;
 		
-		case SORTIE :
-			total = 0;
-			count = 0;
-			etat = NBN;
-			break;
-			
+			if(decodage_line_fourmiliere(line, ensemble_fourmilieres, erreur, total)) {
+				etat = NBN;
+			}
+			if(erreur==true) {
+				etat = NBN;
+				break;
+			}
+			break;		
 		default : exit(0);
 	}
 }
 
-/*void Simulation::supprimer_structs() {
-		supprimer_grid();
-		initialise_grid(g_max);
-		ensemble_food.clear();
-		for(auto& fourmiliere : ensemble_fourmilieres) {
-			fourmiliere.supprimer_fourmis();
-			
-		}
-		//ensemble_fourmilieres.clear();
-}*/
+void Simulation::supprimer_structs() {
+	supprimer_grid();
+	initialise_grid(g_max);
+	ensemble_food.clear();
+	for(auto& fourmiliere : ensemble_fourmilieres) {
+		fourmiliere.supprimer_fourmis();	
+	}
+	ensemble_fourmilieres.clear();
+}
 
 void Simulation::draw_simulation(Graphic graphic) {
 	initialise_ensemble_couleurs();

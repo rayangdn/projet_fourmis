@@ -95,9 +95,9 @@ bool MyArea::on_draw(const Cairo::RefPtr<Cairo::Context>& cr) {
 //=====================================================================================
 
 MyEvent::MyEvent(Simulation simulation): 
-	m_area(std::move(simulation)), //probleme avec unique ptr comment faire??
+	 //probleme avec unique ptr comment faire??
 	simulation(std::move(simulation)),
-	
+	m_area(std::move(simulation)),
 	timer_added(false),
 	disconnect(false),
 	timeout_value(500),
@@ -191,6 +191,7 @@ void MyEvent::on_button_clicked_Exit() {
 }
 
 void MyEvent::on_button_clicked_Open() {
+	simulation.supprimer_structs();
 	Gtk::FileChooserDialog dialog("Please choose a file",
     Gtk::FILE_CHOOSER_ACTION_OPEN);
 	dialog.set_transient_for(*this);
@@ -204,10 +205,6 @@ void MyEvent::on_button_clicked_Open() {
 			std::string filename = dialog.get_filename();
 			std::cout << "File selected: " <<  filename << std::endl;
 			simulation.lecture(filename);
-			
-    /* if(simulation.lecture(filename)==false){
-		simulation.supprimer_structs();
-	}*/
 		}
 		case(Gtk::RESPONSE_CANCEL): {
 			break;
@@ -257,14 +254,14 @@ void MyEvent::on_button_clicked_Step() {
 void MyEvent::on_button_clicked_Previous() {
 	indice_frmi = indice_frmi - 1;
 	if(indice_frmi < -1) {
-		indice_frmi= simulation.get_ensemble_fourmilieres_size()-1;
+		indice_frmi=  simulation.get_nb_fourmiliere()-1;
 	}
 	maj_info_frmi(indice_frmi);
 }
 
 void MyEvent::on_button_clicked_Next() {	
 	indice_frmi = indice_frmi + 1;
-	if(indice_frmi >= simulation.get_ensemble_fourmilieres_size() ){
+	if(indice_frmi >=  simulation.get_nb_fourmiliere()){
 		indice_frmi = -1;
 	}
 	maj_info_frmi(indice_frmi);
