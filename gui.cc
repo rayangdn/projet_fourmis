@@ -259,11 +259,11 @@ void MyEvent::on_button_clicked_Start() {
 		Glib::signal_timeout().connect( sigc::mem_fun(*this, &MyEvent::on_timeout),
 		timeout_value );
 		timer_added = true;
-		m_Button_Start.set_label("Stop");
+		m_Button_Start.set_label("stop");
 	} else {	    
 		disconnect  = true;   
 		timer_added = false;
-		m_Button_Start.set_label("Start");
+		m_Button_Start.set_label("start");
 	}
 }
 
