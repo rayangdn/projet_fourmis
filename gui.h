@@ -20,12 +20,21 @@ class MyArea : public Gtk::DrawingArea {
 	public :
 	MyArea(Simulation);
 	~MyArea();
+	Simulation get_simulation() const;
+	Simulation simulation; //OKE OU PAS???
 	void set_frame(Distortion); 
 	void adjust_frame();
+	void clear();
+	void draw();
+	void refresh();
 	protected :
-	Simulation simulation;
+	
+	bool empty;
+	Distortion distortion;
+	
+	 
 	bool on_draw(const Cairo::RefPtr<Cairo::Context>& cr) override;
-    Distortion distortion;
+  
 	
 };
 class MyEvent : public Gtk::Window {
@@ -34,9 +43,9 @@ public:
 	virtual ~MyEvent();
 	void affiche_food();
 private :
-Simulation simulation;
+
 	MyArea m_area;
-	
+	//Simulation simulation;
 	bool timer_added;
 	bool disconnect;
 	const int timeout_value;

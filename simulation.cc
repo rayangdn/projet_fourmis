@@ -61,7 +61,6 @@ void Simulation::decodage_ligne(string& line, bool& erreur) {
 	enum Etat_lecture {NBN, FOOD, NBF, FRMIL};
 	static int etat(NBN);
 	static unsigned int count(0), total(0);
-	//cout << "etat: "<< etat << endl;
 	switch(etat) {
 		case NBN :
 			data >> total; count = 0;

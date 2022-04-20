@@ -15,12 +15,15 @@ using namespace std;
 
 static Distortion default_distortion = {-70, 70, -70, 70, 1, 140, 140};
 
-MyArea::MyArea(Simulation simulation): simulation(std::move(simulation)) {
+MyArea::MyArea(Simulation simulation): simulation(std::move(simulation)), empty(false) {
 	set_frame(default_distortion);
 }
 
 MyArea::~MyArea () {}
 
+Simulation MyArea::get_simulation() const {
+	
+}
 void MyArea::set_frame(Distortion d) {
 	if((d.xMin <= d.xMax) and (d.yMin <= d.yMax) and (d.height > 0))
 	{
@@ -38,65 +41,70 @@ void MyArea::adjust_frame() {
 	
 	distortion.width  = width;
 	distortion.height = height;
-
-	// Preventing distorsion by adjusting the frame (cadrage)
-	// to have the same proportion as the graphical area
 	
-    // use the reference framing as a guide for preventing distortion
     double new_aspect_ratio((double)width/height);
-    if( new_aspect_ratio > default_distortion.asp)
-    { // keep yMax and yMin. Adjust xMax and xMin
+    if( new_aspect_ratio > default_distortion.asp) { 
 	    distortion.yMax = default_distortion.yMax ;
 	    distortion.yMin = default_distortion.yMin ;	
-	  
 	    double delta(default_distortion.xMax - default_distortion.xMin);
 	    double mid((default_distortion.xMax + default_distortion.xMin)/2);
-        // the new frame is centered on the mid-point along X
 	    distortion.xMax = mid + 0.5*(new_aspect_ratio/default_distortion.asp)*delta ;
 	    distortion.xMin = mid - 0.5*(new_aspect_ratio/default_distortion.asp)*delta ;		  	  
-    }
-    else
-    { // keep xMax and xMin. Adjust yMax and yMin
+    } else { 
 	    distortion.xMax = default_distortion.xMax ;
 	    distortion.xMin = default_distortion.xMin ;
-	  	  
  	    double delta(default_distortion.yMax - default_distortion.yMin);
 	    double mid((default_distortion.yMax + default_distortion.yMin)/2);
-        // the new frame is centered on the mid-point along Y
 	    distortion.yMax = mid + 0.5*(default_distortion.asp/new_aspect_ratio)*delta ;
 	    distortion.yMin = mid - 0.5*(default_distortion.asp/new_aspect_ratio)*delta ;		  	  
     }
 }
 
 static void orthographic_projection(const Cairo::RefPtr<Cairo::Context>& cr, Distortion distortion) {
-	
 	cr->translate(distortion.width/2, distortion.height/2);
- 
-	
 	cr->scale(distortion.width/(distortion.xMax - distortion.xMin), 
            -distortion.height/(distortion.yMax - distortion.yMin));
-  
 	cr->translate(-(distortion.xMin + distortion.xMax)/2, -(distortion.yMin + distortion.yMax)/2);
 	cr->translate(-64, -64); //origine de notre grille
 
 
 }
+void MyArea::clear() {
+	empty = true; 
+	refresh();
+}
+
+void MyArea::draw() {
+	empty = false;
+	refresh();
+}
+void MyArea::refresh() {
+	auto win = get_window();
+	if(win)
+	{
+		Gdk::Rectangle r(0,0, get_allocation().get_width(), 
+						      get_allocation().get_height());
+								
+		win->invalidate_rect(r,false);
+	}
+}
+	
 
 bool MyArea::on_draw(const Cairo::RefPtr<Cairo::Context>& cr) {
-		
 	adjust_frame();
 	orthographic_projection(cr, distortion);
+	if(not empty) {
 	Graphic graphic;
 	graphic.set_context(cr);
 	simulation.draw_simulation(graphic);
+	}
 	return true;
 }
 
 //=====================================================================================
 
 MyEvent::MyEvent(Simulation simulation): 
-	 //probleme avec unique ptr comment faire??
-	simulation(std::move(simulation)),
+	//simulation(std::move(simulation)), // probleme unique ptr
 	m_area(std::move(simulation)),
 	timer_added(false),
 	disconnect(false),
@@ -191,7 +199,10 @@ void MyEvent::on_button_clicked_Exit() {
 }
 
 void MyEvent::on_button_clicked_Open() {
-	simulation.supprimer_structs();
+	m_area.simulation.supprimer_structs();
+	m_area.clear();
+	indice_frmi = -1;
+	maj_info_frmi(indice_frmi);
 	Gtk::FileChooserDialog dialog("Please choose a file",
     Gtk::FILE_CHOOSER_ACTION_OPEN);
 	dialog.set_transient_for(*this);
@@ -204,7 +215,33 @@ void MyEvent::on_button_clicked_Open() {
 		case(Gtk::RESPONSE_OK): {
 			std::string filename = dialog.get_filename();
 			std::cout << "File selected: " <<  filename << std::endl;
-			simulation.lecture(filename);
+			m_area.simulation.lecture(filename);
+			m_area.draw();
+		}
+		case(Gtk::RESPONSE_CANCEL): {
+			m_area.draw();
+			break;
+		}
+		default: {
+			m_area.draw();
+			break;
+		}
+	}
+	maj_nbf();
+}
+
+void MyEvent::on_button_clicked_Save() {
+	//comment sauvegarder notre grille a la place d'un nouveau fichier??
+	Gtk::FileChooserDialog dialog("Please choose a file",
+	Gtk::FILE_CHOOSER_ACTION_SAVE);
+	dialog.set_transient_for(*this);
+	dialog.add_button("_Cancel", Gtk::RESPONSE_CANCEL);
+	dialog.add_button("_Save", Gtk::RESPONSE_OK);
+	int result = dialog.run();
+	switch(result) {
+		case(Gtk::RESPONSE_OK): {
+			std::string filename = dialog.get_filename();
+			std::cout << "File saved: " <<  filename << std::endl;
 		}
 		case(Gtk::RESPONSE_CANCEL): {
 			break;
@@ -214,12 +251,8 @@ void MyEvent::on_button_clicked_Open() {
 			break;
 		}
 	}
-	maj_nbf();
 }
 
-void MyEvent::on_button_clicked_Save() {
-	cout << "Save" << endl;
-}
 
 void MyEvent::on_button_clicked_Start() {
 	if(not timer_added) {	  
@@ -241,6 +274,7 @@ bool MyEvent::on_timeout() {
 	}
 	cout << val << endl;
 	++val;
+	m_area.refresh();
 	return true; 
 }
 
@@ -248,20 +282,21 @@ void MyEvent::on_button_clicked_Step() {
 	if(not timer_added) {													// Suffisant ou est ce que on doit bloqué le bouttons ?		
 		cout << val << endl;												//hide () to close the application. (ça fait la même que exit() mais pour gtkmm car exit ça marche pas !!)
 		++val; 
+		m_area.refresh();
 	}
 }
 
 void MyEvent::on_button_clicked_Previous() {
 	indice_frmi = indice_frmi - 1;
 	if(indice_frmi < -1) {
-		indice_frmi=  simulation.get_nb_fourmiliere()-1;
+		indice_frmi=  m_area.simulation.get_nb_fourmiliere()-1;
 	}
 	maj_info_frmi(indice_frmi);
 }
 
 void MyEvent::on_button_clicked_Next() {	
 	indice_frmi = indice_frmi + 1;
-	if(indice_frmi >=  simulation.get_nb_fourmiliere()){
+	if(indice_frmi >=  m_area.simulation.get_nb_fourmiliere()){
 		indice_frmi = -1;
 	}
 	maj_info_frmi(indice_frmi);
@@ -275,16 +310,16 @@ void MyEvent::maj_info_frmi(int indice) {
 		info += convertion_unInt_to_strg(indice);
 		info += "\n";
 		info += "Total food: ";
-		int total_food = simulation.get_total_food(indice);
+		int total_food = m_area.simulation.get_total_food(indice);
 		info += convertion_unInt_to_strg(total_food);
 		info += "\n\n nbC: ";
-		int nbC = simulation.get_nbC(indice);
+		int nbC = m_area.simulation.get_nbC(indice);
 		info += convertion_unInt_to_strg(nbC);
 		info += "\n nbD: ";
-		int nbD = simulation.get_nbD(indice);
+		int nbD = m_area.simulation.get_nbD(indice);
 		info += convertion_unInt_to_strg(nbD);
 		info += "\n nbP: ";
-		int nbP = simulation.get_nbP(indice);
+		int nbP = m_area.simulation.get_nbP(indice);
 		info += convertion_unInt_to_strg(nbP);
 		info += "\n";
 		m_Label_Frmi.set_text(info);
@@ -293,7 +328,7 @@ void MyEvent::maj_info_frmi(int indice) {
 }
 
 void MyEvent::maj_nbf() {
-	unsigned int nb_food(simulation.get_nb_food());
+	unsigned int nb_food(m_area.simulation.get_nb_food());
 	stringstream food;
 	string nbr;
 	string info("Nb food: ");

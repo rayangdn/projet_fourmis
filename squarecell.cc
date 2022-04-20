@@ -32,13 +32,13 @@ void test_validation_carre_non_centre(const Carre& carre, bool& erreur) {
 		erreur = true;
 		return;
 	}
-	if(carre.point.x + carre.longeur > grid.size()-1){
+	if(carre.point.x + carre.longeur > grid.size()){
 		cout << error_squarecell::print_outside(carre.point.x, carre.longeur,
 		grid.size()-1);
 		erreur = true;
 		return;
 	}
-	if (carre.point.y + carre.longeur > grid.size()-1) {
+	if (carre.point.y + carre.longeur > grid.size()) {
 		cout << error_squarecell::print_outside(carre.point.x, carre.longeur,
 		grid.size()-1);
 		erreur = true;
@@ -57,13 +57,13 @@ void test_validation_carre_centre(const Carre& carre, bool& erreur) {
 		erreur = true;
 		return;
 	}
-	if(carre.point.x + (carre.longeur/2) > grid.size()-1){
+	if(carre.point.x + (carre.longeur/2) > grid.size()){
 		cout << error_squarecell::print_outside(carre.point.x, carre.longeur,
 		grid.size()-1);
 		erreur = true;
 		return;
 	}
-	if (carre.point.y + (carre.longeur/2) > grid.size()-1) {
+	if (carre.point.y + (carre.longeur/2) > grid.size()) {
 		cout << error_squarecell::print_outside(carre.point.x, carre.longeur,
 		grid.size()-1);
 		erreur = true;

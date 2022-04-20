@@ -65,6 +65,7 @@ void Fourmiliere::draw_fourmiliere(Graphic graphic, Couleur couleur) {
 		fourmi->draw_fourmis(graphic, couleur);
 	}
 }
+
 bool decodage_line_fourmiliere(string line, Ensemble_fourmilieres& ensemble_fourmilieres, 
 bool& erreur, unsigned int total) {
 	istringstream data(line);
@@ -82,7 +83,6 @@ bool& erreur, unsigned int total) {
 			fourmiliere.test_superposition_fourmiliere(ensemble_fourmilieres[i],
 			countF, i, erreur);
 		}
-		
 		Carre carre_generator{sizeG, {xg, yg}};
 		fourmiliere.ajouter_fourmis(new Generator(carre_generator, total_food));
 		fourmiliere.test_fourmis(countF, count_fourmis, erreur);
@@ -114,9 +114,7 @@ bool& erreur, unsigned int total) {
 	switch(etat_f) {
 		case COLLECT :
 			decodage_line_fourmis(line, etat_f, collector, defensor, predator, erreur);
-				
 			ensemble_fourmilieres[countF].ajouter_fourmis(new Collector(collector));
-			
 			ensemble_fourmilieres[countF].test_fourmis(countF, count_fourmis, erreur);
 			++count_fourmis;
 			++countC;
@@ -126,9 +124,9 @@ bool& erreur, unsigned int total) {
 				count_fourmis=0;
 				break;
 			}
-			if(countC==nbC) {
-				etat_f=DEFNS;
-			}
+			if(countC==nbC  and nbD == 0 and nbP == 0)  { etat_f=FRMIL;
+				count_fourmis=0; ++countF;  break;
+			} else if(countC==nbC) { etat_f =DEFNS; }
 			break;
 		
 		case DEFNS :
@@ -144,9 +142,8 @@ bool& erreur, unsigned int total) {
 				count_fourmis=0;
 				break;
 			}
-			if(countD==nbD) {
-				etat_f=PREDAT;
-			}
+			if(countD==nbD and nbP==0) { etat_f=FRMIL; count_fourmis=0; ++countF; break; 
+			} else if (countD ==nbD)  { etat_f=PREDAT; }
 			break;
 			
 		case PREDAT :
@@ -171,7 +168,7 @@ bool& erreur, unsigned int total) {
 		default :
 			exit(0);
 	}
-	if(ensemble_fourmilieres.size()==total) {
+	if(ensemble_fourmilieres.size()==total and countC==nbC and countD==nbD  and countP==nbP) {
 		countF = 0;
 		count_fourmis=0;
 		return true;

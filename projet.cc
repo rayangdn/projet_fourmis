@@ -23,6 +23,5 @@ int main(int argc, char* argv[]) {
 	simulation.lecture(argv[1]);
 	auto app = Gtk::Application::create();
 		MyEvent myevent(std::move(simulation));
-		
 		return app->run(myevent);
 }
