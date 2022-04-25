@@ -71,7 +71,7 @@ void Graphic::draw_carre_losange(unsigned int x, unsigned int y, unsigned int lo
 
 void Graphic::draw_carre_uniforme(unsigned int x, unsigned int y, unsigned int longeur, Couleur couleur) {
 	(*ptcr)->set_line_width(1.0);
-	(*ptcr)->set_source_rgba(couleur.red, couleur.green, couleur.blue, 1.0);
+	(*ptcr)->set_source_rgb(couleur.red, couleur.green, couleur.blue);
 	(*ptcr)->move_to(x,y-0.5);//-0.5 pour prendre en compte la largeur de la ligne
 	(*ptcr)->line_to(x, y+longeur-1);
 	(*ptcr)->line_to(x+longeur-1,y+longeur-1);

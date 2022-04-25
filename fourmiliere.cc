@@ -43,6 +43,7 @@ unsigned int countF, unsigned int i, bool& erreur) {
 }
 	
 void Fourmiliere::ajouter_fourmis(Fourmi* nouveau) {
+	
 	if(nouveau!= nullptr) {
 		ensemble_fourmis.push_back(unique_ptr<Fourmi>(nouveau));
 	}
@@ -89,25 +90,24 @@ bool& erreur, unsigned int total) {
 		ensemble_fourmilieres.push_back(std::move(fourmiliere));
 		++count_fourmis;
 		countC=0; countD=0; countP=0;
+		if(erreur==true) { 
+			count_fourmis=0; countF=0; return true;
+		}
 		if(nbC!=0) {
-			etat_f=COLLECT ;
-			return false ;
-			}
+			etat_f=COLLECT ; return false ;
+		}
 		if(nbD!=0) {
-			etat_f=DEFNS;
-			return false;
-			}
+			etat_f=DEFNS; return false;
+		}
 		if(nbP!=0) {
-			etat_f=PREDAT;
-			return false;
+			etat_f=PREDAT; return false;
 		} else {
 			count_fourmis=0;
 			if(ensemble_fourmilieres.size()==total) {
-				countF = 0;
-				return true;
+				countF = 0; return true;
 			}
-			return false;
 		}
+	return false;
 	} 
 	Carre carre{0, {0, 0}}; Collector collector(carre, 0, "");
 	Defensor defensor(carre, 0); Predator predator(carre, 0);
@@ -116,62 +116,45 @@ bool& erreur, unsigned int total) {
 			decodage_line_fourmis(line, etat_f, collector, defensor, predator, erreur);
 			ensemble_fourmilieres[countF].ajouter_fourmis(new Collector(collector));
 			ensemble_fourmilieres[countF].test_fourmis(countF, count_fourmis, erreur);
-			++count_fourmis;
-			++countC;
+			++count_fourmis; ++countC;
 			if(erreur==true) {
-				etat_f = FRMIL;
-				countF=0;
-				count_fourmis=0;
-				break;
+				etat_f = FRMIL; countF=0; count_fourmis=0; break; 
 			}
-			if(countC==nbC  and nbD == 0 and nbP == 0)  { etat_f=FRMIL;
-				count_fourmis=0; ++countF;  break;
+			if(countC==nbC  and nbD == 0 and nbP == 0) { 
+				etat_f=FRMIL; count_fourmis=0; ++countF;  break;
 			} else if(countC==nbC) { etat_f =DEFNS; }
 			break;
-		
 		case DEFNS :
 			if(nbD==0) { etat_f=PREDAT; break;}
 			decodage_line_fourmis(line, etat_f, collector, defensor, predator, erreur);
 			ensemble_fourmilieres[countF].ajouter_fourmis(new Defensor(defensor));
 			ensemble_fourmilieres[countF].test_fourmis(countF, count_fourmis, erreur);
-			++count_fourmis;
-			++countD;
+			++count_fourmis; ++countD;
 			if(erreur==true) {
-				etat_f = FRMIL;
-				countF=0;
-				count_fourmis=0;
-				break;
+				etat_f = FRMIL; countF=0; count_fourmis=0; break; 
 			}
-			if(countD==nbD and nbP==0) { etat_f=FRMIL; count_fourmis=0; ++countF; break; 
-			} else if (countD ==nbD)  { etat_f=PREDAT; }
+			if(countD==nbD and nbP==0) { 
+				etat_f=FRMIL; count_fourmis=0; ++countF; break; 
+			} else if (countD ==nbD) { etat_f=PREDAT; }
 			break;
-			
 		case PREDAT :
 			if(nbP==0) { etat_f=FRMIL; count_fourmis=0; ++countF; break; }
 			decodage_line_fourmis(line, etat_f, collector, defensor, predator, erreur);
 			ensemble_fourmilieres[countF].ajouter_fourmis(new Predator(predator));
 			ensemble_fourmilieres[countF].test_fourmis(countF, count_fourmis, erreur);
-			++count_fourmis;
-			++countP;
+			++count_fourmis; ++countP;
 			if(erreur==true) {
-				etat_f = FRMIL;
-				countF=0;
-				count_fourmis=0;
-				break;
+				etat_f = FRMIL; countF=0; count_fourmis=0; break; 
 			}
 			if(countP==nbP) {
-				count_fourmis=0;
-				++countF;
-				etat_f=FRMIL;
+				count_fourmis=0; ++countF; etat_f=FRMIL;
 			}
 			break;
 		default :
 			exit(0);
 	}
 	if(ensemble_fourmilieres.size()==total and countC==nbC and countD==nbD  and countP==nbP) {
-		countF = 0;
-		count_fourmis=0;
-		return true;
+		countF = 0; count_fourmis=0; return true;
 	}
 	return false;
 }

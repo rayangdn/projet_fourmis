@@ -140,7 +140,7 @@ MyEvent::MyEvent(Simulation simulation):
 	
 	m_Box_Left.pack_start(m_Box_Top);
 	
-	m_area.set_size_request(500,500.);
+	m_area.set_size_request(taille_dessin, taille_dessin);
 	m_Box_Right.pack_start(m_area);
   
 	m_Box_Top.pack_start(m_Frame_General, Gtk::PACK_EXPAND_WIDGET, 10);
@@ -279,8 +279,8 @@ bool MyEvent::on_timeout() {
 }
 
 void MyEvent::on_button_clicked_Step() {
-	if(not timer_added) {													// Suffisant ou est ce que on doit bloqué le bouttons ?		
-		cout << val << endl;												//hide () to close the application. (ça fait la même que exit() mais pour gtkmm car exit ça marche pas !!)
+	if(not timer_added) {												
+		cout << val << endl;												
 		++val; 
 		m_area.refresh();
 	}
@@ -349,7 +349,7 @@ string MyEvent::convertion_unInt_to_strg(int& nbr) const {
 }
 
 bool MyEvent::on_key_press_event(GdkEventKey * key_event) {
-	if(key_event->type == GDK_KEY_PRESS) {
+	if(key_event->type == GDK_KEY_PRESS) { //seulement si pas erreur??
 		switch(gdk_keyval_to_unicode(key_event->keyval)) {
 			case 's':
 				on_button_clicked_Start();
@@ -364,6 +364,9 @@ bool MyEvent::on_key_press_event(GdkEventKey * key_event) {
 				return true;
 			case 'p':
 				on_button_clicked_Previous();
+				return true;
+			case 'q':
+				on_button_clicked_Exit();
 				return true;
 		}
 	}

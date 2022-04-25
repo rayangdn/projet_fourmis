@@ -6,6 +6,8 @@
 #include "simulation.h"
 #include "graphic.h"
 
+constexpr unsigned taille_dessin(500);
+
 struct Distortion 
 {
 	double xMin; 
