@@ -32,7 +32,7 @@ void Food::superposition_food(bool& erreur) {
 }
 
 void Food::draw_food(Graphic graphic) {
-	draw_carre_food(carre, graphic);
+	draw_carre_losange(carre, graphic);
 }
 void decodage_line_food(string line, Ensemble_food& ensemble_food, bool& erreur) {
 		istringstream data(line);

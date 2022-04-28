@@ -61,7 +61,7 @@ void Fourmiliere::supprimer_fourmis() {
 }
 
 void Fourmiliere::draw_fourmiliere(Graphic graphic, Couleur couleur) {
-	draw_carre_fourmiliere(carre, graphic, couleur);
+	draw_carre_vide(carre, graphic, couleur);
 	for(const auto& fourmi : ensemble_fourmis) {
 		fourmi->draw_fourmis(graphic, couleur);
 	}

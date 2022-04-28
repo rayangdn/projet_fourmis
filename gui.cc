@@ -203,6 +203,7 @@ void MyEvent::on_button_clicked_Open() {
 	m_area.clear();
 	indice_frmi = -1;
 	maj_info_frmi(indice_frmi);
+	val=1;
 	Gtk::FileChooserDialog dialog("Please choose a file",
     Gtk::FILE_CHOOSER_ACTION_OPEN);
 	dialog.set_transient_for(*this);

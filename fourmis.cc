@@ -76,7 +76,7 @@ bool& erreur) {
 }
 
 void Generator::draw_fourmis(Graphic graphic, Couleur couleur) {
-	draw_carre_gene_predat(carre, graphic, couleur);
+	draw_carre_uniforme(carre, graphic, couleur);
 }
 
 void Collector::initialise_collect(const Carre& autre_carre, unsigned int autre_age,
@@ -110,11 +110,11 @@ void Collector::superposition_fourmi_C(bool& erreur) {
 }
 
 void Collector::draw_fourmis(Graphic graphic, Couleur couleur) {
-	draw_carre_collector(carre, graphic, couleur);
+	draw_carre_diagonale(carre, graphic, couleur);
 	if(have_food) {
 		Carre carre_food{1, {carre.point.x, 
 		carre.point.y}};
-		draw_carre_food(carre_food, graphic);
+		draw_carre_losange(carre_food, graphic);
 	}
 }
 
@@ -156,7 +156,7 @@ bool& erreur) {
 }
 
 void Defensor::draw_fourmis(Graphic graphic, Couleur couleur) {
-	draw_carre_defensor(carre, graphic, couleur);
+	draw_carre_grille(carre, graphic, couleur);
 }
 
 void Predator::initialise_predat(const Carre& autre_carre, unsigned int autre_age) {
@@ -183,7 +183,7 @@ void Predator::superposition_fourmi_P(bool& erreur) {
 }
 
 void Predator::draw_fourmis(Graphic graphic, Couleur couleur) {
-	draw_carre_gene_predat(carre, graphic, couleur);
+	draw_carre_uniforme(carre, graphic, couleur);
 }
 
 void decodage_line_fourmis(string line, unsigned int etat, Collector& collector,
