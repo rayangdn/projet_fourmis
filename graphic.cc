@@ -16,32 +16,32 @@ void Graphic::draw_grille() {
 	(*ptcr)->set_line_width(1.0);
 	(*ptcr)->set_source_rgb(0.0, 0.0, 0.0);
 	(*ptcr)->move_to(0.0,0.0);
-	(*ptcr)->line_to(0.0, 127);
-	(*ptcr)->line_to(127, 127);
-	(*ptcr)->line_to(127,0.0);
+	(*ptcr)->line_to(0.0, g_max-1);
+	(*ptcr)->line_to(g_max-1 ,g_max-1);
+	(*ptcr)->line_to(g_max-1,0.0);
 	(*ptcr)->line_to(0.0, 0.0);
 	(*ptcr)->fill_preserve();
 	(*ptcr)->stroke();
 	(*ptcr)->set_line_width(1.0);
 	(*ptcr)->set_source_rgb(1.0, 1.0, 1.0);
 	(*ptcr)->move_to(0.0,0.0);
-	(*ptcr)->line_to(0.0, 127.0);
-	(*ptcr)->line_to(127.0, 127.0);
-	(*ptcr)->line_to(127.0,0.0);
+	(*ptcr)->line_to(0.0, g_max-1);
+	(*ptcr)->line_to(g_max-1 ,g_max-1);
+	(*ptcr)->line_to(g_max-1 ,0.0);
 	(*ptcr)->line_to(0.0, 0.0);
 	(*ptcr)->stroke();
-	for(unsigned int i(0); i <= 128; ++i) { 
+	for(unsigned int i(0); i <= g_max; ++i) { 
 	(*ptcr)->set_line_width(0.1);
 	(*ptcr)->set_source_rgb(0.6, 0.6, 0.6);
 	(*ptcr)->move_to(i-0.5, -0.5);
-	(*ptcr)->line_to(i-0.5, 127.5);
+	(*ptcr)->line_to(i-0.5, g_max-0.5);
 	(*ptcr)->stroke();
 	}
-	for(unsigned int i(0); i <= 128; ++i) { 
+	for(unsigned int i(0); i <= g_max; ++i) { 
 	(*ptcr)->set_line_width(0.1);
 	(*ptcr)->set_source_rgb(0.6, 0.6, 0.6);
 	(*ptcr)->move_to(-0.5, i-0.5);
-	(*ptcr)->line_to(127.5,i-0.5);
+	(*ptcr)->line_to(g_max-0.5,i-0.5);
 	(*ptcr)->stroke();
 	}
 }

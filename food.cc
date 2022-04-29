@@ -21,10 +21,7 @@ void Food::initialise_food_on_grid() {
 }
 
 void Food::superposition_food(bool& erreur) {
-	test_validation_carre_centre(carre, erreur);
-	if(carre.point.x == 0 or carre.point.y==0) {
-		cout << "erreur" << endl;
-	}
+	test_validation_carre_no_bound(carre, erreur);
 	if(erreur==false) {
 		if(test_superposition_sans_coord(carre)) {
 			cout << message::food_overlap(carre.point.x,carre.point.y);

@@ -12,6 +12,7 @@ using namespace std;
 void supprimer_grid() {
 	grid.clear();
 }
+
 void initialise_grid(const unsigned int& g_max) {
 	for(size_t i(0); i < g_max; ++i) {
 		grid.push_back(vector<bool>());
@@ -71,6 +72,20 @@ void test_validation_carre_centre(const Carre& carre, bool& erreur) {
 	}
 }
 	
+void test_validation_carre_no_bound(const Carre& carre , bool& erreur) {
+	if(carre.point.x == 0 or  carre.point.x == g_max-1) {
+		cout << "coordinate " << carre.point.x << " does not belong to ] 0, "
+		 << g_max-1 << " [\n";
+		erreur = true;
+		return;
+	}
+	if(carre.point.y == 0 or carre.point.y == g_max-1) {
+		cout << "coordinate " << carre.point.x << " does not belong to ] 0, "
+		 << g_max-1 << " [\n";
+		erreur = true;
+		return;
+	}
+}
 void initialise_carre_non_centre(const Carre& carre) {
 	for(size_t i(carre.point.y); i < carre.point.y + carre.longeur ; ++i) {
 		for(size_t j(carre.point.x); j < carre.point.x + carre.longeur; ++j) {

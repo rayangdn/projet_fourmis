@@ -303,20 +303,20 @@ void MyEvent::maj_info_frmi(int indice) {
 		m_Label_Frmi.set_text("None selected");
 	} else {
 		string info("id: ");
-		info += convertion_unInt_to_strg(indice);
+		info += to_string(indice);
 		info += "\n";
 		info += "Total food: ";
 		int total_food = (*simu).get_total_food(indice);
-		info += convertion_unInt_to_strg(total_food);
+		info += to_string(total_food);
 		info += "\n\n nbC: ";
 		int nbC =(*simu).get_nbC(indice);
-		info += convertion_unInt_to_strg(nbC);
+		info += to_string(nbC);
 		info += "\n nbD: ";
 		int nbD = (*simu).get_nbD(indice);
-		info += convertion_unInt_to_strg(nbD);
+		info +=to_string(nbD);
 		info += "\n nbP: ";
 		int nbP = (*simu).get_nbP(indice);
-		info += convertion_unInt_to_strg(nbP);
+		info += to_string(nbP);
 		info += "\n";
 		m_Label_Frmi.set_text(info);
 		
@@ -328,24 +328,12 @@ void MyEvent::maj_nbf() {
 	stringstream food;
 	string nbr;
 	string info("Nb food: ");
-	
-	food << nb_food;
-	food >> nbr;
-	info = info + nbr;
-	
+	info += to_string(nb_food);
 	m_Label_Info.set_text(info);
 }
 
-string MyEvent::convertion_unInt_to_strg(int& nbr) const {
-	stringstream tmp;
-	string rendu;
-	tmp << nbr;
-	tmp >> rendu;
-	return rendu;
-}
-
 bool MyEvent::on_key_press_event(GdkEventKey * key_event) {
-	if(key_event->type == GDK_KEY_PRESS) { //seulement si pas erreur??
+	if(key_event->type == GDK_KEY_PRESS) {
 		switch(gdk_keyval_to_unicode(key_event->keyval)) {
 			case 's':
 				on_button_clicked_Start();

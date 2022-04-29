@@ -3,6 +3,9 @@
 
 #include <gtkmm/drawingarea.h>
 #include <vector>
+constexpr short unsigned g_dim(7);
+const short unsigned g_max(pow(2, g_dim));
+
 struct Couleur {
 	double red;
 	double green;

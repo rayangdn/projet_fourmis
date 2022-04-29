@@ -8,8 +8,7 @@
 #include "error_squarecell.h"
 #include "graphic.h"
 
-constexpr short unsigned g_dim(7);
-const short unsigned g_max(pow(2, g_dim));
+
 
 typedef std::vector<std::vector<bool>> Grid;
 static Grid grid;
@@ -31,6 +30,8 @@ void initialise_grid(const unsigned int&);
 void test_validation_carre_non_centre(const Carre&, bool&);
 
 void test_validation_carre_centre(const Carre&, bool&);
+
+void test_validation_carre_no_bound(const Carre&, bool&);
 
 void initialise_carre_non_centre(const Carre&);
 

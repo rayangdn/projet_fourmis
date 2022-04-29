@@ -52,7 +52,6 @@ private :
 	int indice_frmi; 
 	void maj_nbf(); 
 	void maj_info_frmi(int indice);
-	std::string convertion_unInt_to_strg(int&) const;
 	
 protected:
 	void on_button_clicked_Exit();
