@@ -21,9 +21,10 @@ public :
 	void test_fourmis(unsigned int, unsigned int, bool&);
 	void supprimer_fourmis();
 	void draw_fourmiliere(Graphic, Couleur couleur);
-	Ensemble_fourmis ensemble_fourmis;
+
 	
 private :
+	Ensemble_fourmis ensemble_fourmis;
 	Carre carre; 
 	unsigned int nbC, nbD, nbP;
 	

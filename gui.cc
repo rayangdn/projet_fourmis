@@ -13,17 +13,15 @@
 
 using namespace std;
 
+static Simulation *simu;
 static Distortion default_distortion = {-70, 70, -70, 70, 1, 140, 140};
 
-MyArea::MyArea(Simulation simulation): simulation(std::move(simulation)), empty(false) {
+MyArea::MyArea() : empty(false) {
 	set_frame(default_distortion);
 }
 
 MyArea::~MyArea () {}
 
-Simulation MyArea::get_simulation() const {
-	
-}
 void MyArea::set_frame(Distortion d) {
 	if((d.xMin <= d.xMax) and (d.yMin <= d.yMax) and (d.height > 0))
 	{
@@ -96,16 +94,14 @@ bool MyArea::on_draw(const Cairo::RefPtr<Cairo::Context>& cr) {
 	if(not empty) {
 	Graphic graphic;
 	graphic.set_context(cr);
-	simulation.draw_simulation(graphic);
+	(*simu).draw_simulation(graphic);
 	}
 	return true;
 }
 
 //=====================================================================================
 
-MyEvent::MyEvent(Simulation simulation): 
-	//simulation(std::move(simulation)), // probleme unique ptr
-	m_area(std::move(simulation)),
+MyEvent::MyEvent(Simulation *simulation): 
 	timer_added(false),
 	disconnect(false),
 	timeout_value(500),
@@ -133,6 +129,7 @@ MyEvent::MyEvent(Simulation simulation):
 	m_Button_Previous("previous"),
 	m_Button_Next("next")
 {
+	simu = simulation;
 	set_title("Tchanz");
 	add(m_Box);
 	m_Box.pack_start(m_Box_Left);
@@ -199,7 +196,7 @@ void MyEvent::on_button_clicked_Exit() {
 }
 
 void MyEvent::on_button_clicked_Open() {
-	m_area.simulation.supprimer_structs();
+	(*simu).supprimer_structs();
 	m_area.clear();
 	indice_frmi = -1;
 	maj_info_frmi(indice_frmi);
@@ -209,14 +206,12 @@ void MyEvent::on_button_clicked_Open() {
 	dialog.set_transient_for(*this);
 	dialog.add_button("_Cancel", Gtk::RESPONSE_CANCEL);
 	dialog.add_button("_Open", Gtk::RESPONSE_OK);
-	
 	int result = dialog.run();
-
 	switch(result) {
 		case(Gtk::RESPONSE_OK): {
 			std::string filename = dialog.get_filename();
 			std::cout << "File selected: " <<  filename << std::endl;
-			m_area.simulation.lecture(filename);
+			(*simu).lecture(filename);
 			m_area.draw();
 		}
 		case(Gtk::RESPONSE_CANCEL): {
@@ -290,14 +285,14 @@ void MyEvent::on_button_clicked_Step() {
 void MyEvent::on_button_clicked_Previous() {
 	indice_frmi = indice_frmi - 1;
 	if(indice_frmi < -1) {
-		indice_frmi=  m_area.simulation.get_nb_fourmiliere()-1;
+		indice_frmi=  (*simu).get_nb_fourmiliere()-1;
 	}
 	maj_info_frmi(indice_frmi);
 }
 
 void MyEvent::on_button_clicked_Next() {	
 	indice_frmi = indice_frmi + 1;
-	if(indice_frmi >=  m_area.simulation.get_nb_fourmiliere()){
+	if(indice_frmi >= (*simu).get_nb_fourmiliere()){
 		indice_frmi = -1;
 	}
 	maj_info_frmi(indice_frmi);
@@ -311,16 +306,16 @@ void MyEvent::maj_info_frmi(int indice) {
 		info += convertion_unInt_to_strg(indice);
 		info += "\n";
 		info += "Total food: ";
-		int total_food = m_area.simulation.get_total_food(indice);
+		int total_food = (*simu).get_total_food(indice);
 		info += convertion_unInt_to_strg(total_food);
 		info += "\n\n nbC: ";
-		int nbC = m_area.simulation.get_nbC(indice);
+		int nbC =(*simu).get_nbC(indice);
 		info += convertion_unInt_to_strg(nbC);
 		info += "\n nbD: ";
-		int nbD = m_area.simulation.get_nbD(indice);
+		int nbD = (*simu).get_nbD(indice);
 		info += convertion_unInt_to_strg(nbD);
 		info += "\n nbP: ";
-		int nbP = m_area.simulation.get_nbP(indice);
+		int nbP = (*simu).get_nbP(indice);
 		info += convertion_unInt_to_strg(nbP);
 		info += "\n";
 		m_Label_Frmi.set_text(info);
@@ -329,7 +324,7 @@ void MyEvent::maj_info_frmi(int indice) {
 }
 
 void MyEvent::maj_nbf() {
-	unsigned int nb_food(m_area.simulation.get_nb_food());
+	unsigned int nb_food((*simu).get_nb_food());
 	stringstream food;
 	string nbr;
 	string info("Nb food: ");

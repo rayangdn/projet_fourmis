@@ -20,10 +20,8 @@ struct Distortion
 };
 class MyArea : public Gtk::DrawingArea {
 	public :
-	MyArea(Simulation);
+	MyArea();
 	~MyArea();
-	Simulation get_simulation() const;
-	Simulation simulation; //OKE OU PAS???
 	void set_frame(Distortion); 
 	void adjust_frame();
 	void clear();
@@ -41,13 +39,11 @@ class MyArea : public Gtk::DrawingArea {
 };
 class MyEvent : public Gtk::Window {
 public:
-	MyEvent(Simulation);
+	MyEvent(Simulation *simulation);
 	virtual ~MyEvent();
 	void affiche_food();
 private :
-
 	MyArea m_area;
-	//Simulation simulation;
 	bool timer_added;
 	bool disconnect;
 	const int timeout_value;
