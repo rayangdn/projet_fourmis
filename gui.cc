@@ -227,7 +227,6 @@ void MyEvent::on_button_clicked_Open() {
 }
 
 void MyEvent::on_button_clicked_Save() {
-	//comment sauvegarder notre grille a la place d'un nouveau fichier??
 	Gtk::FileChooserDialog dialog("Please choose a file",
 	Gtk::FILE_CHOOSER_ACTION_SAVE);
 	dialog.set_transient_for(*this);
@@ -236,9 +235,12 @@ void MyEvent::on_button_clicked_Save() {
 	int result = dialog.run();
 	switch(result) {
 		case(Gtk::RESPONSE_OK): {
-			std::string filename = dialog.get_filename();
-			std::cout << "File saved: " <<  filename << std::endl;
+			ofstream fichier(dialog.get_filename());
+			if(!(fichier.fail())) {
+				(*simu).ecriture_fichier(fichier);
+			}
 		}
+			
 		case(Gtk::RESPONSE_CANCEL): {
 			break;
 		}

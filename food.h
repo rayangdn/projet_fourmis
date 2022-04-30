@@ -1,6 +1,7 @@
 #ifndef FOOD_H_INCLUDED
 #define FOOD_H_INCLUDED
 
+#include <fstream>
 #include "constantes.h"
 #include "squarecell.h"
 #include "message.h"
@@ -10,8 +11,9 @@ public :
 	Food(Carre, unsigned int);
 	~Food() {};
 	void initialise_food_on_grid();
-	void superposition_food(bool&);
+	bool superposition_food();
 	void draw_food(Graphic);
+	void ecriture_food(std::ofstream&) const;
 private :
 	Carre carre;
 	unsigned int val_food;
@@ -19,6 +21,6 @@ private :
 
 typedef std::vector<Food> Ensemble_food;
 
-void decodage_line_food(std::string, Ensemble_food&, bool&);
+bool decodage_line_food(std::string, Ensemble_food&);
 
 #endif

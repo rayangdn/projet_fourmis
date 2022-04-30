@@ -1,12 +1,12 @@
 #ifndef SQUARECELL_H_INCLUDED
 #define SQUARECELL_H_INCLUDED
 
+
 #include <cmath>
 
-
+#include "constantes.h"
 #include "message.h"
 #include "error_squarecell.h"
-#include "graphic.h"
 
 constexpr short unsigned g_dim(7);
 const short unsigned g_max(pow(2, g_dim));
@@ -24,13 +24,11 @@ struct Carre {
 	Point point;
 };
 
-void supprimer_grid();
-
 void initialise_grid(const unsigned int&);
 
-void test_validation_carre_non_centre(const Carre&, bool&);
+void test_validation_carre_non_centre(const Carre&);
 
-void test_validation_carre_centre(const Carre&, bool&);
+void test_validation_carre_centre(const Carre&);
 
 void initialise_carre_non_centre(const Carre&);
 
@@ -45,16 +43,6 @@ bool test_superposition_2_carres(const Carre&, const Carre&);
 bool test_superposition_avec_coord(const Carre&, unsigned int&, unsigned int&);
 
 bool test_superposition_sans_coord(const Carre&);
-
-void draw_carre_losange(const Carre&, Graphic);
-
-void draw_carre_vide(const Carre&, Graphic, Couleur couleur);
-
-void draw_carre_uniforme(const Carre&, Graphic, Couleur couleur);
-
-void draw_carre_diagonale(const Carre&, Graphic, Couleur couleur);
-
-void draw_carre_grille(const Carre&, Graphic, Couleur couleur);
 
 #endif
 

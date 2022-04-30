@@ -37,26 +37,23 @@ unsigned int Simulation::get_nbP(int i) const {
 
 void Simulation::lecture(string nom_fichier) {	
     string line;
-    bool erreur(false);
     ifstream fichier(nom_fichier);
      
     if(!fichier.fail()) {
         while(getline(fichier >> ws,line)) {	
-			
 			if(line[0]=='#')  continue;  
-			decodage_ligne(line, erreur);
-			if(erreur) {
-				supprimer_structs(); //supprime struct ici pour afficher la grille vide
-				fichier.close(); //probleme passe autre fichier texte regler vendredi
+			if(decodage_line(line)) {
+				supprimer_structs();
+				fichier.close();
 				return;
 			}
         }
 	}
 	cout << message::success();
-	fichier.close(); //on supprime les structs quand on clique sur open un autre fichier
+	fichier.close(); 
 }
 
-void Simulation::decodage_ligne(string& line, bool& erreur) {
+bool Simulation::decodage_line(string& line) {
 	istringstream data(line);
 	enum Etat_lecture {NBN, FOOD, NBF, FRMIL};
 	static int etat(NBN);
@@ -64,7 +61,6 @@ void Simulation::decodage_ligne(string& line, bool& erreur) {
 	switch(etat) {
 		case NBN :
 			data >> total; count = 0;
-			
 			if(total == 0) {
 				etat = NBF;
 			} else {
@@ -73,11 +69,10 @@ void Simulation::decodage_ligne(string& line, bool& erreur) {
 			break;
 		
 		case FOOD :
-			decodage_line_food(line, ensemble_food, erreur);
 			++count;
-			if(erreur==true) {
+			if(decodage_line_food(line, ensemble_food)) {
 				etat = NBN;
-				break;
+				return true;
 			}
 			if(count == total) {
 				etat = NBF;
@@ -95,17 +90,18 @@ void Simulation::decodage_ligne(string& line, bool& erreur) {
 			break;
 		
 		case FRMIL :
-		
-			if(decodage_line_fourmiliere(line, ensemble_fourmilieres, erreur, total)) {
+			if(decodage_line_fourmiliere(line, ensemble_fourmilieres, total, etat)) {
 				etat = NBN;
+				return true;
 			}
-			if(erreur==true) {
+			if(count==total) {
+				cout << "Y=" << endl;
 				etat = NBN;
-				break;
 			}
 			break;		
 		default : exit(0);
 	}
+	return false;
 }
 
 void Simulation::supprimer_structs() {
@@ -148,4 +144,15 @@ void Simulation::initialise_ensemble_couleurs() {
 	ensemble_couleurs.push_back(jaune); 
 	ensemble_couleurs.push_back(magenta); 
 	ensemble_couleurs.push_back(cyan); 
+}
+
+void Simulation::ecriture_fichier(ofstream& fichier) const {
+	fichier << to_string(ensemble_food.size()) << "\n\n" ;
+	for(size_t i(0); i < ensemble_food.size(); ++i) {
+		ensemble_food[i].ecriture_food(fichier);
+	}
+	fichier << "\n" <<  to_string(ensemble_fourmilieres.size()) <<  "\n";
+	for(size_t i(0); i < ensemble_fourmilieres.size(); ++i) {
+		ensemble_fourmilieres[i].ecriture_fourmiliere(fichier);
+	}
 }

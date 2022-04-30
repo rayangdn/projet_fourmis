@@ -27,11 +27,11 @@ void supprimer_grid();
 
 void initialise_grid(const unsigned int&);
 
-void test_validation_carre_non_centre(const Carre&, bool&);
+bool test_validation_carre_non_centre(const Carre&);
 
-void test_validation_carre_centre(const Carre&, bool&);
+bool test_validation_carre_centre(const Carre&);
 
-void test_validation_carre_no_bound(const Carre&, bool&);
+bool test_validation_carre_no_bound(const Carre&);
 
 void initialise_carre_non_centre(const Carre&);
 

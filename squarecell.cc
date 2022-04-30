@@ -22,69 +22,63 @@ void initialise_grid(const unsigned int& g_max) {
 	}
 }
 
-void test_validation_carre_non_centre(const Carre& carre, bool& erreur) {
+bool test_validation_carre_non_centre(const Carre& carre) {
 	if(carre.point.x > (grid.size()-1)) {
 		cout << error_squarecell:: print_index(carre.point.x, grid.size()-1);
-		erreur = true;
-		return;
+		return true;
 	}
 	if(carre.point.y > (grid.size()-1)) {
 		cout << error_squarecell:: print_index(carre.point.y, grid.size()-1);
-		erreur = true;
-		return;
+		return true;
 	}
 	if(carre.point.x + carre.longeur > grid.size()){
 		cout << error_squarecell::print_outside(carre.point.x, carre.longeur,
 		grid.size()-1);
-		erreur = true;
-		return;
+		return true;
 	}
 	if (carre.point.y + carre.longeur > grid.size()) {
 		cout << error_squarecell::print_outside(carre.point.x, carre.longeur,
 		grid.size()-1);
-		erreur = true;
-		return;
+		return true;
 	}
+	return false;
 }
 
-void test_validation_carre_centre(const Carre& carre, bool& erreur) {
+bool test_validation_carre_centre(const Carre& carre) {
 	if(carre.point.x > (grid.size()-1)) {
 		cout << error_squarecell:: print_index(carre.point.x, grid.size()-1);
-		erreur = true;
-		return;
+		return true;
 	}
 	if(carre.point.y > (grid.size()-1)) {
 		cout << error_squarecell:: print_index(carre.point.y, grid.size()-1);
-		erreur = true;
-		return;
+		return true;
 	}
 	if(carre.point.x + (carre.longeur/2) > grid.size()){
 		cout << error_squarecell::print_outside(carre.point.x, carre.longeur,
 		grid.size()-1);
-		erreur = true;
-		return;
+		return true;
 	}
 	if (carre.point.y + (carre.longeur/2) > grid.size()) {
 		cout << error_squarecell::print_outside(carre.point.x, carre.longeur,
 		grid.size()-1);
-		erreur = true;
-		return;
+		return true;
 	}
+	return false;
 }
 	
-void test_validation_carre_no_bound(const Carre& carre , bool& erreur) {
+bool test_validation_carre_no_bound(const Carre& carre) {
 	if(carre.point.x == 0 or  carre.point.x == g_max-1) {
 		cout << "coordinate " << carre.point.x << " does not belong to ] 0, "
 		 << g_max-1 << " [\n";
-		erreur = true;
-		return;
+		//food pas le droit d'être sur la bordure
+		return true;
 	}
 	if(carre.point.y == 0 or carre.point.y == g_max-1) {
 		cout << "coordinate " << carre.point.x << " does not belong to ] 0, "
 		 << g_max-1 << " [\n";
-		erreur = true;
-		return;
+		return true;
 	}
+	return false;
 }
 void initialise_carre_non_centre(const Carre& carre) {
 	for(size_t i(carre.point.y); i < carre.point.y + carre.longeur ; ++i) {

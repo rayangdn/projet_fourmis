@@ -20,26 +20,35 @@ void Food::initialise_food_on_grid() {
 	initialise_carre_centre(carre);
 }
 
-void Food::superposition_food(bool& erreur) {
-	test_validation_carre_no_bound(carre, erreur);
-	if(erreur==false) {
-		if(test_superposition_sans_coord(carre)) {
-			cout << message::food_overlap(carre.point.x,carre.point.y);
-			erreur = true;
-		}
+bool Food::superposition_food() {
+	if(test_superposition_sans_coord(carre)) {
+		cout << message::food_overlap(carre.point.x,carre.point.y);
+		return true;
 	}
+	return false;
 }
 
 void Food::draw_food(Graphic graphic) {
 	draw_carre_losange(carre, graphic);
 }
-void decodage_line_food(string line, Ensemble_food& ensemble_food, bool& erreur) {
+
+void Food::ecriture_food(ofstream& fichier) const {
+	fichier << to_string(carre.point.x) << " " << to_string(carre.point.y) << "\n";
+}
+
+bool decodage_line_food(string line, Ensemble_food& ensemble_food) {
 		istringstream data(line);
 		unsigned int x, y;
 		data >> x >> y;
 		Carre carre{1, {x, y}};
 		Food food(carre, val_food);
-		food.superposition_food(erreur);
+		if(test_validation_carre_no_bound(carre)) {
+			return true;
+		}
+		if(food.superposition_food()) {
+			return true;
+		}
 		food.initialise_food_on_grid();
 		ensemble_food.push_back(food);
+		return false;
 }

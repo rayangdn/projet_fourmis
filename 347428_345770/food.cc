@@ -5,6 +5,7 @@
 #include <cstdlib>
 #include <string>
 #include <iostream>
+#include <fstream>
 #include <sstream>
 #include <vector>
 #include <string>
@@ -19,31 +20,21 @@ void Food::initialise_food_on_grid() {
 	initialise_carre_centre(carre);
 }
 
-void Food::superposition_food(bool& erreur) {
-	test_validation_carre_centre(carre, erreur);
-	
-	if(erreur==false) {
-		if(test_superposition_sans_coord(carre)) {
-			cout << message::food_overlap(carre.point.x,carre.point.y);
-			erreur = true;
+void Food::superposition_food() {
+	if(test_superposition_sans_coord(carre)) {
+		cout << message::food_overlap(carre.point.x,carre.point.y);
+		exit(EXIT_FAILURE);
 		}
-	}
 }
 
-void Food::draw_food(Graphic graphic) {
-	draw_carre_losange(carre, graphic);
-}
-void decodage_line_food(string line, Ensemble_food& ensemble_food, bool& erreur) {
+void decodage_line_food(string line, Ensemble_food& ensemble_food) {
 		istringstream data(line);
 		unsigned int x, y;
 		data >> x >> y;
 		Carre carre{1, {x, y}};
+		test_validation_carre_non_centre(carre);
 		Food food(carre, val_food);
-		food.superposition_food(erreur);
+		food.superposition_food();
 		food.initialise_food_on_grid();
 		ensemble_food.push_back(food);
-}
-
-void Food::ecriture_food(ofstream& fichier) const{
-	fichier << to_string(carre.point.x) << " " << to_string(carre.point.y) << "\n";
 }

@@ -5,7 +5,6 @@
 #include <cstdlib>
 #include <string>
 #include <iostream>
-#include <fstream>
 #include <sstream>
 #include <vector>
 #include <string>
@@ -46,39 +45,49 @@ bool Fourmi::fourmis_in_house(const Carre& carre_fourmiliere) {
 unsigned int Generator::get_total_food() const {
 	return total_food;
 }
-void Generator::test_chaque_fourmi(unsigned int countF, const Carre& carre_fourmiliere,
-bool& erreur) {
-	test_validation_carre_centre(carre, erreur);
-	if(erreur==false) {
-		superposition_fourmi_G(erreur);
+
+bool Generator::test_chaque_fourmi(unsigned int countF, const Carre& carre_fourmiliere) {
+	if(test_validation_carre_centre(carre)) {
+		return true;
 	}
-	if(erreur==false) {
-		fourmis_in_house_G(countF, carre_fourmiliere, erreur);
+	if(superposition_fourmi_G()) {
+		return true;
+	}
+	if(fourmis_in_house_G(countF, carre_fourmiliere)) {
+		return true;
 	}
 	initialise_fourmi();
+	return false;
 }
 
-void Generator::superposition_fourmi_G(bool& erreur) {
-	unsigned int x(0), y(0);
+bool Generator::superposition_fourmi_G() {
+	unsigned int x, y;
 	if(test_superposition_avec_coord(carre, x, y)) {
-		cout << message::generator_overlap( carre.point.x, carre.point.y,x,y);
-		erreur = true;
+		cout << message::generator_overlap(carre.point.x, carre.point.y, x, y);
+		return true;
 	}
+	return false;
 }
 
-void Generator::fourmis_in_house_G(unsigned int countF, const Carre& carre_fourmiliere,
-bool& erreur) {
+bool Generator::fourmis_in_house_G(unsigned int countF, const Carre& carre_fourmiliere) {
 	if(fourmis_in_house(carre_fourmiliere)) {
 		cout << message::generator_not_within_home(carre.point.x, carre.point.y,
 		countF);
-		erreur = true;
+		return true;
 	}
+	return false;
 }
 
 void Generator::draw_fourmis(Graphic graphic, Couleur couleur) {
 	draw_carre_uniforme(carre, graphic, couleur);
 }
 
+void Generator::ecriture_frmi(ofstream& fichier) const {
+	fichier << " " << to_string(carre.point.x) << " " << to_string(carre.point.y) 
+			<< " " << to_string(total_food) << " ";
+}
+
+ 
 void Collector::initialise_collect(const Carre& autre_carre, unsigned int autre_age,
 string autre_have_food) {
 	carre.longeur = autre_carre.longeur;
@@ -92,21 +101,25 @@ string autre_have_food) {
 	}
 }
 
-void Collector::test_chaque_fourmi(unsigned int countF, const Carre& carre_fourmiliere,
-bool& erreur) {
-	test_validation_carre_centre(carre, erreur);
-	if(erreur==false) {
-		superposition_fourmi_C(erreur);
+bool Collector::test_chaque_fourmi(unsigned int countF, const Carre& carre_fourmiliere) {
+	if(test_validation_carre_centre(carre)) {
+		return true;
+	}
+	if(superposition_fourmi_C()) {
+		return true;
 	}
 	initialise_fourmi();
+	return false;
 
 }
-void Collector::superposition_fourmi_C(bool& erreur) {
+
+bool Collector::superposition_fourmi_C() {
 	unsigned int x(0), y(0);
 	if(test_superposition_avec_coord(carre, x, y)) {
 		cout << message::collector_overlap( carre.point.x, carre.point.y, x, y);
-		erreur = true;
+		return true;
 	}
+	return false;
 }
 
 void Collector::draw_fourmis(Graphic graphic, Couleur couleur) {
@@ -118,6 +131,18 @@ void Collector::draw_fourmis(Graphic graphic, Couleur couleur) {
 	}
 }
 
+void Collector::ecriture_frmi(ofstream& fichier) const {
+	fichier << "\t" << to_string(carre.point.x) << " " << to_string(carre.point.y) << " "
+	<< to_string(age) << " ";
+	string have_food_string;
+	if(have_food==true) {
+		have_food_string="true\n";
+	} else {
+		have_food_string="false\n";
+	}
+	fichier << have_food_string;
+}
+
 void Defensor::initialise_defens(const Carre& autre_carre, unsigned int autre_age) {
 	carre.longeur = autre_carre.longeur;
 	carre.point.x = autre_carre.point.x;
@@ -125,40 +150,47 @@ void Defensor::initialise_defens(const Carre& autre_carre, unsigned int autre_ag
 	age = autre_age;
 }
 
-void Defensor::test_chaque_fourmi(unsigned int countF, const Carre& carre_fourmiliere, 
-bool& erreur) {
-	test_validation_carre_centre(carre, erreur);
-	if(erreur==false) {
-		superposition_fourmi_D(erreur);
+bool Defensor::test_chaque_fourmi(unsigned int countF, const Carre& carre_fourmiliere) {
+	if(test_validation_carre_centre(carre)) {
+		return true;
 	}
-	if(erreur==false) {
-		fourmis_in_house_D(countF, carre_fourmiliere, erreur);
+	if(superposition_fourmi_D()) {
+		return true;
+	}
+	if(fourmis_in_house_D(countF, carre_fourmiliere)) {
+		return true;
 	}
 	initialise_fourmi();
+	return false;
 }
 
-
-void Defensor::superposition_fourmi_D(bool& erreur) {
+bool Defensor::superposition_fourmi_D() {
 	unsigned int x(0), y(0);
 	if(test_superposition_avec_coord(carre, x, y)) {
 		cout << message::defensor_overlap( carre.point.x, carre.point.y, x, y );
-		erreur = true;
+		return true;
 	}
+	return false;
 }
 
-void Defensor::fourmis_in_house_D(unsigned int countF, const Carre& carre_fourmiliere,
-bool& erreur) {
+bool Defensor::fourmis_in_house_D(unsigned int countF, const Carre& carre_fourmiliere) {
 	if(fourmis_in_house(carre_fourmiliere)) {
 		cout << message::defensor_not_within_home(carre.point.x, carre.point.y,
 		countF);
-		erreur = true;
+		return true;
 	}
+	return false;
 }
 
 void Defensor::draw_fourmis(Graphic graphic, Couleur couleur) {
 	draw_carre_grille(carre, graphic, couleur);
 }
 
+void Defensor::ecriture_frmi(ofstream& fichier) const {
+	fichier << "\t" << to_string(carre.point.x) << " " << to_string(carre.point.y) << " " 
+			<< to_string(age) << "\n";
+}
+	
 void Predator::initialise_predat(const Carre& autre_carre, unsigned int autre_age) {
 	carre.longeur = autre_carre.longeur;
 	carre.point.x = autre_carre.point.x;
@@ -166,28 +198,36 @@ void Predator::initialise_predat(const Carre& autre_carre, unsigned int autre_ag
 	age = autre_age;
 }
 
-void Predator::test_chaque_fourmi(unsigned int countF, const Carre& carre_fourmiliere, 
-bool& erreur) {
-	test_validation_carre_centre(carre, erreur);
-	if(erreur==false) {
-		superposition_fourmi_P(erreur);
+bool Predator::test_chaque_fourmi(unsigned int countF, const Carre& carre_fourmiliere) {
+	if(test_validation_carre_centre(carre)) {
+		return true;
+	}
+	if(superposition_fourmi_P()) {
+		return true;
 	}
 	initialise_fourmi();
+	return false;
 }
 
-void Predator::superposition_fourmi_P(bool& erreur) {
+bool Predator::superposition_fourmi_P() {
 	if(test_superposition_sans_coord(carre)) {
 		cout << message::predator_overlap(carre.point.x, carre.point.y);
-		erreur = true;
+		return true;
 	}
+	return false;
 }
 
 void Predator::draw_fourmis(Graphic graphic, Couleur couleur) {
 	draw_carre_uniforme(carre, graphic, couleur);
 }
 
+void Predator::ecriture_frmi(ofstream& fichier) const {
+	fichier << "\t" << to_string(carre.point.x) << " " << to_string(carre.point.y) << " " 
+			<< to_string(age) << "\n";
+}
+
 void decodage_line_fourmis(string line, unsigned int etat, Collector& collector,
-Defensor& defensor, Predator& predator, bool& erreur) {
+Defensor& defensor, Predator& predator) {
 	istringstream data(line);
 	unsigned int x, y, age;
 	string have_food;
