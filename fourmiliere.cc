@@ -73,9 +73,23 @@ void Fourmiliere::ecriture_fourmiliere(ofstream& fichier) const {
 			<< " " << to_string(carre.longeur);
 	ensemble_fourmis[0]->ecriture_frmi(fichier);
 	fichier << to_string(nbC) << " " << to_string(nbD) << " " << to_string(nbP) 
-	 << "\n" << "\n";
+	 << "\n\n" ;
+	 static unsigned int j(0), k(0), l(0);
 	for(size_t i(1); i < ensemble_fourmis.size(); ++i) {
 		ensemble_fourmis[i]->ecriture_frmi(fichier);
+		++j;
+		if(j == nbC) {
+			fichier << "\n" ;
+			j = 0;
+		}
+		if(k == nbD and j != nbC) {
+			fichier << "\n" ;
+			k = 0;
+		}
+		if(l == nbP and j!=nbC and l!= nbD) {
+			fichier << "\n" ;
+			l = 0;
+		}
 	}
 }
 	
