@@ -1,11 +1,8 @@
 #ifndef SIMULATION_H_INCLUDED
 #define SIMULATION_H_INCLUDED
 
-#include <fstream>
-
 #include "fourmiliere.h"
 #include "food.h"
-
 
 class Simulation {
 public :

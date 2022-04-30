@@ -2,18 +2,12 @@
 //Rayan Gauderon membre 1: 30%
 //Maxime Luyet membre 2: 70%
 
-#include <cstdlib>
-#include <string>
 #include <iostream>
-#include <fstream>
-#include <sstream>
-#include <vector>
-#include <string>
 
 #include "simulation.h"
 
-
 using namespace std;
+
 unsigned int Simulation::get_nb_food() const {
 	return ensemble_food.size();
 }
@@ -25,12 +19,15 @@ unsigned int Simulation::get_nb_fourmiliere() const {
 unsigned int Simulation::get_total_food(int i) const  {
 	return ensemble_fourmilieres[i].get_total_food();
 }
+
 unsigned int Simulation::get_nbC(int i) const {
 	return ensemble_fourmilieres[i].get_nbC();
 }
+
 unsigned int Simulation::get_nbD(int i) const {
 	return ensemble_fourmilieres[i].get_nbD();
 }
+
 unsigned int Simulation::get_nbP(int i) const {
 	return ensemble_fourmilieres[i].get_nbP();
 }
@@ -38,7 +35,6 @@ unsigned int Simulation::get_nbP(int i) const {
 void Simulation::lecture(string nom_fichier) {	
     string line;
     ifstream fichier(nom_fichier);
-     
     if(!fichier.fail()) {
         while(getline(fichier >> ws,line)) {	
 			if(line[0]=='#')  continue;  
@@ -67,7 +63,6 @@ bool Simulation::decodage_line(string& line) {
 				etat = FOOD;
 			}
 			break;
-		
 		case FOOD :
 			++count;
 			if(decodage_line_food(line, ensemble_food)) {
@@ -78,7 +73,6 @@ bool Simulation::decodage_line(string& line) {
 				etat = NBF;
 			} 
 			break;
-			
 		case NBF :
 			data >> total; count = 0;
 			if(total == 0) {
@@ -88,15 +82,10 @@ bool Simulation::decodage_line(string& line) {
 				etat = FRMIL;
 			}
 			break;
-		
 		case FRMIL :
 			if(decodage_line_fourmiliere(line, ensemble_fourmilieres, total, etat)) {
 				etat = NBN;
 				return true;
-			}
-			if(count==total) {
-				cout << "Y=" << endl;
-				etat = NBN;
 			}
 			break;		
 		default : exit(0);
@@ -114,12 +103,22 @@ void Simulation::supprimer_structs() {
 	ensemble_fourmilieres.clear();
 }
 
+void Simulation::ecriture_fichier(ofstream& fichier) const {
+	fichier << to_string(ensemble_food.size()) << "\n\n" ;
+	for(size_t i(0); i < ensemble_food.size(); ++i) {
+		ensemble_food[i].ecriture_food(fichier);
+	}
+	fichier << "\n" <<  to_string(ensemble_fourmilieres.size()) << "\n";
+	for(size_t i(0); i < ensemble_fourmilieres.size(); ++i) {
+		ensemble_fourmilieres[i].ecriture_fourmiliere(fichier);
+	}
+}
+
 void Simulation::draw_simulation(Graphic graphic) {
 	initialise_ensemble_couleurs();
 	graphic.draw_grille();
 	for(auto& food : ensemble_food) {
 		food.draw_food(graphic);
-		
 	}
 	unsigned int i(0);
 	for(auto& fourmiliere : ensemble_fourmilieres) {
@@ -146,13 +145,4 @@ void Simulation::initialise_ensemble_couleurs() {
 	ensemble_couleurs.push_back(cyan); 
 }
 
-void Simulation::ecriture_fichier(ofstream& fichier) const {
-	fichier << to_string(ensemble_food.size()) << "\n\n" ;
-	for(size_t i(0); i < ensemble_food.size(); ++i) {
-		ensemble_food[i].ecriture_food(fichier);
-	}
-	fichier << "\n" <<  to_string(ensemble_fourmilieres.size()) <<  "\n";
-	for(size_t i(0); i < ensemble_fourmilieres.size(); ++i) {
-		ensemble_fourmilieres[i].ecriture_fourmiliere(fichier);
-	}
-}
+

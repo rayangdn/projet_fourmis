@@ -1,18 +1,13 @@
 #ifndef SQUARECELL_H_INCLUDED
 #define SQUARECELL_H_INCLUDED
 
-#include <cmath>
-
-
 #include "message.h"
 #include "error_squarecell.h"
 #include "graphic.h"
 
-
-
 typedef std::vector<std::vector<bool>> Grid;
-static Grid grid;
 
+static Grid grid;
 
 struct Point {
 	unsigned int x;

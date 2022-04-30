@@ -1,4 +1,6 @@
-
+//graphic.cc
+//Rayan Gauderon membre 1: 60%
+//Maxime Luyet membre 2: 40%
 
 #include "graphic.h"
 
@@ -46,7 +48,8 @@ void Graphic::draw_grille() {
 	}
 }
 
-void Graphic::draw_carre_vide(unsigned int x, unsigned int y, unsigned int longeur, Couleur couleur) {
+void Graphic::draw_carre_vide(unsigned int x, unsigned int y, unsigned int longeur,
+Couleur couleur) {
 	(*ptcr)->set_line_width(0.4);
 	(*ptcr)->set_source_rgb(couleur.red, couleur.green, couleur.blue);
 	(*ptcr)->move_to(x,y);
@@ -69,10 +72,11 @@ void Graphic::draw_carre_losange(unsigned int x, unsigned int y, unsigned int lo
 	(*ptcr)->stroke();
 }
 
-void Graphic::draw_carre_uniforme(unsigned int x, unsigned int y, unsigned int longeur, Couleur couleur) {
+void Graphic::draw_carre_uniforme(unsigned int x, unsigned int y, unsigned int longeur, 
+Couleur couleur) {
 	(*ptcr)->set_line_width(1.0);
 	(*ptcr)->set_source_rgb(couleur.red, couleur.green, couleur.blue);
-	(*ptcr)->move_to(x,y-0.5);//-0.5 pour prendre en compte la largeur de la ligne
+	(*ptcr)->move_to(x,y-0.5);
 	(*ptcr)->line_to(x, y+longeur-1);
 	(*ptcr)->line_to(x+longeur-1,y+longeur-1);
 	(*ptcr)->line_to(x+longeur-1,y);
@@ -81,8 +85,8 @@ void Graphic::draw_carre_uniforme(unsigned int x, unsigned int y, unsigned int l
 	(*ptcr)->stroke();
 }
 	
-void Graphic::draw_carre_diagonale(unsigned int x, unsigned int y, unsigned int longeur, Couleur couleur) {
-	
+void Graphic::draw_carre_diagonale(unsigned int x, unsigned int y, unsigned int longeur,
+Couleur couleur) {
 	(*ptcr)->set_line_width(1.0);
 	for(size_t i(0); i < longeur; ++i) {
 		for(size_t j(0); j<longeur; ++j) {
@@ -106,7 +110,8 @@ void Graphic::draw_carre_diagonale(unsigned int x, unsigned int y, unsigned int 
 	}	
 }
 	
-void Graphic::draw_carre_grille(unsigned int x, unsigned int y, unsigned int longeur, Couleur couleur) {
+void Graphic::draw_carre_grille(unsigned int x, unsigned int y, unsigned int longeur,
+Couleur couleur) {
 	(*ptcr)->set_line_width(1.0);
 	for(size_t i(0); i < longeur; ++i) {
 		for(size_t j(0); j<longeur; ++j) {

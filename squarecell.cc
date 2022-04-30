@@ -3,7 +3,6 @@
 //Maxime Luyet Membre 2: 25%
 
 #include <iostream>
-#include <vector>
 
 #include "squarecell.h"
 
@@ -80,6 +79,7 @@ bool test_validation_carre_no_bound(const Carre& carre) {
 	}
 	return false;
 }
+
 void initialise_carre_non_centre(const Carre& carre) {
 	for(size_t i(carre.point.y); i < carre.point.y + carre.longeur ; ++i) {
 		for(size_t j(carre.point.x); j < carre.point.x + carre.longeur; ++j) {

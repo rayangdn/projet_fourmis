@@ -2,16 +2,8 @@
 //Rayan Gauderon membre 1: 100%
 //Maxime Luyet membre 2: 0%
 
-#include <iostream>
-#include <vector>
-#include <gtkmm.h>
-#include <utility>
-
-
 #include "simulation.h"
 #include "gui.h"
-
-using namespace std;
 
 int main(int argc, char* argv[]) {
 	initialise_grid(g_max);

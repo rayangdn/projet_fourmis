@@ -2,13 +2,8 @@
 //Rayan Gauderon membre1: 40%
 //Maxime Luyet membre 2: 60%
 
-#include <cstdlib>
-#include <string>
 #include <iostream>
 #include <fstream>
-#include <sstream>
-#include <vector>
-#include <string>
 
 #include "food.h"
 

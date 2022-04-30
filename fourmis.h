@@ -1,8 +1,8 @@
 #ifndef FOURMI_H_INCLUDED
 #define FOURMI_H_INCLUDED
 
-#include <memory>
 #include <fstream>
+
 #include "constantes.h"
 #include "food.h"
 #include "squarecell.h"

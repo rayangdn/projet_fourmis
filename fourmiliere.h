@@ -1,14 +1,10 @@
 #ifndef FOURMILIERE_H_INCLUDED
 #define FOURMILIERE_H_INCLUDED
 
-#include <fstream>
-
 #include "fourmis.h"
 #include "squarecell.h"
 #include "food.h"
 #include "message.h"
-
-
 
 class Fourmiliere {
 public :

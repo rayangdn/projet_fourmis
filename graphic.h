@@ -1,8 +1,8 @@
 #ifndef GRAPHIC_H_INCLUDED
 #define GRAPHIC_H_INCLUDED
 
-#include <gtkmm/drawingarea.h>
-#include <vector>
+#include <gtkmm.h>
+
 constexpr short unsigned g_dim(7);
 const short unsigned g_max(pow(2, g_dim));
 
@@ -12,6 +12,7 @@ struct Couleur {
 	double blue;
 };
 typedef std::vector<Couleur> Ensemble_couleurs;
+
 class Graphic {
 	public :
 	Graphic() {};
@@ -24,8 +25,5 @@ class Graphic {
 	void draw_carre_diagonale(unsigned int, unsigned int, unsigned int, Couleur);
 	void draw_carre_grille(unsigned int, unsigned int, unsigned int, Couleur);
 };
-
-
-
 
 #endif

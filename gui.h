@@ -1,8 +1,6 @@
 #ifndef GUI_H_INCLUDED
 #define GUI_H_INCLUDED
 
-#include <gtkmm.h>
-#include <utility>
 #include "simulation.h"
 #include "graphic.h"
 
@@ -18,8 +16,9 @@ struct Distortion
 	int height;  
 	int width; 
 };
+
 class MyArea : public Gtk::DrawingArea {
-	public :
+public :
 	MyArea();
 	~MyArea();
 	void set_frame(Distortion); 
@@ -27,16 +26,12 @@ class MyArea : public Gtk::DrawingArea {
 	void clear();
 	void draw();
 	void refresh();
-	protected :
-	
+protected :
 	bool empty;
 	Distortion distortion;
-	
-	 
 	bool on_draw(const Cairo::RefPtr<Cairo::Context>& cr) override;
-  
-	
 };
+
 class MyEvent : public Gtk::Window {
 public:
 	MyEvent(Simulation *simulation);
@@ -50,9 +45,8 @@ private :
 	unsigned int val;
 	unsigned int nb_food;	
 	int indice_frmi; 
-	void maj_nbf(); 
+	void maj_nombre_food(); 
 	void maj_info_frmi(int indice);
-	
 protected:
 	void on_button_clicked_Exit();
 	void on_button_clicked_Open();
@@ -63,16 +57,16 @@ protected:
 	void on_button_clicked_Next();
 	bool on_key_press_event(GdkEventKey * key_event);
 	bool on_timeout();
-    
+	
 	Gtk::Box m_Box, m_Box_Left, m_Box_Right, m_Box_Top, m_Box1, m_Box2, m_Box3;
-  
+	
 	Gtk::Frame m_Frame_General;
 	Gtk::Frame m_Frame_Info;
 	Gtk::Frame m_Frame_AnthillInfo;
-  
+	
 	Gtk::Label m_Label_Info;
-	Gtk::Label m_Label_Frmi;				
-  
+	Gtk::Label m_Label_Frmi;		
+			
 	Gtk::Button m_Button_Exit;
 	Gtk::Button m_Button_Open;
 	Gtk::Button m_Button_Save;

@@ -1,7 +1,6 @@
 #ifndef FOOD_H_INCLUDED
 #define FOOD_H_INCLUDED
 
-#include <fstream>
 #include "constantes.h"
 #include "squarecell.h"
 #include "message.h"

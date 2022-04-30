@@ -1,13 +1,8 @@
-#include <cstdlib>
-#include <string>
-#include <iostream>
-#include <fstream>
-#include <sstream>
-#include <vector>
-#include <string>
-#include <cairomm/context.h>
-#include <utility>
+//gui.cc
+//Rayan Gauderon membre 1: 50%
+//Maxime Luyet membre 2: 50%
 
+#include <iostream>
 
 #include "gui.h"
 
@@ -29,44 +24,43 @@ void MyArea::set_frame(Distortion d) {
 		distortion = d;
 	}
 	else
-		std::cout << "incorrect Model framing or window parameters" << std::endl;
+		cout << "incorrect Model framing or window parameters" << endl;
 } 
 
 void MyArea::adjust_frame() {
 	Gtk::Allocation allocation = get_allocation();
 	const int width = allocation.get_width();
 	const int height = allocation.get_height();
-	
 	distortion.width  = width;
 	distortion.height = height;
-	
     double new_aspect_ratio((double)width/height);
     if( new_aspect_ratio > default_distortion.asp) { 
 	    distortion.yMax = default_distortion.yMax ;
 	    distortion.yMin = default_distortion.yMin ;	
 	    double delta(default_distortion.xMax - default_distortion.xMin);
 	    double mid((default_distortion.xMax + default_distortion.xMin)/2);
-	    distortion.xMax = mid + 0.5*(new_aspect_ratio/default_distortion.asp)*delta ;
-	    distortion.xMin = mid - 0.5*(new_aspect_ratio/default_distortion.asp)*delta ;		  	  
+	    distortion.xMax = mid + 0.5*(new_aspect_ratio/default_distortion.asp)*delta;
+	    distortion.xMin = mid - 0.5*(new_aspect_ratio/default_distortion.asp)*delta;		  	  
     } else { 
 	    distortion.xMax = default_distortion.xMax ;
 	    distortion.xMin = default_distortion.xMin ;
  	    double delta(default_distortion.yMax - default_distortion.yMin);
 	    double mid((default_distortion.yMax + default_distortion.yMin)/2);
-	    distortion.yMax = mid + 0.5*(default_distortion.asp/new_aspect_ratio)*delta ;
-	    distortion.yMin = mid - 0.5*(default_distortion.asp/new_aspect_ratio)*delta ;		  	  
+	    distortion.yMax = mid + 0.5*(default_distortion.asp/new_aspect_ratio)*delta;
+	    distortion.yMin = mid - 0.5*(default_distortion.asp/new_aspect_ratio)*delta;		  	  
     }
 }
 
-static void orthographic_projection(const Cairo::RefPtr<Cairo::Context>& cr, Distortion distortion) {
+static void orthographic_projection(const Cairo::RefPtr<Cairo::Context>& cr, 
+Distortion distortion) {
 	cr->translate(distortion.width/2, distortion.height/2);
 	cr->scale(distortion.width/(distortion.xMax - distortion.xMin), 
-           -distortion.height/(distortion.yMax - distortion.yMin));
-	cr->translate(-(distortion.xMin + distortion.xMax)/2, -(distortion.yMin + distortion.yMax)/2);
-	cr->translate(-64, -64); //origine de notre grille
-
-
+         -distortion.height/(distortion.yMax - distortion.yMin));
+	cr->translate(-(distortion.xMin + distortion.xMax)/2,
+	     -(distortion.yMin + distortion.yMax)/2);
+	cr->translate(-64, -64);
 }
+
 void MyArea::clear() {
 	empty = true; 
 	refresh();
@@ -76,6 +70,7 @@ void MyArea::draw() {
 	empty = false;
 	refresh();
 }
+
 void MyArea::refresh() {
 	auto win = get_window();
 	if(win)
@@ -87,7 +82,6 @@ void MyArea::refresh() {
 	}
 }
 	
-
 bool MyArea::on_draw(const Cairo::RefPtr<Cairo::Context>& cr) {
 	adjust_frame();
 	orthographic_projection(cr, distortion);
@@ -101,7 +95,7 @@ bool MyArea::on_draw(const Cairo::RefPtr<Cairo::Context>& cr) {
 
 //=====================================================================================
 
-MyEvent::MyEvent(Simulation *simulation): 
+MyEvent::MyEvent(Simulation *simulation) : 
 	timer_added(false),
 	disconnect(false),
 	timeout_value(500),
@@ -114,13 +108,10 @@ MyEvent::MyEvent(Simulation *simulation):
 	m_Box1(Gtk::ORIENTATION_VERTICAL, 10),
 	m_Box2(Gtk::ORIENTATION_VERTICAL, 10),
 	m_Box3(Gtk::ORIENTATION_VERTICAL, 10),
-  
 	m_Frame_General("General"),
 	m_Frame_Info("Info"),
 	m_Frame_AnthillInfo("Anthill info"),
-  
 	m_Label_Frmi("None selected"),
-  
 	m_Button_Exit("exit"),
 	m_Button_Open("open"),
 	m_Button_Save("save"),
@@ -131,35 +122,30 @@ MyEvent::MyEvent(Simulation *simulation):
 {
 	simu = simulation;
 	set_title("Tchanz");
+	
 	add(m_Box);
 	m_Box.pack_start(m_Box_Left);
 	m_Box.pack_start(m_Box_Right);
-	
 	m_Box_Left.pack_start(m_Box_Top);
-	
 	m_area.set_size_request(taille_dessin, taille_dessin);
 	m_Box_Right.pack_start(m_area);
-  
 	m_Box_Top.pack_start(m_Frame_General, Gtk::PACK_EXPAND_WIDGET, 10);
- 
 	m_Box_Top.set_border_width(10);
+	
 	m_Frame_General.add(m_Box1);
-  
 	m_Box1.pack_start(m_Button_Exit);
 	m_Box1.pack_start(m_Button_Open);
 	m_Box1.pack_start(m_Button_Save);
 	m_Box1.pack_start(m_Button_Start);
 	m_Box1.pack_start(m_Button_Step);
-  
 	m_Box_Top.pack_start(m_Frame_Info, Gtk::PACK_EXPAND_WIDGET, 10);
+	
 	m_Frame_Info.add(m_Box2);
-  
 	m_Box2.pack_start(m_Label_Info);
-	maj_nbf();
-  
+	maj_nombre_food();
 	m_Box_Top.pack_start(m_Frame_AnthillInfo, Gtk::PACK_EXPAND_WIDGET, 10);
+	
 	m_Frame_AnthillInfo.add(m_Box3);
-  
 	m_Box3.pack_start(m_Button_Previous);
 	m_Box3.pack_start(m_Button_Next);
 	m_Box3.pack_start(m_Label_Frmi);
@@ -189,6 +175,7 @@ MyEvent::MyEvent(Simulation *simulation):
 	
 	show_all_children();
 }
+
 MyEvent::~MyEvent() {}
 
 void MyEvent::on_button_clicked_Exit() {
@@ -196,11 +183,10 @@ void MyEvent::on_button_clicked_Exit() {
 }
 
 void MyEvent::on_button_clicked_Open() {
-	(*simu).supprimer_structs();
 	m_area.clear();
 	indice_frmi = -1;
 	maj_info_frmi(indice_frmi);
-	val=1;
+	val = 1;
 	Gtk::FileChooserDialog dialog("Please choose a file",
     Gtk::FILE_CHOOSER_ACTION_OPEN);
 	dialog.set_transient_for(*this);
@@ -209,8 +195,9 @@ void MyEvent::on_button_clicked_Open() {
 	int result = dialog.run();
 	switch(result) {
 		case(Gtk::RESPONSE_OK): {
-			std::string filename = dialog.get_filename();
-			std::cout << "File selected: " <<  filename << std::endl;
+			(*simu).supprimer_structs();
+			string filename = dialog.get_filename();
+			cout << "File selected: " <<  filename << endl;
 			(*simu).lecture(filename);
 			m_area.draw();
 		}
@@ -223,34 +210,34 @@ void MyEvent::on_button_clicked_Open() {
 			break;
 		}
 	}
-	maj_nbf();
+	maj_nombre_food();
 }
 
 void MyEvent::on_button_clicked_Save() {
-	Gtk::FileChooserDialog dialog("Please choose a file",
-	Gtk::FILE_CHOOSER_ACTION_SAVE);
-	dialog.set_transient_for(*this);
-	dialog.add_button("_Cancel", Gtk::RESPONSE_CANCEL);
-	dialog.add_button("_Save", Gtk::RESPONSE_OK);
-	int result = dialog.run();
-	switch(result) {
-		case(Gtk::RESPONSE_OK): {
-			ofstream fichier(dialog.get_filename());
-			if(!(fichier.fail())) {
-				(*simu).ecriture_fichier(fichier);
+	if(not timer_added) {
+		Gtk::FileChooserDialog dialog("Please choose a file",
+		Gtk::FILE_CHOOSER_ACTION_SAVE);
+		dialog.set_transient_for(*this);
+		dialog.add_button("_Cancel", Gtk::RESPONSE_CANCEL);
+		dialog.add_button("_Save", Gtk::RESPONSE_OK);
+		int result = dialog.run();
+		switch(result) {
+			case(Gtk::RESPONSE_OK): {
+				ofstream fichier(dialog.get_filename());
+				if(!(fichier.fail())) {
+					(*simu).ecriture_fichier(fichier);
+				}
 			}
-		}
-			
-		case(Gtk::RESPONSE_CANCEL): {
-			break;
-		}
-		default: {
-			std::cout << "Unexpected button clicked." << std::endl;
-			break;
+			case(Gtk::RESPONSE_CANCEL): {
+				break;
+			}
+			default: {
+				std::cout << "Unexpected button clicked." << std::endl;
+				break;
+			}
 		}
 	}
 }
-
 
 void MyEvent::on_button_clicked_Start() {
 	if(not timer_added) {	  
@@ -325,7 +312,7 @@ void MyEvent::maj_info_frmi(int indice) {
 	}
 }
 
-void MyEvent::maj_nbf() {
+void MyEvent::maj_nombre_food() {
 	unsigned int nb_food((*simu).get_nb_food());
 	stringstream food;
 	string nbr;
