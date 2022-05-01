@@ -20,8 +20,6 @@ public :
 	void supprimer_fourmis();
 	void draw_fourmiliere(Graphic, unsigned int);
 	void ecriture_fourmiliere(std::ofstream&) const;
-
-	
 private :
 	Carre carre; 
 	unsigned int nbC, nbD, nbP;

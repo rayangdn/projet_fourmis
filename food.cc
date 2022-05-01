@@ -32,18 +32,18 @@ void Food::ecriture_food(ofstream& fichier) const {
 }
 
 bool decodage_line_food(string line, Ensemble_food& ensemble_food) {
-		istringstream data(line);
-		unsigned int x, y;
-		data >> x >> y;
-		Carre carre{1, {x, y}};
-		Food food(carre, val_food);
-		if(test_validation_carre_no_bound(carre)) {
-			return true;
-		}
-		if(food.superposition_food()) {
-			return true;
-		}
-		food.initialise_food_on_grid();
-		ensemble_food.push_back(food);
-		return false;
+	istringstream data(line);
+	unsigned int x, y;
+	data >> x >> y;
+	Carre carre{1, {x, y}};
+	Food food(carre, val_food);
+	if(test_validation_carre_no_bound(carre)) {
+		return true;
+	}
+	if(food.superposition_food()) {
+		return true;
+	}
+	food.initialise_food_on_grid();
+	ensemble_food.push_back(food);
+	return false;
 }
