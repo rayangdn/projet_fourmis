@@ -281,7 +281,7 @@ void MyEvent::on_button_clicked_Previous() {
 
 void MyEvent::on_button_clicked_Next() {	
 	indice_frmi = indice_frmi + 1;
-	if(indice_frmi >= (*simu).get_nb_fourmiliere()){
+	if(indice_frmi >= (int)(*simu).get_nb_fourmiliere()){
 		indice_frmi = -1;
 	}
 	maj_info_frmi(indice_frmi);
