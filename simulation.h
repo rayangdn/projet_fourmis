@@ -15,7 +15,7 @@ public :
 	void lecture(std::string);
 	bool decodage_line(std::string&);
 	void supprimer_structs();
-	void draw_simulation(Graphic);
+	void draw_simulation();
 	void ecriture_fichier(std::ofstream&) const;
 private :
 	Ensemble_food ensemble_food;

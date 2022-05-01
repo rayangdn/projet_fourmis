@@ -57,10 +57,11 @@ void Fourmiliere::supprimer_fourmis() {
 	}
 }
 
-void Fourmiliere::draw_fourmiliere(Graphic graphic,unsigned int couleur) {
-	draw_carre_vide(carre, graphic, couleur);
+void Fourmiliere::draw_fourmiliere(unsigned int couleur) {
+	unsigned int style(VIDE);
+	draw_carre(carre, style, couleur);
 	for(const auto& fourmi : ensemble_fourmis) {
-		fourmi->draw_fourmis(graphic, couleur);
+		fourmi->draw_fourmis(couleur);
 	}
 }
 

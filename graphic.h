@@ -6,8 +6,9 @@
 constexpr short unsigned g_dim(7);
 const short unsigned g_max(pow(2, g_dim));
 
-enum Couleur{RIEN, ROUGE, GREEN, BLUE, YELLOW, MAGENTA, CYAN}; 
+enum Couleur{WHITE, ROUGE, GREEN, BLUE, YELLOW, MAGENTA, CYAN}; 
 
+enum Style{VIDE, LOSANGE, UNIFORME, DIAGONALE, GRILLE};
 class Graphic {
 	public :
 	Graphic() {};
@@ -17,7 +18,7 @@ class Graphic {
 	void initialise_couleur_bis(unsigned int, double&, double&, double&);
 	void draw_grille();
 	void draw_carre_vide(unsigned int, unsigned int, unsigned int, unsigned int);
-	void draw_carre_losange(unsigned int, unsigned int,  unsigned int);
+	void draw_carre_losange(unsigned int, unsigned int,  unsigned int, unsigned int);
 	void draw_carre_uniforme(unsigned int, unsigned int, unsigned int, unsigned int);
 	void draw_carre_diagonale(unsigned int, unsigned int, unsigned int, unsigned int);
 	void draw_carre_grille(unsigned int, unsigned int, unsigned int, unsigned int);

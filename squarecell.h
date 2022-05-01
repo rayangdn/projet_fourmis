@@ -42,15 +42,7 @@ bool test_superposition_avec_coord(const Carre&, unsigned int&, unsigned int&);
 
 bool test_superposition_sans_coord(const Carre&);
 
-void draw_carre_losange(const Carre&, Graphic);
-
-void draw_carre_vide(const Carre&, Graphic, unsigned int);
-
-void draw_carre_uniforme(const Carre&, Graphic, unsigned int);
-
-void draw_carre_diagonale(const Carre&, Graphic, unsigned int);
-
-void draw_carre_grille(const Carre&, Graphic, unsigned int);
+void draw_carre(const Carre&, unsigned int, unsigned int);
 
 #endif
 

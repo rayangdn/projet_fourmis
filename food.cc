@@ -23,8 +23,10 @@ bool Food::superposition_food() {
 	return false;
 }
 
-void Food::draw_food(Graphic graphic) {
-	draw_carre_losange(carre, graphic);
+void Food::draw_food() {
+	unsigned int style(LOSANGE);
+	unsigned int couleur(WHITE);
+	draw_carre(carre, style,  couleur);
 }
 
 void Food::ecriture_food(ofstream& fichier) const {

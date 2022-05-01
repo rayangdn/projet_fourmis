@@ -114,15 +114,14 @@ void Simulation::ecriture_fichier(ofstream& fichier) const {
 	}
 }
 
-void Simulation::draw_simulation(Graphic graphic) {
-	graphic.draw_grille();
+void Simulation::draw_simulation() {
 	for(auto& food : ensemble_food) {
-		food.draw_food(graphic);
+		food.draw_food(); 
 	}
 	unsigned int i(0);
 	for(auto& fourmiliere : ensemble_fourmilieres) {
 		++i;
-		fourmiliere.draw_fourmiliere(graphic, i);
+		fourmiliere.draw_fourmiliere(i);
 		if( i==6) { //refaire la boucle de couleur
 			i=0;
 		}

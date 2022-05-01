@@ -18,7 +18,7 @@ public :
 	void ajouter_fourmis(Fourmi*);
 	bool test_fourmis(unsigned int, unsigned int);
 	void supprimer_fourmis();
-	void draw_fourmiliere(Graphic, unsigned int);
+	void draw_fourmiliere(unsigned int);
 	void ecriture_fourmiliere(std::ofstream&) const;
 private :
 	Carre carre; 

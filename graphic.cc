@@ -16,6 +16,9 @@ void Graphic::set_context(const Cairo::RefPtr<Cairo::Context>& cr) {
 
 void Graphic::initialise_couleur(unsigned int c, double& r, double& g,
 double& b) {
+	if(c== WHITE) {
+		r = 1.0; g = 1.0; b = 1.0;
+	}
 	if(c == ROUGE) {
 		r = 1.0; g = 0.0, b = 0.0;
 	}
@@ -59,6 +62,8 @@ double& b) {
 }
 
 void Graphic::draw_grille() {
+	(*ptcr)->set_source_rgb(0.0, 0.0, 0.0);
+	(*ptcr)->paint();
 	(*ptcr)->set_line_width(1.0);
 	(*ptcr)->set_source_rgb(0.0, 0.0, 0.0);
 	(*ptcr)->move_to(0.0,0.0);
@@ -106,9 +111,12 @@ unsigned int c) {
 	(*ptcr)->stroke();
 }
 
-void Graphic::draw_carre_losange(unsigned int x, unsigned int y, unsigned int longeur) {
+void Graphic::draw_carre_losange(unsigned int x, unsigned int y, unsigned int longeur,
+unsigned int c) {
+	double r, g, b;
+	initialise_couleur(c, r, g, b);
 	(*ptcr)->set_line_width(0.1);
-	(*ptcr)->set_source_rgb(1.0, 1.0, 1.0);
+	(*ptcr)->set_source_rgb(r, g, b);
 	(*ptcr)->move_to(x-0.4, y);
 	(*ptcr)->line_to(x, y+0.4);
 	(*ptcr)->line_to(x+0.4,y);

@@ -83,12 +83,14 @@ void MyArea::refresh() {
 }
 	
 bool MyArea::on_draw(const Cairo::RefPtr<Cairo::Context>& cr) {
+	
 	adjust_frame();
 	orthographic_projection(cr, distortion);
-	if(not empty) {
 	Graphic graphic;
 	graphic.set_context(cr);
-	(*simu).draw_simulation(graphic);
+	if(not empty) {
+	graphic.draw_grille();
+	(*simu).draw_simulation();
 	}
 	return true;
 }

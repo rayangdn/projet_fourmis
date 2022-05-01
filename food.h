@@ -11,7 +11,7 @@ public :
 	~Food() {};
 	void initialise_food_on_grid();
 	bool superposition_food();
-	void draw_food(Graphic);
+	void draw_food();
 	void ecriture_food(std::ofstream&) const;
 private :
 	Carre carre;
