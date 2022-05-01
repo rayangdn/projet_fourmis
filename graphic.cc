@@ -58,7 +58,6 @@ double& b) {
 	}
 }
 
-
 void Graphic::draw_grille() {
 	(*ptcr)->set_line_width(1.0);
 	(*ptcr)->set_source_rgb(0.0, 0.0, 0.0);
