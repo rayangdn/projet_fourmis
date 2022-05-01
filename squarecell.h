@@ -44,13 +44,13 @@ bool test_superposition_sans_coord(const Carre&);
 
 void draw_carre_losange(const Carre&, Graphic);
 
-void draw_carre_vide(const Carre&, Graphic, Couleur);
+void draw_carre_vide(const Carre&, Graphic, unsigned int);
 
-void draw_carre_uniforme(const Carre&, Graphic, Couleur);
+void draw_carre_uniforme(const Carre&, Graphic, unsigned int);
 
-void draw_carre_diagonale(const Carre&, Graphic, Couleur);
+void draw_carre_diagonale(const Carre&, Graphic, unsigned int);
 
-void draw_carre_grille(const Carre&, Graphic, Couleur);
+void draw_carre_grille(const Carre&, Graphic, unsigned int);
 
 #endif
 

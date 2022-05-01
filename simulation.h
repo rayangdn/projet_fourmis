@@ -16,12 +16,10 @@ public :
 	bool decodage_line(std::string&);
 	void supprimer_structs();
 	void draw_simulation(Graphic);
-	void initialise_ensemble_couleurs();
 	void ecriture_fichier(std::ofstream&) const;
 private :
 	Ensemble_food ensemble_food;
 	Ensemble_fourmilieres ensemble_fourmilieres;
-	Ensemble_couleurs ensemble_couleurs;
 };
 
 #endif

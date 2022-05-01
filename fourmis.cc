@@ -36,6 +36,11 @@ bool Fourmi::fourmis_in_house(const Carre& carre_fourmiliere) {
 	return false;
 }
 
+void Fourmi::ecriture_frmi(ofstream& fichier) const {
+	fichier << "\t" << to_string(carre.point.x) << " " << to_string(carre.point.y)
+	<< "\n";
+}
+
 unsigned int Generator::get_total_food() const {
 	return total_food;
 }
@@ -72,7 +77,7 @@ bool Generator::fourmis_in_house_G(unsigned int countF, const Carre& carre_fourm
 	return false;
 }
 
-void Generator::draw_fourmis(Graphic graphic, Couleur couleur) {
+void Generator::draw_fourmis(Graphic graphic, unsigned int couleur) {
 	draw_carre_uniforme(carre, graphic, couleur);
 }
 
@@ -115,7 +120,7 @@ bool Collector::superposition_fourmi_C() {
 	return false;
 }
 
-void Collector::draw_fourmis(Graphic graphic, Couleur couleur) {
+void Collector::draw_fourmis(Graphic graphic,unsigned int couleur) {
 	draw_carre_diagonale(carre, graphic, couleur);
 	if(have_food) {
 		Carre carre_food{1, {carre.point.x, carre.point.y}};
@@ -174,15 +179,10 @@ bool Defensor::fourmis_in_house_D(unsigned int countF, const Carre& carre_fourmi
 	return false;
 }
 
-void Defensor::draw_fourmis(Graphic graphic, Couleur couleur) {
+void Defensor::draw_fourmis(Graphic graphic, unsigned int  couleur) {
 	draw_carre_grille(carre, graphic, couleur);
 }
 
-void Defensor::ecriture_frmi(ofstream& fichier) const {
-	fichier << "\t" << to_string(carre.point.x) << " " << to_string(carre.point.y) << 
-	" " << to_string(age) << "\n";
-}
-	
 void Predator::initialise_predat(const Carre& autre_carre, unsigned int autre_age) {
 	carre.longeur = autre_carre.longeur;
 	carre.point.x = autre_carre.point.x;
@@ -209,13 +209,8 @@ bool Predator::superposition_fourmi_P() {
 	return false;
 }
 
-void Predator::draw_fourmis(Graphic graphic, Couleur couleur) {
+void Predator::draw_fourmis(Graphic graphic, unsigned int couleur) {
 	draw_carre_uniforme(carre, graphic, couleur);
-}
-
-void Predator::ecriture_frmi(ofstream& fichier) const {
-	fichier << "\t" << to_string(carre.point.x) << " " << to_string(carre.point.y) << 
-	" " << to_string(age) << "\n";
 }
 
 void decodage_line_fourmis(string line, unsigned int etat, Collector& collector,

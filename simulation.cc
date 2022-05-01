@@ -115,34 +115,21 @@ void Simulation::ecriture_fichier(ofstream& fichier) const {
 }
 
 void Simulation::draw_simulation(Graphic graphic) {
-	initialise_ensemble_couleurs();
 	graphic.draw_grille();
 	for(auto& food : ensemble_food) {
 		food.draw_food(graphic);
 	}
 	unsigned int i(0);
 	for(auto& fourmiliere : ensemble_fourmilieres) {
-		fourmiliere.draw_fourmiliere(graphic, ensemble_couleurs[i]);
 		++i;
+		fourmiliere.draw_fourmiliere(graphic, i);
 		if( i==6) { //refaire la boucle de couleur
 			i=0;
 		}
+		
 	}
 }
 
-void Simulation::initialise_ensemble_couleurs() {
-	Couleur rouge{1.0, 0.0, 0.0};
-	Couleur green{0.0, 1.0, 0.0};
-	Couleur blue{0.0, 0.0, 1.0};
-	Couleur jaune{1.0, 1.0, 0.0};
-	Couleur magenta{1.0, 0.0, 1.0};
-	Couleur cyan{0.0, 1.0, 1.0};
-	ensemble_couleurs.push_back(rouge); 
-	ensemble_couleurs.push_back(green); 
-	ensemble_couleurs.push_back(blue); 
-	ensemble_couleurs.push_back(jaune); 
-	ensemble_couleurs.push_back(magenta); 
-	ensemble_couleurs.push_back(cyan); 
-}
+	
 
 
