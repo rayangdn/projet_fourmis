@@ -3,14 +3,10 @@
 //Maxime Luyet membre 2: 70%
 
 #include <iostream>
-#include <random>
 
 #include "simulation.h"
 
 using namespace std;
-
-const int MIN_FOOD = 1;
-const int MAX_FOOD = g_max-2;
 
 unsigned int Simulation::get_nb_food() const {
 	return ensemble_food.size();
@@ -133,28 +129,6 @@ void Simulation::draw_simulation() {
 	}
 }
 
-void Simulation::refresh() {
-	create_food();
-}
-
-void Simulation::create_food() {
-	Point point;
-	Carre carre{1, point};
-	random_food(carre);
-	Food food(carre, val_food);
-	ensemble_food.push_back(food);
-	//food.draw_food();
-	
-	
-}
-void Simulation::random_food(Carre& carre) {
-	random_device rd;
-    default_random_engine eng(rd());
-    uniform_int_distribution<int> distr(MIN_FOOD, MAX_FOOD);
-    carre.point.x = distr(eng);
-    carre.point.y = distr(eng);
-    cout << carre.point.x << " " << carre.point.y << endl;
-}
 	
 
 

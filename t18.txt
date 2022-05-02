@@ -16,7 +16,7 @@
 
 
 5 # nb anthill
-	100 100 20 110 110 99 3 4 1 # anthill #1
+	100 100 20 110 110 3 3 4 1 # anthill #1
 	
 	# collectors:
 	50 50 3 true

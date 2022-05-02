@@ -268,7 +268,6 @@ void MyEvent::on_button_clicked_Step() {
 	if(not timer_added) {												
 		cout << val << endl;												
 		++val; 
-		(*simu).refresh();
 		m_area.refresh();
 	}
 }

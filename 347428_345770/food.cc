@@ -23,14 +23,14 @@ bool Food::superposition_food() {
 	return false;
 }
 
-void Food::ecriture_food(ofstream& fichier) const {
-	fichier << to_string(carre.point.x) << " " << to_string(carre.point.y) << "\n";
-}
-
 void Food::draw_food() {
 	unsigned int style(LOSANGE);
 	unsigned int couleur(WHITE);
 	draw_carre(carre, style,  couleur);
+}
+
+void Food::ecriture_food(ofstream& fichier) const {
+	fichier << to_string(carre.point.x) << " " << to_string(carre.point.y) << "\n";
 }
 
 bool decodage_line_food(string line, Ensemble_food& ensemble_food) {

@@ -15,11 +15,8 @@ public :
 	void lecture(std::string);
 	bool decodage_line(std::string&);
 	void supprimer_structs();
-	void ecriture_fichier(std::ofstream&) const;
 	void draw_simulation();
-	void refresh();
-	void create_food();
-	void random_food(Carre&);
+	void ecriture_fichier(std::ofstream&) const;
 private :
 	Ensemble_food ensemble_food;
 	Ensemble_fourmilieres ensemble_fourmilieres;

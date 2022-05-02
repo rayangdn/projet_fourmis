@@ -6,7 +6,8 @@
 
 constexpr unsigned taille_dessin(500);
 
-struct Distortion  {
+struct Distortion 
+{
 	double xMin; 
 	double xMax;
 	double yMin;
