@@ -36,7 +36,7 @@ unsigned int countF, unsigned int i) {
 	}
 	return false;
 }
-	
+
 void Fourmiliere::ajouter_fourmis(Fourmi* nouveau) {
 	if(nouveau!= nullptr) {
 		ensemble_fourmis.push_back(unique_ptr<Fourmi>(nouveau));

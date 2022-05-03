@@ -157,23 +157,22 @@ bool test_superposition_sans_coord(const Carre& carre) {
 
 void draw_carre(const Carre& carre, unsigned int style,
 unsigned int couleur) {
-	Graphic graphic;
 	if(style==VIDE) {
-		graphic.draw_carre_vide(carre.point.x, carre.point.y, carre.longeur, couleur);
+		graphic_draw_carre_vide(carre.point.x, carre.point.y, carre.longeur, couleur);
 	}
 	if(style==LOSANGE) {
-		graphic.draw_carre_losange(carre.point.x, carre.point.y, carre.longeur, couleur);
+		graphic_draw_carre_losange(carre.point.x, carre.point.y, carre.longeur, couleur);
 	}
 	if(style==UNIFORME) {
-		graphic.draw_carre_uniforme(carre.point.x-carre.longeur/2,
-	carre.point.y-carre.longeur/2, carre.longeur, couleur);
+		graphic_draw_carre_uniforme(carre.point.x-carre.longeur/2,
+			carre.point.y-carre.longeur/2, carre.longeur, couleur);
 	}
 	if(style==DIAGONALE) {
-		graphic.draw_carre_diagonale(carre.point.x-carre.longeur/2,
-	carre.point.y-carre.longeur/2, carre.longeur, couleur);
+		graphic_draw_carre_diagonale(carre.point.x-carre.longeur/2,
+			carre.point.y-carre.longeur/2, carre.longeur, couleur);
 	}
 	if(style==GRILLE) {
-		graphic.draw_carre_grille(carre.point.x-carre.longeur/2,
-	carre.point.y-carre.longeur/2, carre.longeur, couleur);
+		graphic_draw_carre_grille(carre.point.x-carre.longeur/2,
+			carre.point.y-carre.longeur/2, carre.longeur, couleur);
 	}
 }

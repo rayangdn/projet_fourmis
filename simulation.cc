@@ -117,7 +117,17 @@ void Simulation::ecriture_fichier(ofstream& fichier) const {
 		ensemble_fourmilieres[i].ecriture_fourmiliere(fichier);
 	}
 }
-
+bool Simulation::superposition_food_with_all(const Carre& carre_food) {
+	if(test_superposition_sans_coord(carre_food)) {
+		return true;
+	}
+	for(size_t i(0); i < ensemble_fourmilieres.size(); ++i) {
+		if(test_superposition_2_carres(ensemble_fourmilieres[i].carre, carre_food)) {
+			return true;
+		}
+	}
+	return false;
+}
 void Simulation::draw_simulation() {
 	for(auto& food : ensemble_food) {
 		food.draw_food(); 
@@ -138,22 +148,34 @@ void Simulation::refresh() {
 }
 
 void Simulation::create_food() {
-	Point point;
-	Carre carre{1, point};
-	random_food(carre);
-	Food food(carre, val_food);
-	ensemble_food.push_back(food);
-	//food.draw_food();
-	
-	
+	random_device rd;
+	double p(food_rate);
+	bernoulli_distribution b(p);
+	default_random_engine eng(rd());
+	if(b(eng)) {
+		unsigned int i(0);
+		while( i < max_food_trial) {
+			Point point_food;
+			Carre carre_food{1, point_food};
+			random_food(carre_food);
+			Food food(carre_food, val_food);
+			if(superposition_food_with_all(carre_food)) {
+				++i;
+			} else {
+				food.draw_food();
+				initialise_carre_centre(carre_food);
+				ensemble_food.push_back(food);
+				return;
+			}
+		}
+	}
 }
 void Simulation::random_food(Carre& carre) {
 	random_device rd;
-    default_random_engine eng(rd());
     uniform_int_distribution<int> distr(MIN_FOOD, MAX_FOOD);
+    default_random_engine eng(rd());
     carre.point.x = distr(eng);
     carre.point.y = distr(eng);
-    cout << carre.point.x << " " << carre.point.y << endl;
 }
 	
 

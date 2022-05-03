@@ -10,11 +10,11 @@ using namespace std;
 
 static const Cairo::RefPtr<Cairo::Context>* ptcr(nullptr);
 
-void Graphic::set_context(const Cairo::RefPtr<Cairo::Context>& cr) {
+void graphic_set_context(const Cairo::RefPtr<Cairo::Context>& cr) {
 	ptcr = &cr;
 }
 
-void Graphic::initialise_couleur(unsigned int c, double& r, double& g,
+void initialise_couleur(unsigned int c, double& r, double& g,
 double& b) {
 	if(c== WHITE) {
 		r = 1.0; g = 1.0; b = 1.0;
@@ -39,7 +39,7 @@ double& b) {
 	}
 }
 
-void Graphic::initialise_couleur_bis(unsigned int c, double& r, double& g,
+void initialise_couleur_bis(unsigned int c, double& r, double& g,
 double& b) {
 	if(c == ROUGE) {
 		r = 1.0; g = 0.5, b = 0.5;
@@ -61,7 +61,7 @@ double& b) {
 	}
 }
 
-void Graphic::draw_grille() {
+void graphic_draw_grille() {
 	(*ptcr)->set_source_rgb(0.0, 0.0, 0.0);
 	(*ptcr)->paint();
 	(*ptcr)->set_line_width(1.0);
@@ -97,7 +97,7 @@ void Graphic::draw_grille() {
 	}
 }
 
-void Graphic::draw_carre_vide(unsigned int x, unsigned int y, unsigned int longeur,
+void graphic_draw_carre_vide(unsigned int x, unsigned int y, unsigned int longeur,
 unsigned int c) {
 	double r, g, b;
 	initialise_couleur(c, r, g, b);
@@ -111,11 +111,11 @@ unsigned int c) {
 	(*ptcr)->stroke();
 }
 
-void Graphic::draw_carre_losange(unsigned int x, unsigned int y, unsigned int longeur,
+void graphic_draw_carre_losange(unsigned int x, unsigned int y, unsigned int longeur,
 unsigned int c) {
 	double r, g, b;
 	initialise_couleur(c, r, g, b);
-	(*ptcr)->set_line_width(0.1);
+	(*ptcr)->set_line_width(0.1); //probleme avec random prends pas le ptcr
 	(*ptcr)->set_source_rgb(r, g, b);
 	(*ptcr)->move_to(x-0.4, y);
 	(*ptcr)->line_to(x, y+0.4);
@@ -126,7 +126,7 @@ unsigned int c) {
 	(*ptcr)->stroke();
 }
 
-void Graphic::draw_carre_uniforme(unsigned int x, unsigned int y, unsigned int longeur, 
+void graphic_draw_carre_uniforme(unsigned int x, unsigned int y, unsigned int longeur, 
 unsigned int c) {
 	double r, g, b;
 	initialise_couleur(c, r, g, b);
@@ -141,7 +141,7 @@ unsigned int c) {
 	(*ptcr)->stroke();
 }
 	
-void Graphic::draw_carre_diagonale(unsigned int x, unsigned int y, unsigned int longeur,
+void graphic_draw_carre_diagonale(unsigned int x, unsigned int y, unsigned int longeur,
 unsigned int c) {
 	double r, g ,b;
 	double r_bis, g_bis, b_bis; 
@@ -161,7 +161,6 @@ unsigned int c) {
 				(*ptcr)->line_to(x+i+0.5, y+j);
 				(*ptcr)->stroke();
 			} else {
-				
 				(*ptcr)->set_source_rgb(r_bis, g_bis, b_bis);
 				(*ptcr)->move_to(x+i-0.5,y+j);
 				(*ptcr)->line_to(x+i+0.5, y+j);
@@ -171,7 +170,7 @@ unsigned int c) {
 	}	
 }
 	
-void Graphic::draw_carre_grille(unsigned int x, unsigned int y, unsigned int longeur,
+void graphic_draw_carre_grille(unsigned int x, unsigned int y, unsigned int longeur,
 unsigned int c) {
 	double r, g ,b;
 	double r_bis, g_bis, b_bis; 

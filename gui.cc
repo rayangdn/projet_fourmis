@@ -11,7 +11,7 @@ using namespace std;
 static Simulation *simu;
 static Distortion default_distortion = {-70, 70, -70, 70, 1, 140, 140};
 
-MyArea::MyArea() : empty(false) {
+MyArea::MyArea() : empty(false), simu_refresh(false) {
 	set_frame(default_distortion);
 }
 
@@ -72,12 +72,12 @@ void MyArea::draw() {
 }
 
 void MyArea::refresh() {
+	simu_refresh = true;
 	auto win = get_window();
-	if(win)
-	{
-		Gdk::Rectangle r(0,0, get_allocation().get_width(), 
-						      get_allocation().get_height());
-								
+	if(win) {
+		Gdk::Rectangle r(0,0,
+		get_allocation().get_width(),
+		get_allocation().get_height());
 		win->invalidate_rect(r,false);
 	}
 }
@@ -85,12 +85,15 @@ void MyArea::refresh() {
 bool MyArea::on_draw(const Cairo::RefPtr<Cairo::Context>& cr) {
 	adjust_frame();
 	orthographic_projection(cr, distortion);
-	Graphic graphic;
-	graphic.set_context(cr);
+	graphic_set_context(cr);
 	if(not empty) {
-	graphic.draw_grille();
-	(*simu).draw_simulation();
+		graphic_draw_grille();
+		(*simu).draw_simulation();
 	}
+	if(simu_refresh) {
+		(*simu).refresh();
+	}
+		
 	return true;
 }
 
@@ -99,7 +102,7 @@ bool MyArea::on_draw(const Cairo::RefPtr<Cairo::Context>& cr) {
 MyEvent::MyEvent(Simulation *simulation) : 
 	timer_added(false),
 	disconnect(false),
-	timeout_value(500),
+	timeout_value(50),
 	val(1),
 	indice_frmi(-1),  // valeur avant l'indice de la premiere fourmiliere qui est 0
 	m_Box(Gtk::ORIENTATION_HORIZONTAL,10),
@@ -261,6 +264,7 @@ bool MyEvent::on_timeout() {
 	cout << val << endl;
 	++val;
 	m_area.refresh();
+	
 	return true; 
 }
 
@@ -268,7 +272,6 @@ void MyEvent::on_button_clicked_Step() {
 	if(not timer_added) {												
 		cout << val << endl;												
 		++val; 
-		(*simu).refresh();
 		m_area.refresh();
 	}
 }

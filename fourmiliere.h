@@ -20,8 +20,9 @@ public :
 	void supprimer_fourmis();
 	void draw_fourmiliere(unsigned int);
 	void ecriture_fourmiliere(std::ofstream&) const;
+	Carre carre;
 private :
-	Carre carre; 
+	 
 	unsigned int nbC, nbD, nbP;
 	Ensemble_fourmis ensemble_fourmis;
 };

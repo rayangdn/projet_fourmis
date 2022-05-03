@@ -23,6 +23,7 @@ public :
 private :
 	Ensemble_food ensemble_food;
 	Ensemble_fourmilieres ensemble_fourmilieres;
+	bool superposition_food_with_all(const Carre&);
 };
 
 #endif
