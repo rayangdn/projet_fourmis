@@ -36,7 +36,7 @@ bool test_validation_carre_non_centre(const Carre& carre) {
 		return true;
 	}
 	if (carre.point.y + carre.longeur > grid.size()) {
-		cout << error_squarecell::print_outside(carre.point.x, carre.longeur,
+		cout << error_squarecell::print_outside(carre.point.y, carre.longeur,
 		grid.size()-1);
 		return true;
 	}
@@ -58,7 +58,7 @@ bool test_validation_carre_centre(const Carre& carre) {
 		return true;
 	}
 	if (carre.point.y + (carre.longeur/2) > grid.size()) {
-		cout << error_squarecell::print_outside(carre.point.x, carre.longeur,
+		cout << error_squarecell::print_outside(carre.point.y, carre.longeur,
 		grid.size()-1);
 		return true;
 	}
@@ -98,7 +98,7 @@ void initialise_carre_centre(const Carre& carre) {
 	}
 }
 
-void supprime_carre_non_centre(const Carre& carre) {
+void supprimer_carre_non_centre(const Carre& carre) {
 	for(size_t i(carre.point.y); i < carre.point.y + carre.longeur; ++i) {
 		for(size_t j(carre.point.x); j < carre.point.x + carre.longeur; ++j) {
 			grid[grid.size()-1-i][j] = false;
@@ -106,12 +106,12 @@ void supprime_carre_non_centre(const Carre& carre) {
 	} 
 }
 
-void supprime_carre_centre(const Carre& carre) {
+void supprimer_carre_centre(const Carre& carre) {
 	for(size_t i(carre.point.y-carre.longeur/2);
 	    i < carre.point.y + (carre.longeur/2+1); ++i) {
 		for(size_t j(carre.point.x-carre.longeur/2);
 		    j < carre.point.x + (carre.longeur/2+1); ++j) {
-			grid[grid.size()-1-i][j] = true;
+			grid[grid.size()-1-i][j] = false;
 		}
 	}
 }
@@ -176,3 +176,5 @@ unsigned int couleur) {
 			carre.point.y-carre.longeur/2, carre.longeur, couleur);
 	}
 }
+
+

@@ -19,7 +19,6 @@ public :
 	void draw_simulation();
 	void refresh();
 	void create_food();
-	void random_food(Carre&);
 private :
 	Ensemble_food ensemble_food;
 	Ensemble_fourmilieres ensemble_fourmilieres;

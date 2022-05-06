@@ -3,6 +3,7 @@
 //Maxime Luyet membre 2: 50%
 
 #include <iostream>
+#include <iomanip>
 
 #include "gui.h"
 
@@ -11,7 +12,7 @@ using namespace std;
 static Simulation *simu;
 static Distortion default_distortion = {-70, 70, -70, 70, 1, 140, 140};
 
-MyArea::MyArea() : empty(false), simu_refresh(false) {
+MyArea::MyArea() : empty(false) {
 	set_frame(default_distortion);
 }
 
@@ -63,16 +64,14 @@ Distortion distortion) {
 
 void MyArea::clear() {
 	empty = true; 
-	refresh();
 }
 
 void MyArea::draw() {
 	empty = false;
-	refresh();
 }
 
 void MyArea::refresh() {
-	simu_refresh = true;
+	(*simu).refresh();
 	auto win = get_window();
 	if(win) {
 		Gdk::Rectangle r(0,0,
@@ -81,19 +80,15 @@ void MyArea::refresh() {
 		win->invalidate_rect(r,false);
 	}
 }
-	
+
 bool MyArea::on_draw(const Cairo::RefPtr<Cairo::Context>& cr) {
 	adjust_frame();
 	orthographic_projection(cr, distortion);
 	graphic_set_context(cr);
+	graphic_draw_grille();
 	if(not empty) {
-		graphic_draw_grille();
 		(*simu).draw_simulation();
 	}
-	if(simu_refresh) {
-		(*simu).refresh();
-	}
-		
 	return true;
 }
 
@@ -102,7 +97,7 @@ bool MyArea::on_draw(const Cairo::RefPtr<Cairo::Context>& cr) {
 MyEvent::MyEvent(Simulation *simulation) : 
 	timer_added(false),
 	disconnect(false),
-	timeout_value(50),
+	timeout_value(500),
 	val(1),
 	indice_frmi(-1),  // valeur avant l'indice de la premiere fourmiliere qui est 0
 	m_Box(Gtk::ORIENTATION_HORIZONTAL,10),
@@ -153,7 +148,6 @@ MyEvent::MyEvent(Simulation *simulation) :
 	m_Box3.pack_start(m_Button_Previous);
 	m_Box3.pack_start(m_Button_Next);
 	m_Box3.pack_start(m_Label_Frmi);
-  
 	m_Button_Exit.signal_clicked().connect(sigc::mem_fun(*this,
               &MyEvent::on_button_clicked_Exit) );
 
@@ -261,30 +255,35 @@ bool MyEvent::on_timeout() {
 		disconnect = false; 
 		return false;
 	}
+	m_area.refresh();
+	maj_nombre_food();
+	maj_info_frmi(indice_frmi);
 	cout << val << endl;
 	++val;
-	m_area.refresh();
 	
 	return true; 
 }
 
 void MyEvent::on_button_clicked_Step() {
-	if(not timer_added) {												
+	if(not timer_added) {	
+		m_area.refresh();		
+		maj_nombre_food();
+		maj_info_frmi(indice_frmi);
 		cout << val << endl;												
 		++val; 
-		m_area.refresh();
+		
 	}
 }
 
 void MyEvent::on_button_clicked_Previous() {
 	indice_frmi = indice_frmi - 1;
 	if(indice_frmi < -1) {
-		indice_frmi=  (*simu).get_nb_fourmiliere()-1;
+		indice_frmi= (*simu).get_nb_fourmiliere()-1;
 	}
 	maj_info_frmi(indice_frmi);
 }
 
-void MyEvent::on_button_clicked_Next() {	
+void MyEvent::on_button_clicked_Next() {
 	indice_frmi = indice_frmi + 1;
 	if(indice_frmi >= (int)(*simu).get_nb_fourmiliere()){
 		indice_frmi = -1;

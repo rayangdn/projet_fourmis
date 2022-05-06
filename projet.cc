@@ -16,3 +16,5 @@ int main(int argc, char* argv[]) {
 	MyEvent myevent(&simulation);
 	return app->run(myevent);
 }
+//si collector a une food celle-çi appartient à ensemble_food??
+//différence entre size et sizeF??

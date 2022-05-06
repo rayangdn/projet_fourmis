@@ -4,12 +4,20 @@
 
 #include <iostream>
 #include <fstream>
+#include <random>
 
 #include "food.h"
 
 using namespace std;
 
+const int MIN_FOOD = 1;
+const int MAX_FOOD = g_max-2;
+
 Food::Food(Carre carre, unsigned int val_food) : carre(carre), val_food(val_food) {}
+
+Carre Food::get_carre() const {
+	return carre;
+}
 
 void Food::initialise_food_on_grid() {
 	initialise_carre_centre(carre);
@@ -31,6 +39,14 @@ void Food::draw_food() {
 	unsigned int style(LOSANGE);
 	unsigned int couleur(WHITE);
 	draw_carre(carre, style,  couleur);
+}
+
+void Food::random_food() {
+	random_device rd;
+    uniform_int_distribution<int> distr(MIN_FOOD, MAX_FOOD);
+    default_random_engine eng(rd());
+    carre.point.x = distr(eng);
+    carre.point.y = distr(eng);
 }
 
 bool decodage_line_food(string line, Ensemble_food& ensemble_food) {

@@ -3,22 +3,32 @@
 //Maxime Luyet membre 2: 40%
 
 #include <iostream>
+#include <random>
 
 #include "fourmis.h"
 
 using namespace std;
 
-Fourmi::Fourmi(Carre carre) : carre(carre) {}
+Fourmi::Fourmi(Carre carre, unsigned int age) : carre(carre), age(age),
+end_of_life(false) {}
 
 Generator::Generator(Carre carre, unsigned int total_food) 
-: Fourmi(carre), total_food(total_food) {}
+: Fourmi(carre, 0), total_food(total_food), end_of_klan(false) {}
 
-Collector::Collector(Carre carre, unsigned int age, bool have_food)
-: Fourmi(carre), age(age), have_food(have_food) {}
+Collector::Collector(Carre carre, unsigned int age)
+: Fourmi(carre, age), etat_c(EMPTY) {}
 
-Defensor::Defensor(Carre carre, unsigned int age) : Fourmi(carre), age(age) {}
+Defensor::Defensor(Carre carre, unsigned int age) : Fourmi(carre, age) {}
 
-Predator::Predator(Carre carre, unsigned int age) : Fourmi(carre), age(age) {}
+Predator::Predator(Carre carre, unsigned int age) : Fourmi(carre, age) {}
+
+unsigned int Fourmi::get_age() const {
+	return age;
+}
+
+bool Fourmi::get_end_of_life() const {
+	return end_of_life;
+}
 
 void Fourmi::initialise_fourmi() {
 	initialise_carre_centre(carre);
@@ -41,8 +51,16 @@ void Fourmi::ecriture_frmi(ofstream& fichier) const {
 	<< "\n";
 }
 
+void Fourmi::incrementer_age() {
+	++age;
+}	
+
 double Generator::get_total_food() const {
 	return total_food;
+}
+
+bool Generator::get_end_of_klan() const {
+	return end_of_klan;
 }
 
 bool Generator::test_chaque_fourmi(unsigned int countF, const Carre& carre_fourmiliere) {
@@ -88,16 +106,93 @@ void Generator::draw_fourmis(unsigned int couleur) {
 	draw_carre(carre, style, couleur);
 }
 
+void Generator::consommation(unsigned int nbT) {
+	total_food -= nbT*food_rate;
+	if(total_food <= 0) {
+		end_of_klan = true;
+	}
+}
+void Generator::deplacement_fourmi(const Carre& carre_fourmiliere) {
+	random_device rd;
+    uniform_int_distribution<int> distr(1, 8); // 9 directions possibles
+    default_random_engine eng(rd());
+    unsigned int random_deplacement(distr(eng));
+    if(random_deplacement==1) {
+		carre.point.x-=1;
+		if(fourmis_in_house(carre_fourmiliere)) {
+			carre.point.x+=1;
+			deplacement_fourmi(carre_fourmiliere);
+		}
+	}
+	 if(random_deplacement==2) {
+		carre.point.x-=1;
+		carre.point.y+=1;
+		if(fourmis_in_house(carre_fourmiliere)) {
+			carre.point.x+=1;
+			deplacement_fourmi(carre_fourmiliere);
+		}
+	} 
+	if(random_deplacement==3) {
+		carre.point.x+=1;
+		if(fourmis_in_house(carre_fourmiliere)) {
+			carre.point.x+=1;
+			deplacement_fourmi(carre_fourmiliere);
+		}
+	}
+	 if(random_deplacement==4) {
+		carre.point.x+=1;
+		carre.point.y+=1;
+		if(fourmis_in_house(carre_fourmiliere)) {
+			carre.point.x+=1;
+			deplacement_fourmi(carre_fourmiliere);
+		}
+	} 
+	if(random_deplacement==5) {
+		carre.point.x+=1;
+	} 
+	if(random_deplacement==6) {
+		carre.point.x+=1;
+		carre.point.y-=1;
+		if(fourmis_in_house(carre_fourmiliere)) {
+			carre.point.x+=1;
+			deplacement_fourmi(carre_fourmiliere);
+		}
+	} 
+	if(random_deplacement==7) {
+		carre.point.y-=1;
+		if(fourmis_in_house(carre_fourmiliere)) {
+			carre.point.x+=1;
+			deplacement_fourmi(carre_fourmiliere);
+		}
+	} 
+	if(random_deplacement==8) {
+		carre.point.x-=1;
+		carre.point.y-=1;
+		if(fourmis_in_house(carre_fourmiliere)) {
+			carre.point.x+=1;
+			deplacement_fourmi(carre_fourmiliere);
+		}
+	} 
+	
+}
+
+void Generator::destruction_fourmi(Ensemble_food& ensemble_food, unsigned int& nbC, 
+unsigned int& nbD, unsigned int& nbP) {
+	nbC=0; nbD=0; nbP=0;
+	supprimer_carre_centre(carre);
+}
+
 void Collector::initialise_collect(const Carre& autre_carre, unsigned int autre_age,
-string autre_have_food) {
+string have_food) {
 	carre.longeur = autre_carre.longeur;
 	carre.point.x = autre_carre.point.x;
 	carre.point.y = autre_carre.point.y;
 	age = autre_age;
-	if(autre_have_food == "true") {
-		have_food=true;
+	if(have_food == "true") {
+		etat_c = LOADED;
+		
 	} else { 
-		have_food=false;
+		etat_c = EMPTY;
 	}
 }
 
@@ -126,7 +221,7 @@ void Collector::ecriture_frmi(ofstream& fichier) const {
 	fichier << "\t" << to_string(carre.point.x) << " " << to_string(carre.point.y) << 
 	" " << to_string(age) << " ";
 	string have_food_string;
-	if(have_food==true) {
+	if(LOADED) {
 		have_food_string="true\n";
 	} else {
 		have_food_string="false\n";
@@ -137,7 +232,7 @@ void Collector::ecriture_frmi(ofstream& fichier) const {
 void Collector::draw_fourmis(unsigned int couleur) {
 	unsigned int style(DIAGONALE);
 	draw_carre(carre, style, couleur);
-	if(have_food) {
+	if(etat_c==LOADED) {
 		unsigned int style(LOSANGE);
 		unsigned int couleur(WHITE);
 		Carre carre_food{1, {carre.point.x, carre.point.y}};
@@ -145,6 +240,17 @@ void Collector::draw_fourmis(unsigned int couleur) {
 	}
 }
 
+void Collector::destruction_fourmi(Ensemble_food& ensemble_food, unsigned int& nbC, 
+unsigned int& nbD, unsigned int& nbP) {
+	--nbC;
+	if(etat_c==LOADED) {
+		Carre carre_food{1, {carre.point.x, carre.point.y}};
+		Food food(carre_food, val_food);
+		ensemble_food.push_back(food);
+	}
+	supprimer_carre_centre(carre);
+}
+	
 void Defensor::initialise_defens(const Carre& autre_carre, unsigned int autre_age) {
 	carre.longeur = autre_carre.longeur;
 	carre.point.x = autre_carre.point.x;
@@ -189,6 +295,12 @@ void Defensor::draw_fourmis(unsigned int  couleur) {
 	draw_carre(carre, style, couleur);
 }
 
+void Defensor::destruction_fourmi(Ensemble_food& ensemble_food, unsigned int& nbC, 
+unsigned int& nbD, unsigned int& nbP) {
+	--nbD;
+	supprimer_carre_centre(carre);
+}
+
 void Predator::initialise_predat(const Carre& autre_carre, unsigned int autre_age) {
 	carre.longeur = autre_carre.longeur;
 	carre.point.x = autre_carre.point.x;
@@ -220,8 +332,14 @@ void Predator::draw_fourmis(unsigned int couleur) {
 	draw_carre(carre, style, couleur);
 }
 
+void Predator::destruction_fourmi(Ensemble_food& ensemble_food, unsigned int& nbC, 
+unsigned int& nbD, unsigned int& nbP) {
+	--nbP;
+	supprimer_carre_centre(carre);
+}
+
 void decodage_line_fourmis(string line, unsigned int etat, Collector& collector,
-Defensor& defensor, Predator& predator) {
+                           Defensor& defensor, Predator& predator) {
 	istringstream data(line);
 	unsigned int x, y, age;
 	string have_food;

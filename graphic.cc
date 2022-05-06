@@ -75,7 +75,7 @@ void graphic_draw_grille() {
 	(*ptcr)->stroke();
 	(*ptcr)->set_line_width(1.0);
 	(*ptcr)->set_source_rgb(1.0, 1.0, 1.0);
-	(*ptcr)->move_to(0.0,0.0);
+	(*ptcr)->move_to(0.0, -0.5);
 	(*ptcr)->line_to(0.0, g_max-1);
 	(*ptcr)->line_to(g_max-1 ,g_max-1);
 	(*ptcr)->line_to(g_max-1 ,0.0);
@@ -115,7 +115,7 @@ void graphic_draw_carre_losange(unsigned int x, unsigned int y, unsigned int lon
 unsigned int c) {
 	double r, g, b;
 	initialise_couleur(c, r, g, b);
-	(*ptcr)->set_line_width(0.1); //probleme avec random prends pas le ptcr
+	(*ptcr)->set_line_width(0.1);
 	(*ptcr)->set_source_rgb(r, g, b);
 	(*ptcr)->move_to(x-0.4, y);
 	(*ptcr)->line_to(x, y+0.4);
@@ -193,3 +193,4 @@ unsigned int c) {
 		}
 	}
 }
+

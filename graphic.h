@@ -28,5 +28,4 @@ void graphic_draw_carre_diagonale(unsigned int, unsigned int, unsigned int, unsi
 	
 void graphic_draw_carre_grille(unsigned int, unsigned int, unsigned int, unsigned int);
 
-
 #endif

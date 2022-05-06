@@ -9,10 +9,12 @@ class Food {
 public :
 	Food(Carre, unsigned int);
 	~Food() {};
+	Carre get_carre() const;
 	void initialise_food_on_grid();
 	bool superposition_food();
 	void ecriture_food(std::ofstream&) const;
 	void draw_food();
+	void random_food();
 private :
 	Carre carre;
 	unsigned int val_food;

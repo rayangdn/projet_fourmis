@@ -9,9 +9,6 @@
 
 using namespace std;
 
-const int MIN_FOOD = 1;
-const int MAX_FOOD = g_max-2;
-
 unsigned int Simulation::get_nb_food() const {
 	return ensemble_food.size();
 }
@@ -101,9 +98,6 @@ void Simulation::supprimer_structs() {
 	supprimer_grid();
 	initialise_grid(g_max);
 	ensemble_food.clear();
-	for(auto& fourmiliere : ensemble_fourmilieres) {
-		fourmiliere.supprimer_fourmis();	
-	}
 	ensemble_fourmilieres.clear();
 }
 
@@ -117,34 +111,56 @@ void Simulation::ecriture_fichier(ofstream& fichier) const {
 		ensemble_fourmilieres[i].ecriture_fourmiliere(fichier);
 	}
 }
-bool Simulation::superposition_food_with_all(const Carre& carre_food) {
-	if(test_superposition_sans_coord(carre_food)) {
-		return true;
-	}
-	for(size_t i(0); i < ensemble_fourmilieres.size(); ++i) {
-		if(test_superposition_2_carres(ensemble_fourmilieres[i].carre, carre_food)) {
-			return true;
-		}
-	}
-	return false;
-}
+
 void Simulation::draw_simulation() {
 	for(auto& food : ensemble_food) {
 		food.draw_food(); 
 	}
-	unsigned int i(0);
+	unsigned int color(0);
 	for(auto& fourmiliere : ensemble_fourmilieres) {
-		++i;
-		fourmiliere.draw_fourmiliere(i);
-		if( i==6) { //refaire la boucle de couleur
-			i=0;
+		++color;
+		fourmiliere.draw_fourmiliere(color);
+		if( color==6) {
+			color=0;
 		}
 		
 	}
 }
 
 void Simulation::refresh() {
+	//PARTIE CREATION DE NOURRITURE
 	create_food();
+	//PARTIE AJUSTEMENT/DEPLACEMENT FOURMILIERE
+	for(size_t i(0); i < ensemble_fourmilieres.size(); ++i) {
+		ensemble_fourmilieres[i].calcul_sizeF();
+		for(size_t j(0); j < ensemble_fourmilieres.size();++j) {
+			if( i!=j) { //pas faire le test sur la meme fourmiliere
+				if(ensemble_fourmilieres[i].test_fourmiliere_no_mess(
+				   ensemble_fourmilieres[j])) {
+					//tester sur les autres coins
+				}
+			} 
+		}
+		ensemble_fourmilieres[i].expend_restrict();
+	
+	//PARTIE GENERATOR
+	ensemble_fourmilieres[i].maj_generator(); 
+	ensemble_fourmilieres[i].create_fourmi();	 
+	//nsemble_fourmilieres[i].deplacement_generator();
+	//déplacement
+	//PARTIE AUTRES FOURMIS
+	ensemble_fourmilieres[i].action_autres_fourmis();
+	}
+	for(auto& fourmiliere : ensemble_fourmilieres) {
+		fourmiliere.destruction_fourmis(ensemble_food);
+		//meilleur manière pour ajouter food si collector en a??
+		if(fourmiliere.destruction_fourmiliere()) {
+			//enlever sans changer l'ordre pour les couleurs??
+			/*swap(ensemble_fourmilieres[k], ensemble_fourmilieres[ensemble_fourmilieres.size()-1]);
+			ensemble_fourmilieres.pop_back();*/
+			//supprimer fourmiliere implique son id change??
+		}
+	}
 }
 
 void Simulation::create_food() {
@@ -154,29 +170,31 @@ void Simulation::create_food() {
 	default_random_engine eng(rd());
 	if(b(eng)) {
 		unsigned int i(0);
+		Carre carre_food{1, {0, 0}};
+		Food food(carre_food, val_food);
 		while( i < max_food_trial) {
-			Point point_food;
-			Carre carre_food{1, point_food};
-			random_food(carre_food);
-			Food food(carre_food, val_food);
-			if(superposition_food_with_all(carre_food)) {
+			food.random_food();
+			if(superposition_food_with_all(food.get_carre())) {
 				++i;
 			} else {
-				food.draw_food();
-				initialise_carre_centre(carre_food);
+				initialise_carre_centre(food.get_carre());
 				ensemble_food.push_back(food);
 				return;
 			}
 		}
 	}
 }
-void Simulation::random_food(Carre& carre) {
-	random_device rd;
-    uniform_int_distribution<int> distr(MIN_FOOD, MAX_FOOD);
-    default_random_engine eng(rd());
-    carre.point.x = distr(eng);
-    carre.point.y = distr(eng);
-}
 	
+bool Simulation::superposition_food_with_all(const Carre& carre_food) {
+	if(test_superposition_sans_coord(carre_food)) {
+		return true;
+	}
+	for(size_t i(0); i < ensemble_fourmilieres.size(); ++i) {
+		if(test_superposition_2_carres(ensemble_fourmilieres[i].get_Carre(), carre_food)) {
+			return true;
+		}
+	}
+	return false;
+}
 
 
