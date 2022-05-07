@@ -77,9 +77,9 @@ public :
 	void initialise_defens(const Carre&, unsigned int);
 	virtual bool test_chaque_fourmi(unsigned int, const Carre&) override;
 	virtual void draw_fourmis(unsigned int) override;
-	//virtual void deplacement_fourmi(const Carre&) override;
+	virtual void deplacement_fourmi(const Carre&) override;
 	virtual void destruction_fourmi(Ensemble_food&, unsigned int&, unsigned int&, 
-	unsigned int&) override;
+									unsigned int&) override;
 private :
 	bool superposition_fourmi_D();
 	bool fourmis_in_house_D(unsigned int, const Carre&);

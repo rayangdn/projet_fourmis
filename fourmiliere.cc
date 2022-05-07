@@ -112,8 +112,7 @@ void Fourmiliere::create_fourmi() {
 	random_device rd;
 	//TRIER FOURMI??
 	double total_food = ensemble_fourmis[0]->get_total_food();
-	//double p(min(1.0, total_food * birth_rate));
-	double p(1);
+	double p(min(1.0, total_food * birth_rate));
 	bernoulli_distribution b(p);
 	default_random_engine eng(rd());
 	if(b(eng)) {
@@ -188,6 +187,7 @@ void Fourmiliere::action_autres_fourmis() {
 	if(ensemble_fourmis[0]->get_end_of_klan()==false) {
 		 for(size_t i(1); i < ensemble_fourmis.size(); ++i) {
 			ensemble_fourmis[i]->incrementer_age();
+			ensemble_fourmis[i]->deplacement_fourmi(carre);
 			//action
 		}
 	}
@@ -197,11 +197,9 @@ void Fourmiliere::destruction_fourmis(Ensemble_food& ensemble_food) {
 	for(size_t i(1);  i < ensemble_fourmis.size(); ++i) {
 		if(ensemble_fourmis[i]->get_age()==bug_life or 
 		   ensemble_fourmis[i]->get_end_of_life()==true) {
-			  //  ensemble_fourmis[i].erase(ensemble_fourmis.begin() + i);
-			//	ensemble_fourmis[i].reset();
-			//	swap(ensemble_fourmis[i], ensemble_fourmis[ensemble_fourmis.size()-1]);
-			//	ensemble_fourmis.pop_back();
-				//meilleur moyen??*/
+				ensemble_fourmis[i]->destruction_fourmi(ensemble_food, nbC, nbD, nbP);
+				ensemble_fourmis.erase(ensemble_fourmis.begin() + i);
+				cout << ensemble_fourmis.size() << endl; // retesetr later pour la sauvegarde de fichier
 				--nbT;
 		 }	 
 	} 

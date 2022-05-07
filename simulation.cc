@@ -146,19 +146,16 @@ void Simulation::refresh() {
 	//PARTIE GENERATOR
 	ensemble_fourmilieres[i].maj_generator(); 
 	ensemble_fourmilieres[i].create_fourmi();	 
-	//nsemble_fourmilieres[i].deplacement_generator();
+	//ensemble_fourmilieres[i].deplacement_generator();
 	//déplacement
 	//PARTIE AUTRES FOURMIS
 	ensemble_fourmilieres[i].action_autres_fourmis();
 	}
-	for(auto& fourmiliere : ensemble_fourmilieres) {
-		fourmiliere.destruction_fourmis(ensemble_food);
+	for(size_t i(0); i < ensemble_fourmilieres.size(); ++i) {
+		ensemble_fourmilieres[i].destruction_fourmis(ensemble_food);
 		//meilleur manière pour ajouter food si collector en a??
-		if(fourmiliere.destruction_fourmiliere()) {
-			//enlever sans changer l'ordre pour les couleurs??
-			/*swap(ensemble_fourmilieres[k], ensemble_fourmilieres[ensemble_fourmilieres.size()-1]);
-			ensemble_fourmilieres.pop_back();*/
-			//supprimer fourmiliere implique son id change??
+		if(ensemble_fourmilieres[i].destruction_fourmiliere()) {
+			ensemble_fourmilieres.erase(ensemble_fourmilieres.begin()+i);
 		}
 	}
 }

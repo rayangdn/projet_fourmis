@@ -292,6 +292,9 @@ void MyEvent::on_button_clicked_Next() {
 }
 
 void MyEvent::maj_info_frmi(int indice) {
+	if((*simu).get_nb_fourmiliere() == 0) {
+		indice= -1;
+	}
 	if (indice == -1){
 		m_Label_Frmi.set_text("None selected");
 	} else {

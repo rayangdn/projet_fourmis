@@ -4,13 +4,14 @@
 
 #include <iostream>
 #include <random>
+#include <cmath>
 
 #include "fourmis.h"
 
 using namespace std;
 
-Fourmi::Fourmi(Carre carre, unsigned int age) : carre(carre), age(age),
-end_of_life(false) {}
+Fourmi::Fourmi(Carre carre, unsigned int age)
+ : carre(carre), age(age), end_of_life(false) {}
 
 Generator::Generator(Carre carre, unsigned int total_food) 
 : Fourmi(carre, 0), total_food(total_food), end_of_klan(false) {}
@@ -112,78 +113,24 @@ void Generator::consommation(unsigned int nbT) {
 		end_of_klan = true;
 	}
 }
+
 void Generator::deplacement_fourmi(const Carre& carre_fourmiliere) {
-	random_device rd;
-    uniform_int_distribution<int> distr(1, 8); // 9 directions possibles
-    default_random_engine eng(rd());
-    unsigned int random_deplacement(distr(eng));
-    if(random_deplacement==1) {
-		carre.point.x-=1;
-		if(fourmis_in_house(carre_fourmiliere)) {
-			carre.point.x+=1;
-			deplacement_fourmi(carre_fourmiliere);
-		}
+	if (carre_fourmiliere.longeur % 2!= 0) {
+		//mettre au milieur pour le fun
 	}
-	 if(random_deplacement==2) {
-		carre.point.x-=1;
-		carre.point.y+=1;
-		if(fourmis_in_house(carre_fourmiliere)) {
-			carre.point.x+=1;
-			deplacement_fourmi(carre_fourmiliere);
-		}
-	} 
-	if(random_deplacement==3) {
-		carre.point.x+=1;
-		if(fourmis_in_house(carre_fourmiliere)) {
-			carre.point.x+=1;
-			deplacement_fourmi(carre_fourmiliere);
-		}
-	}
-	 if(random_deplacement==4) {
-		carre.point.x+=1;
-		carre.point.y+=1;
-		if(fourmis_in_house(carre_fourmiliere)) {
-			carre.point.x+=1;
-			deplacement_fourmi(carre_fourmiliere);
-		}
-	} 
-	if(random_deplacement==5) {
-		carre.point.x+=1;
-	} 
-	if(random_deplacement==6) {
-		carre.point.x+=1;
-		carre.point.y-=1;
-		if(fourmis_in_house(carre_fourmiliere)) {
-			carre.point.x+=1;
-			deplacement_fourmi(carre_fourmiliere);
-		}
-	} 
-	if(random_deplacement==7) {
-		carre.point.y-=1;
-		if(fourmis_in_house(carre_fourmiliere)) {
-			carre.point.x+=1;
-			deplacement_fourmi(carre_fourmiliere);
-		}
-	} 
-	if(random_deplacement==8) {
-		carre.point.x-=1;
-		carre.point.y-=1;
-		if(fourmis_in_house(carre_fourmiliere)) {
-			carre.point.x+=1;
-			deplacement_fourmi(carre_fourmiliere);
-		}
-	} 
+		
+	
 	
 }
 
 void Generator::destruction_fourmi(Ensemble_food& ensemble_food, unsigned int& nbC, 
-unsigned int& nbD, unsigned int& nbP) {
+								   unsigned int& nbD, unsigned int& nbP) {
 	nbC=0; nbD=0; nbP=0;
 	supprimer_carre_centre(carre);
 }
 
 void Collector::initialise_collect(const Carre& autre_carre, unsigned int autre_age,
-string have_food) {
+								   string have_food) {
 	carre.longeur = autre_carre.longeur;
 	carre.point.x = autre_carre.point.x;
 	carre.point.y = autre_carre.point.y;
@@ -221,7 +168,7 @@ void Collector::ecriture_frmi(ofstream& fichier) const {
 	fichier << "\t" << to_string(carre.point.x) << " " << to_string(carre.point.y) << 
 	" " << to_string(age) << " ";
 	string have_food_string;
-	if(LOADED) {
+	if(etat_c == LOADED) {
 		have_food_string="true\n";
 	} else {
 		have_food_string="false\n";
@@ -241,7 +188,7 @@ void Collector::draw_fourmis(unsigned int couleur) {
 }
 
 void Collector::destruction_fourmi(Ensemble_food& ensemble_food, unsigned int& nbC, 
-unsigned int& nbD, unsigned int& nbP) {
+								   unsigned int& nbD, unsigned int& nbP) {
 	--nbC;
 	if(etat_c==LOADED) {
 		Carre carre_food{1, {carre.point.x, carre.point.y}};
@@ -295,8 +242,95 @@ void Defensor::draw_fourmis(unsigned int  couleur) {
 	draw_carre(carre, style, couleur);
 }
 
+void Defensor::deplacement_fourmi(const Carre& carre_f) {
+	if(fourmis_in_house(carre_f)) {
+		
+		end_of_life=true;
+		return;
+	}
+	//CALCUL DIST MINIM  A BORDURE ET VA AU PLUS PROCHE OKE??
+	//SI COLLISION PAS DEE DEPLACEMENT OKE??
+	int x_b1 =  (carre.point.x-carre.longeur/2-carre_f.point.x-1);//enlever la bordure
+	int x_b2 =  (carre_f.point.x+carre_f.longeur-2-carre.point.x-carre.longeur/2);
+	int y_b1 =  (carre.point.y-carre.longeur/2-carre_f.point.y-1);//enlever la bordure
+	int y_b2 =  (carre_f.point.y+carre_f.longeur-2-carre.point.y-carre.longeur/2);
+	if(x_b1 == 0 or x_b2 == 0 or y_b1 == 0 or y_b2 == 0) {
+		return;
+	}
+	supprimer_carre_centre(carre);
+	cout << x_b1 << " " << x_b2 << " " << y_b1 << " " << y_b2<< endl;
+	if( x_b1 <= x_b2) {
+		if( y_b1 <= y_b2) {
+			if ( x_b1 <= y_b1) {
+				carre.point.x -= 1;
+				if(test_superposition_sans_coord(carre)) {
+					carre.point.x+=1;
+				} 
+				initialise_carre_centre(carre);
+			} else {
+				carre.point.y-= 1;
+				if(test_superposition_sans_coord(carre)) {
+					carre.point.y+=1;
+				} 
+				initialise_carre_centre(carre);
+			}
+		} 
+	}
+	if( x_b2 < x_b1) {
+		if( y_b1 <= y_b2) {
+			if ( x_b2 <= y_b1) {
+				carre.point.x += 1;
+				if(test_superposition_sans_coord(carre)) {
+					carre.point.x-=1;
+				} 
+				initialise_carre_centre(carre);
+			} else {
+				carre.point.y-= 1;
+				if(test_superposition_sans_coord(carre)) {
+					carre.point.y+=1;
+				} 
+				initialise_carre_centre(carre);
+			}
+		} 
+	}
+	if( x_b1 <= x_b2) {
+		if( y_b2 < y_b1) {
+			if ( x_b1 <= y_b2) {
+				carre.point.x -= 1;
+				if(test_superposition_sans_coord(carre)) {
+					carre.point.x+=1;
+				} 
+				initialise_carre_centre(carre);
+			} else {
+				carre.point.y+= 1;
+				if(test_superposition_sans_coord(carre)) {
+					carre.point.y-=1;
+				} 
+				initialise_carre_centre(carre);
+			}
+		} 
+	}
+	if( x_b2 < x_b1) {
+		if( y_b2 < y_b1) {
+			if ( x_b2 <= y_b2) {
+				carre.point.x += 1;
+				if(test_superposition_sans_coord(carre)) {
+					carre.point.x-=1;
+				} 
+				initialise_carre_centre(carre);
+			} else {
+				carre.point.y+= 1;
+				if(test_superposition_sans_coord(carre)) {
+					carre.point.y-=1;
+				} 
+				initialise_carre_centre(carre);
+			}
+		} 
+	}
+}
+
 void Defensor::destruction_fourmi(Ensemble_food& ensemble_food, unsigned int& nbC, 
-unsigned int& nbD, unsigned int& nbP) {
+								  unsigned int& nbD, unsigned int& nbP) {
 	--nbD;
 	supprimer_carre_centre(carre);
 }
@@ -333,7 +367,7 @@ void Predator::draw_fourmis(unsigned int couleur) {
 }
 
 void Predator::destruction_fourmi(Ensemble_food& ensemble_food, unsigned int& nbC, 
-unsigned int& nbD, unsigned int& nbP) {
+								  unsigned int& nbD, unsigned int& nbP) {
 	--nbP;
 	supprimer_carre_centre(carre);
 }
