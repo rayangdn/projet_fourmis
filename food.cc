@@ -13,7 +13,7 @@ using namespace std;
 const int MIN_FOOD = 1;
 const int MAX_FOOD = g_max-2;
 
-Food::Food(Carre carre, unsigned int val_food) : carre(carre), val_food(val_food) {}
+Food::Food(Carre carre) : carre(carre) {}
 
 Carre Food::get_carre() const {
 	return carre;
@@ -51,10 +51,10 @@ void Food::random_food() {
 
 bool decodage_line_food(string line, Ensemble_food& ensemble_food) {
 	istringstream data(line);
-	unsigned int x, y;
+	int x, y;
 	data >> x >> y;
 	Carre carre{1, {x, y}};
-	Food food(carre, val_food);
+	Food food(carre);
 	if(test_validation_carre_no_bound(carre)) {
 		return true;
 	}

@@ -20,7 +20,7 @@ public :
 	virtual void ecriture_frmi(std::ofstream&) const;
 	virtual void draw_fourmis(unsigned int couleur)=0;
 	virtual void consommation(unsigned int) { return; }
-	virtual void deplacement_fourmi(const Carre&) { return; }
+	virtual void deplacement_fourmi(const Carre&, Ensemble_food&) { return; }
 	void incrementer_age();
 	virtual void destruction_fourmi(Ensemble_food&, unsigned int&, unsigned int&,
 	unsigned int&)=0;
@@ -44,7 +44,7 @@ public :
 	virtual void ecriture_frmi(std::ofstream&) const override;
 	virtual void draw_fourmis(unsigned int) override;
 	virtual void consommation(unsigned int) override;
-	virtual void deplacement_fourmi(const Carre&) override;
+	virtual void deplacement_fourmi(const Carre&, Ensemble_food&) override;
 	virtual void destruction_fourmi(Ensemble_food&, unsigned int&, unsigned int&, 
 	unsigned int&) override;
 private :
@@ -54,7 +54,7 @@ private :
 	bool end_of_klan;
 };
 
-class Collector : public Fourmi{
+class Collector : public Fourmi {
 public :
 	Collector(Carre, unsigned int);
 	~Collector () {};
@@ -62,7 +62,20 @@ public :
 	virtual bool test_chaque_fourmi(unsigned int, const Carre&) override;
 	virtual void ecriture_frmi(std::ofstream&) const override;
 	virtual void draw_fourmis(unsigned int) override;
-//	virtual void deplacement_fourmi(const Carre&) override;
+	virtual void deplacement_fourmi(const Carre&, Ensemble_food&) override;
+	void deplacement_collector_loaded(const Carre&);
+	void deplacement_collector_empty(Ensemble_food&);
+	int test_diago_proximities(const Ensemble_food&);
+	void deplacement_collector_out(const Carre&);
+	bool deplacement_chemin_1_empty(const Carre&, int, int);
+	bool deplacement_chemin_2_empty(const Carre&, int , int);
+	bool deplacement_chemin_1_loaded(const Carre&, int, int);
+	bool deplacement_chemin_2_loaded(const Carre&, int, int);
+	void calcul_itineraire(int, int, int&, int&);
+	void deplacement_droite_haut();
+	void deplacement_droite_bas();
+	void deplacement_gauche_haut();
+	void deplacement_gauche_bas();
 	virtual void destruction_fourmi(Ensemble_food&, unsigned int&, unsigned int&, 
 	unsigned int&) override;
 private :
@@ -77,7 +90,7 @@ public :
 	void initialise_defens(const Carre&, unsigned int);
 	virtual bool test_chaque_fourmi(unsigned int, const Carre&) override;
 	virtual void draw_fourmis(unsigned int) override;
-	virtual void deplacement_fourmi(const Carre&) override;
+	virtual void deplacement_fourmi(const Carre&, Ensemble_food&) override;
 	virtual void destruction_fourmi(Ensemble_food&, unsigned int&, unsigned int&, 
 									unsigned int&) override;
 private :
@@ -92,7 +105,7 @@ public :
 	void initialise_predat(const Carre&, unsigned int);
 	virtual bool test_chaque_fourmi(unsigned int, const Carre&) override;
 	virtual void draw_fourmis(unsigned int) override;
-	//virtual void deplacement_fourmi(const Carre&) override;
+	//virtual void deplacement_fourmi(const Carre&, Ensemble_food&) override;
 	virtual void destruction_fourmi(Ensemble_food&, unsigned int&, unsigned int&, 
 	unsigned int&) override;
 private :

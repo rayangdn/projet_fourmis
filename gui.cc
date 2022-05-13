@@ -97,7 +97,7 @@ bool MyArea::on_draw(const Cairo::RefPtr<Cairo::Context>& cr) {
 MyEvent::MyEvent(Simulation *simulation) : 
 	timer_added(false),
 	disconnect(false),
-	timeout_value(500),
+	timeout_value(50),
 	val(1),
 	indice_frmi(-1),  // valeur avant l'indice de la premiere fourmiliere qui est 0
 	m_Box(Gtk::ORIENTATION_HORIZONTAL,10),
@@ -258,7 +258,7 @@ bool MyEvent::on_timeout() {
 	m_area.refresh();
 	maj_nombre_food();
 	maj_info_frmi(indice_frmi);
-	cout << val << endl;
+	//cout << val << endl;
 	++val;
 	
 	return true; 
@@ -269,7 +269,7 @@ void MyEvent::on_button_clicked_Step() {
 		m_area.refresh();		
 		maj_nombre_food();
 		maj_info_frmi(indice_frmi);
-		cout << val << endl;												
+	//	cout << val << endl;												
 		++val; 
 		
 	}

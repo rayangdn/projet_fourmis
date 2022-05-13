@@ -64,6 +64,9 @@ bool test_validation_carre_centre(const Carre& carre) {
 	}
 	return false;
 }
+
+bool test_validation_carre_centre_no_mess(const Carre& carre) {
+}
 	
 bool test_validation_carre_no_bound(const Carre& carre) {
 	if(carre.point.x == 0 or  carre.point.x == g_max-1) {
@@ -120,10 +123,36 @@ bool test_superposition_2_carres(const Carre& carre, const Carre& autre_carre) {
 	if ((carre.point.x < autre_carre.point.x + autre_carre.longeur) and
 		(carre.point.x + carre.longeur > autre_carre.point.x) and
 		(carre.point.y < autre_carre.point.y + autre_carre.longeur) and
-		(carre.longeur + carre.point.y > autre_carre.point.y)) {
+		(carre.point.y + carre.longeur > autre_carre.point.y)) {
 		return true;
    }
    return false;
+}
+
+bool test_superposition_2_carres_non_centre_centre(const Carre& carre,
+												   const Carre& autre_carre) {
+													   
+	if ((carre.point.x-carre.longeur/2 < autre_carre.point.x + autre_carre.longeur-1) and 
+		(carre.point.x + carre.longeur/2+1 > autre_carre.point.x+1) and
+		(carre.point.y-carre.longeur/2 < autre_carre.point.y + autre_carre.longeur-1) and
+		(carre.point.y + carre.longeur/2+1 > autre_carre.point.y+1)) {
+		return true;
+   }
+   return false;								   
+}												   
+
+bool test_superposition_2_carres_centre(const Carre& carre, const Carre& autre_carre) {
+	for(size_t i(carre.point.y-carre.longeur/2);
+	    i < carre.point.y + (carre.longeur/2+1); ++i) {
+		for(size_t j(carre.point.x-carre.longeur/2); 
+		    j < carre.point.x + (carre.longeur/2+1); ++j) {
+				if(autre_carre.point.x == j and 
+				   autre_carre.point.y == i) {
+				return true;
+			}
+		}
+	}
+	return false;
 }
 
 bool test_superposition_avec_coord(const Carre& carre, unsigned int& x,
@@ -153,6 +182,113 @@ bool test_superposition_sans_coord(const Carre& carre) {
 		}
 	}
 	return false;	
+}
+
+bool test_validation_inf_gauche(const Carre& carre) {
+	if(carre.point.x + carre.longeur > g_max or 
+	   carre.point.y + carre.longeur > g_max) {
+		return true;
+	}
+	return false;
+}
+
+bool test_validation_sup_gauche(const Carre& carre) {
+	if(carre.point.x + carre.longeur > g_max or carre.point.y < 0) {
+		   return true;
+	   }
+	   return false;
+}
+
+bool test_validation_sup_droite(const Carre& carre) {
+	if(carre.point.x < 0 or carre.point.y < 0) {
+		return true;
+	}
+	return false;
+}
+
+bool test_validation_inf_droite(const Carre& carre) {
+	if(carre.point.x < 0 or carre.point.y + carre.longeur > g_max) {
+		return true;
+	}
+	return false;
+} 
+
+/*bool test_superposition_inf_gauche(const Carre& carre, const Carre& autre_carre) {
+		//cout << "Carre 1 :" << "X " << carre.point.x << " " << carre.point.x + carre.longeur-1;
+		//cout << " Y " << carre.point.y <<" " << carre.point.y + carre.longeur-1 << endl;
+		//cout << "Carre 2 :" << "X " <<autre_carre.point.x << " " <<  autre_carre.point.x + autre_carre.longeur-1;
+		//cout << " Y " << autre_carre.point.y <<" " << autre_carre.point.y + autre_carre.longeur-1 << endl;
+	
+	
+	if((carre.point.y >= autre_carre.point.y and 
+	   carre.point.y <= autre_carre.point.y + autre_carre.longeur - 1) or
+	   (carre.point.y + carre.longeur - 1 >= autre_carre.point.y and
+	   carre.point.y + carre.longeur - 1 <= autre_carre.point.y+ autre_carre.longeur - 1)) {
+		if(carre.point.x <= autre_carre.point.x) {
+			if(carre.point.x + carre.longeur - 1 >= autre_carre.point.x) {
+				
+				return true;
+			}
+		}
+	}
+	if((carre.point.x  >= autre_carre.point.x and 
+	    carre.point.x <= autre_carre.point.x + autre_carre.longeur-1) or
+	   (carre.point.x + carre.longeur <= autre_carre.point.x and 
+	    carre.point.x + carre.longeur - 1 <= autre_carre.point.x + autre_carre.longeur - 1)) {
+		if(carre.point.y < autre_carre.point.y) {
+			if(carre.point.y + carre.longeur-1 >= autre_carre.point.y) {
+				
+				return true;
+			}
+		}
+	}   
+	return false;
+}
+	
+bool test_superposition_sup_gauche(const Carre& carre, const Carre& autre_carre) {
+	//cout << carre.point.y << " " <<  autre_carre.point.y + autre_carre.longeur -1 << endl;
+	if((carre.point.y >= autre_carre.point.y and 
+	   carre.point.y <= autre_carre.point.y + autre_carre.longeur - 1) or
+	   (carre.point.y + carre.longeur - 1 >= autre_carre.point.y and
+	   carre.point.y + carre.longeur - 1 <= autre_carre.point.y+ autre_carre.longeur - 1)) {
+		if(carre.point.x <= autre_carre.point.x) {
+			if(carre.point.x + carre.longeur - 1 >= autre_carre.point.x) {
+				return true;
+			}
+		}
+	}
+	
+	if((carre.point.x  >= autre_carre.point.x and 
+	    carre.point.x <= autre_carre.point.x + autre_carre.longeur-1) or
+	   (carre.point.x + carre.longeur <= autre_carre.point.x and 
+	    carre.point.x + carre.longeur - 1 <= autre_carre.point.x + autre_carre.longeur - 1)) {
+		if(carre.point.y >= autre_carre.point.y) {
+			if(carre.point.y  <= autre_carre.point.y + autre_carre.longeur -1) {
+				
+				return true;
+			}
+		}
+	}
+	return false;
+}*/
+
+
+
+bool test_diago(const Carre& carre, const Carre& autre_carre) {
+	if(carre.point.x % 2 == 0 and carre.point.y % 2 == 0 and 
+	   autre_carre.point.x % 2 == 0 and autre_carre.point.y % 2 == 0) {
+		   return true;
+	} else if(carre.point.x % 2 == 1 and carre.point.y % 2 == 1 and 
+	          autre_carre.point.x % 2 == 1 and autre_carre.point.y % 2 == 1) {
+				  return true;
+    } else if(carre.point.x % 2 == 0 and carre.point.y % 2 == 0 and 
+			  autre_carre.point.x % 2 == 1 and autre_carre.point.y % 2 == 1) {
+				  return true;
+	} else if(carre.point.x % 2 == 1 and carre.point.y % 2 == 1 and 
+			  autre_carre.point.x % 2 == 0 and autre_carre.point.y % 2 == 0) {
+				  return true;
+	}	
+	return false;
 }
 
 void draw_carre(const Carre& carre, unsigned int style,

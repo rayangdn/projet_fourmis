@@ -7,7 +7,7 @@
 
 class Food {
 public :
-	Food(Carre, unsigned int);
+	Food(Carre);
 	~Food() {};
 	Carre get_carre() const;
 	void initialise_food_on_grid();
@@ -17,7 +17,6 @@ public :
 	void random_food();
 private :
 	Carre carre;
-	unsigned int val_food;
 };
 
 typedef std::vector<Food> Ensemble_food;

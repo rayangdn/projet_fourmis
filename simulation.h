@@ -18,11 +18,13 @@ public :
 	void ecriture_fichier(std::ofstream&) const;
 	void draw_simulation();
 	void refresh();
-	void create_food();
 private :
 	Ensemble_food ensemble_food;
 	Ensemble_fourmilieres ensemble_fourmilieres;
+	void create_food();
 	bool superposition_food_with_all(const Carre&);
+	//bool test_fourmiliere(unsigned int);
+	
 };
 
 #endif
