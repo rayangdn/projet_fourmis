@@ -22,6 +22,14 @@ public :
 	virtual void consommation(unsigned int) { return; }
 	virtual void deplacement_fourmi(const Carre&, Ensemble_food&) { return; }
 	void incrementer_age();
+	void deplacement_droite_haut();
+	void deplacement_droite_bas();
+	void deplacement_gauche_haut();
+	void deplacement_gauche_bas();
+	void deplacement_bas();
+	void deplacement_gauche();
+	void deplacement_droite();
+	void deplacement_haut();
 	virtual void destruction_fourmi(Ensemble_food&, unsigned int&, unsigned int&,
 	unsigned int&)=0;
 protected :
@@ -50,6 +58,7 @@ public :
 private :
 	bool superposition_fourmi_G();
 	bool fourmis_in_house_G(unsigned int, const Carre&);
+	bool generator_good_position(const Carre&);
 	double total_food;
 	bool end_of_klan;
 };
@@ -72,10 +81,6 @@ public :
 	bool deplacement_chemin_1_loaded(const Carre&, int, int);
 	bool deplacement_chemin_2_loaded(const Carre&, int, int);
 	void calcul_itineraire(int, int, int&, int&);
-	void deplacement_droite_haut();
-	void deplacement_droite_bas();
-	void deplacement_gauche_haut();
-	void deplacement_gauche_bas();
 	virtual void destruction_fourmi(Ensemble_food&, unsigned int&, unsigned int&, 
 	unsigned int&) override;
 private :

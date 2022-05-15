@@ -123,31 +123,25 @@ void Simulation::draw_simulation() {
 
 void Simulation::refresh() {
 	//PARTIE CREATION DE NOURRITURE
-	//create_food();
+	create_food();
 	//PARTIE AJUSTEMENT/DEPLACEMENT FOURMILIERE
 	for(size_t i(0); i < ensemble_fourmilieres.size(); ++i) {
 		ensemble_fourmilieres[i].calcul_sizeF();
-		//test_fourmiliere(i);
-			
-	/*	if(test_fourmiliere(i)) {
-			cout << "NO" << endl;
-		} else { 
-			cout << "EXPEND" << endl;
-		} */
+		//test_expend_fourmiliere(i);
 	//PARTIE GENERATOR
 	//ensemble_fourmilieres[i].maj_generator(); 
-	ensemble_fourmilieres[i].create_fourmi();	 
-	//ensemble_fourmilieres[i].deplacement_generator(ensemble_food);
+	//ensemble_fourmilieres[i].create_fourmi();	 
+	ensemble_fourmilieres[i].deplacement_generator(ensemble_food);
 	//déplacement
 	//PARTIE AUTRES FOURMIS
-	//ensemble_fourmilieres[i].action_autres_fourmis(ensemble_food);
+	ensemble_fourmilieres[i].action_autres_fourmis(ensemble_food);
 	}
-	for(size_t i(0); i < ensemble_fourmilieres.size(); ++i) {
+	/*for(size_t i(0); i < ensemble_fourmilieres.size(); ++i) {
 		ensemble_fourmilieres[i].destruction_fourmis(ensemble_food);
 		if(ensemble_fourmilieres[i].destruction_fourmiliere()) {
 			ensemble_fourmilieres.erase(ensemble_fourmilieres.begin()+i);
 		}
-	}
+	}*/
 }
 
 void Simulation::create_food() {
@@ -184,6 +178,26 @@ bool Simulation::superposition_food_with_all(const Carre& carre_food) {
 	return false;
 }
 
+bool Simulation::test_expend_fourmiliere(unsigned int i) {
+	unsigned int k(0);
+	for(size_t j(0); j < ensemble_fourmilieres.size(); ++j) {
+		if(i != j) {
+			ensemble_fourmilieres[i].test_expend(ensemble_fourmilieres[j], k);
+				
+			/*Carre carre1 = ensemble_fourmilieres[i].get_carre();
+			unsigned int longeur = carre1.longeur;
+			Carre carre2 = ensemble_fourmilieres[j].get_carre();
+			if(ensemble_fourmilieres[i].superposition_inf_gauche(carre2, longeur, k)) {
+			
+			if(ensemble_fourmilieres[i].superposition_sup_gauche(carre2, longeur, k)) {
+				return true;
+				}*/
+			}
+		}
+	cout << k << endl;
+	ensemble_fourmilieres[i].expend(k);
+}
+	//return false;
 /*bool Simulation::test_fourmiliere(unsigned int i) {
 	cout << "I : " << i << endl;
 	unsigned int k(0);

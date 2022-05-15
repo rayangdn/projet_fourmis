@@ -23,7 +23,7 @@ private :
 	Ensemble_fourmilieres ensemble_fourmilieres;
 	void create_food();
 	bool superposition_food_with_all(const Carre&);
-	//bool test_fourmiliere(unsigned int);
+	bool test_expend_fourmiliere(unsigned int);
 	
 };
 

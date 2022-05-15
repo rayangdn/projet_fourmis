@@ -17,10 +17,7 @@ public :
 	Carre get_carre() const;
 	bool test_superposition_fourmiliere(const Fourmiliere&, unsigned int,
 										unsigned int);
-	bool test_inf_gauche();
-	bool test_sup_gauche();
-	bool test_sup_droite();
-	bool test_inf_droite();
+	
 	//void test_inf_gauche(const Carre&, unsigned int&);
 	//void test_sup_gauche(const Carre&, unsigned int&);
 	void ajouter_fourmis(Fourmi*);
@@ -28,11 +25,14 @@ public :
 	void ecriture_fourmiliere(std::ofstream&) const;
 	void draw_fourmiliere();
 	void calcul_sizeF();
-	//void expend_restrict(unsigned int);
+	bool test_expend(const Fourmiliere&, unsigned int& k);
+	bool superposition_inf_gauche(const Carre&, unsigned int, unsigned int&);
+	bool superposition_sup_gauche(const Carre&, unsigned int, unsigned int&);
+	void expend(unsigned int);
 	void maj_generator();
 	void create_fourmi();
 	void deplacement_generator(Ensemble_food& ensemble_foo);
-	void recherche_espace_libre(Carre&);
+	bool recherche_espace_libre(Carre&);
 	void action_autres_fourmis(Ensemble_food& ensemble_foo);
 	void destruction_fourmis(Ensemble_food&);
 	bool destruction_fourmiliere();
@@ -43,6 +43,11 @@ private :
 	unsigned int color;
 	Ensemble_fourmis ensemble_fourmis;
 	Etat_fourmiliere etat_f;
+	bool test_inf_gauche();
+	bool test_sup_gauche();
+	bool test_sup_droite();
+	bool test_inf_droite();
+	
 };
 
 typedef std::vector<Fourmiliere> Ensemble_fourmilieres;

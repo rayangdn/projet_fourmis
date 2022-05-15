@@ -213,6 +213,7 @@ bool test_validation_inf_droite(const Carre& carre) {
 	return false;
 } 
 
+
 /*bool test_superposition_inf_gauche(const Carre& carre, const Carre& autre_carre) {
 		//cout << "Carre 1 :" << "X " << carre.point.x << " " << carre.point.x + carre.longeur-1;
 		//cout << " Y " << carre.point.y <<" " << carre.point.y + carre.longeur-1 << endl;
@@ -287,10 +288,47 @@ bool test_diago(const Carre& carre, const Carre& autre_carre) {
 	} else if(carre.point.x % 2 == 1 and carre.point.y % 2 == 1 and 
 			  autre_carre.point.x % 2 == 0 and autre_carre.point.y % 2 == 0) {
 				  return true;
-	}	
+	} else if(carre.point.x % 2 == 0 and carre.point.y % 2 == 1 and 
+			  autre_carre.point.x % 2 == 1 and autre_carre.point.y % 2 == 0) {
+				  return true;
+	}else if(carre.point.x % 2 == 1 and carre.point.y % 2 == 0 and 
+			 autre_carre.point.x % 2 == 0 and autre_carre.point.y % 2 == 1) {
+				  return true;
+	}
 	return false;
 }
 
+bool find_place_in_carre(const Carre& carre1, Carre& carre2) {
+	for(size_t i(carre1.point.y+1); i < carre1.point.y + carre1.longeur-carre2.longeur; ++i) {
+		for(size_t j(carre1.point.x+1); j < carre1.point.x + carre1.longeur-carre2.longeur; ++j) {
+			if(carre2.longeur == 3) {
+				if(grid[grid.size()-1-i][j] == false and
+				   grid[grid.size()-1-i][j] == false and
+				   grid[grid.size()-2-i][j] == false and
+				   grid[grid.size()-2-i][j+1] == false and
+				   grid[grid.size()-2-i][j+1] == false and
+				   grid[grid.size()-3-i][j+1] == false and
+				   grid[grid.size()-3-i][j+2] == false and
+				   grid[grid.size()-3-i][j+2] == false and
+				   grid[grid.size()-3-i][j+2] == false  ) {
+					carre2.point.x = j + carre2.longeur/2;
+					carre2.point.y = i + carre2.longeur/2;
+					cout << carre2.point.x << endl;
+					return true;
+				}
+			}
+			if(carre2.longeur == 1) {
+				if(grid[grid.size()-1-i][j]) {
+					carre2.point.x = j;
+					carre2.point.y = i;
+					return true;
+				}
+			}
+		}
+	}
+	return false;
+}
+	
 void draw_carre(const Carre& carre, unsigned int style,
 unsigned int couleur) {
 	if(style==VIDE) {
@@ -312,5 +350,6 @@ unsigned int couleur) {
 			carre.point.y-carre.longeur/2, carre.longeur, couleur);
 	}
 }
+
 
 

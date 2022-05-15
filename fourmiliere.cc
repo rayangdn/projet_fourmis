@@ -43,60 +43,6 @@ bool Fourmiliere::test_superposition_fourmiliere(const Fourmiliere& autre_fourmi
 	}
 	return false;
 }
-
-bool Fourmiliere::test_inf_gauche() {
-	unsigned int longeur = carre.longeur;
-	carre.longeur = sizeF + 2;
-	if(test_validation_inf_gauche(carre)) {
-		carre.longeur = longeur;
-		return true;
-	}
-	etat_f = FREE;
-	return false;
-}
-
-bool Fourmiliere::test_sup_gauche() {
-	unsigned int longeur = carre.longeur;
-	carre.longeur = sizeF + 2;
-	carre.point.y -= carre.longeur - longeur;
-	if(test_validation_sup_gauche(carre)) {
-		carre.point.y += carre.longeur - longeur;
-		carre.longeur = longeur;
-		return true;
-	}
-	etat_f = FREE;
-	return false;
-}
-
-bool Fourmiliere::test_sup_droite() {
-	unsigned int longeur = carre.longeur;
-	carre.longeur = sizeF + 2;
-	carre.point.y -= carre.longeur - longeur;
-	carre.point.x -= carre.longeur - longeur;
-	if(test_validation_sup_droite(carre)) {
-		carre.point.y += carre.longeur - longeur;
-		carre.point.x += carre.longeur - longeur;
-		carre.longeur = longeur;
-		return true;
-	}
-	etat_f = FREE;
-	return false;
-}
-
-bool Fourmiliere::test_inf_droite() {
-	unsigned int longeur = carre.longeur;
-	carre.longeur = sizeF + 2;
-	carre.point.x -= carre.longeur - longeur;
-	if(test_validation_inf_droite(carre)) {
-		carre.point.x += carre.longeur - longeur;
-		carre.longeur = longeur;
-		etat_f = CONSTRAINED;
-		return true;
-	}
-	etat_f = FREE;
-	return false;
-}
-
 /*void Fourmiliere::test_inf_gauche(const Carre& carre_f, unsigned int& k) {
 	unsigned int longeur = carre.longeur;
 	carre.longeur = sizeF + 2;
@@ -190,7 +136,117 @@ void Fourmiliere::calcul_sizeF() {
 	sizeF = sqrt(4*(sizeG*sizeG + sizeC*sizeC*nbC + sizeD*sizeD*nbD + 
 	sizeP*sizeP*nbP));
 }
+
+bool Fourmiliere::test_inf_gauche() {
+	unsigned int longeur = carre.longeur;
+	carre.longeur = sizeF + 2;
+	if(test_validation_inf_gauche(carre)) {
+		carre.longeur = longeur;
+		return true;
+	}
+	return false;
+}
+
+bool Fourmiliere::test_sup_gauche() {
+	unsigned int longeur = carre.longeur;
+	carre.longeur = sizeF + 2;
+	carre.point.y -= carre.longeur - longeur;
+	if(test_validation_sup_gauche(carre)) {
+		carre.point.y += carre.longeur - longeur;
+		carre.longeur = longeur;
+		return true;
+	}
+	return false;
+}
+
+bool Fourmiliere::test_sup_droite() {
+	unsigned int longeur = carre.longeur;
+	carre.longeur = sizeF + 2;
+	carre.point.y -= carre.longeur - longeur;
+	carre.point.x -= carre.longeur - longeur;
+	if(test_validation_sup_droite(carre)) {
+		carre.point.y += carre.longeur - longeur;
+		carre.point.x += carre.longeur - longeur;
+		carre.longeur = longeur;
+		return true;
+	}
+	return false;
+}
+
+bool Fourmiliere::test_inf_droite() {
+	unsigned int longeur = carre.longeur;
+	carre.longeur = sizeF + 2;
+	carre.point.x -= carre.longeur - longeur;
+	if(test_validation_inf_droite(carre)) {
+		carre.point.x += carre.longeur - longeur;
+		carre.longeur = longeur;
+		return true;
+	}
+	return false;
+}
+
+bool Fourmiliere::test_expend(const Fourmiliere& fourmiliere, unsigned int& k) {
+	unsigned int longeur = carre.longeur;
+	if(superposition_inf_gauche(fourmiliere.carre, longeur, k)) {
+		return true;
+	}
+	if(superposition_sup_gauche(fourmiliere.carre, longeur, k)) {
+		return true;
+	}
+	return false;
+}
+bool Fourmiliere::superposition_inf_gauche(const Carre& carre_f, unsigned int longeur,
+										   unsigned int& k) {
 	
+	carre.longeur = sizeF + 2;
+	if(test_superposition_2_carres(carre, carre_f)) {
+		carre.longeur = longeur;
+		k=0;
+		return true;
+	}
+	carre.longeur = longeur;
+	k = 1;
+	return false;
+}	
+
+bool Fourmiliere::superposition_sup_gauche(const Carre& carre_f, unsigned int longeur,
+										   unsigned int& k) {
+	carre.longeur = sizeF + 2;
+	carre.point.y -= carre.longeur - longeur;
+	if(test_superposition_2_carres(carre, carre_f)) {
+		carre.point.y += carre.longeur - longeur;
+		carre.longeur = longeur;
+		k=0;
+		return true;
+	}
+	carre.point.y += carre.longeur - longeur;
+	carre.longeur = longeur;
+	k = 2;
+	return false;
+	
+}
+
+void Fourmiliere::expend(unsigned int k) {
+	unsigned int longeur = carre.longeur;
+	if(k==1) {
+		carre.longeur = sizeF + 2;
+	}
+	if(k==2) {
+		carre.longeur = sizeF + 2;
+		carre.point.y -= carre.longeur - longeur;
+	}
+	if(k==3) {
+		carre.longeur = sizeF + 2;
+		carre.point.y -= carre.longeur - longeur;
+		carre.point.x -= carre.longeur - longeur;
+	}
+	if(k==4) {
+		carre.longeur = sizeF + 2;
+		carre.point.x -= carre.longeur - longeur;
+	}
+		
+}
+
 /*void Fourmiliere::expend_restrict(unsigned int k) {
 	unsigned int longeur = carre.longeur;
 	if(k==1) {
@@ -230,69 +286,70 @@ void Fourmiliere::create_fourmi() {
 		if(etat_f == FREE) {
 			if((double)nbC/nbT <= prop_free_collector) { 
 				Carre carre_collector{sizeC, {0,0}};
-				recherche_espace_libre(carre_collector);
+				if(recherche_espace_libre(carre_collector)) {
 				unsigned int age(0);
 				ajouter_fourmis(new Collector(carre_collector, age));
-				++nbC; ++nbT;
+				++nbD; ++nbT;
+				}
 				return;
 			} else if((double)nbD/nbT <= prop_free_defensor) {
 				Carre carre_defensor{sizeD, {0,0}};
-				recherche_espace_libre(carre_defensor);
+				if(recherche_espace_libre(carre_defensor)) {
 				unsigned int age(0);
 				ajouter_fourmis(new Defensor(carre_defensor, age));
 				++nbD; ++nbT;
+				}
 				return;
 			} else {
 				Carre carre_predator{sizeP, {0,0}};
-				recherche_espace_libre(carre_predator);
+				if(recherche_espace_libre(carre_predator)) {
 				unsigned int age(0);
 				ajouter_fourmis(new Predator(carre_predator, age));
-				++nbP; ++nbT;
+				++nbD; ++nbT;
+				}
 				return;
 			}
 		}
 		if(etat_f == CONSTRAINED) {
 			if((double)nbC/nbT <= prop_constrained_collector) { 
 				Carre carre_collector{sizeC, {0,0}};
-				recherche_espace_libre(carre_collector);
+				if(recherche_espace_libre(carre_collector)) {
 				unsigned int age(0);
 				ajouter_fourmis(new Collector(carre_collector, age));
-				++nbC; ++nbT;
+				++nbD; ++nbT;
+				}
 				return;
 			} else if((double)nbD/nbT <= prop_constrained_defensor) {
 				Carre carre_defensor{sizeD, {0,0}};
-				recherche_espace_libre(carre_defensor);
+				if(recherche_espace_libre(carre_defensor)) {
 				unsigned int age(0);
 				ajouter_fourmis(new Defensor(carre_defensor, age));
 				++nbD; ++nbT;
+				}
 				return;
 			} else {
 				Carre carre_predator{sizeP, {0,0}};
-				recherche_espace_libre(carre_predator);
+				if(recherche_espace_libre(carre_predator)) {
 				unsigned int age(0);
 				ajouter_fourmis(new Predator(carre_predator, age));
-				++nbP; ++nbT;
+				++nbD; ++nbT;
+				}
 				return;
 			}
 		}
 	}
 }
 
-void Fourmiliere::recherche_espace_libre(Carre& carre_fourmi) {
-	do {
-	random_device rd;
-    uniform_int_distribution<int> distr(2 + carre_fourmi.longeur/2,
-    carre.longeur-2-carre_fourmi.longeur/2);
-    default_random_engine eng(rd());
-    carre_fourmi.point.x = distr(eng)+carre.point.x;
-    carre_fourmi.point.y = distr(eng)+carre.point.y;
-    } while(test_superposition_sans_coord(carre_fourmi));
-     initialise_carre_centre(carre_fourmi);
+bool Fourmiliere::recherche_espace_libre(Carre& carre_fourmi) {
+	if(find_place_in_carre(carre, carre_fourmi)) {
+		initialise_carre_centre(carre_fourmi);
+		return true;
+	} 
+	return false;
 }	
 
 void Fourmiliere::deplacement_generator(Ensemble_food& ensemble_food) {
-	
-	//ensemble_fourmis[0]->deplacement_fourmi(carre, ensemble_food,);
+	ensemble_fourmis[0]->deplacement_fourmi(carre, ensemble_food);
 }
 
 void Fourmiliere::action_autres_fourmis( Ensemble_food& ensemble_food) {

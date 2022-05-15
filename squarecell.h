@@ -62,7 +62,11 @@ bool test_validation_inf_droite(const Carre&);
 
 bool test_diago(const Carre&, const Carre&);
 
+bool find_place_in_carre(const Carre&, Carre&);
+
 void draw_carre(const Carre&, unsigned int, unsigned int);
+
+
 
 #endif
 
