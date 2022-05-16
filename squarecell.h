@@ -56,10 +56,6 @@ bool test_validation_sup_droite(const Carre&);
 
 bool test_validation_inf_droite(const Carre&);
 
-//bool test_superposition_inf_gauche(const Carre&, const Carre&);
-
-//bool test_superposition_sup_gauche(const Carre&, const Carre&);
-
 bool test_diago(const Carre&, const Carre&);
 
 bool find_place_in_carre(const Carre&, Carre&);

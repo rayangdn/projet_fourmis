@@ -213,68 +213,6 @@ bool test_validation_inf_droite(const Carre& carre) {
 	return false;
 } 
 
-
-/*bool test_superposition_inf_gauche(const Carre& carre, const Carre& autre_carre) {
-		//cout << "Carre 1 :" << "X " << carre.point.x << " " << carre.point.x + carre.longeur-1;
-		//cout << " Y " << carre.point.y <<" " << carre.point.y + carre.longeur-1 << endl;
-		//cout << "Carre 2 :" << "X " <<autre_carre.point.x << " " <<  autre_carre.point.x + autre_carre.longeur-1;
-		//cout << " Y " << autre_carre.point.y <<" " << autre_carre.point.y + autre_carre.longeur-1 << endl;
-	
-	
-	if((carre.point.y >= autre_carre.point.y and 
-	   carre.point.y <= autre_carre.point.y + autre_carre.longeur - 1) or
-	   (carre.point.y + carre.longeur - 1 >= autre_carre.point.y and
-	   carre.point.y + carre.longeur - 1 <= autre_carre.point.y+ autre_carre.longeur - 1)) {
-		if(carre.point.x <= autre_carre.point.x) {
-			if(carre.point.x + carre.longeur - 1 >= autre_carre.point.x) {
-				
-				return true;
-			}
-		}
-	}
-	if((carre.point.x  >= autre_carre.point.x and 
-	    carre.point.x <= autre_carre.point.x + autre_carre.longeur-1) or
-	   (carre.point.x + carre.longeur <= autre_carre.point.x and 
-	    carre.point.x + carre.longeur - 1 <= autre_carre.point.x + autre_carre.longeur - 1)) {
-		if(carre.point.y < autre_carre.point.y) {
-			if(carre.point.y + carre.longeur-1 >= autre_carre.point.y) {
-				
-				return true;
-			}
-		}
-	}   
-	return false;
-}
-	
-bool test_superposition_sup_gauche(const Carre& carre, const Carre& autre_carre) {
-	//cout << carre.point.y << " " <<  autre_carre.point.y + autre_carre.longeur -1 << endl;
-	if((carre.point.y >= autre_carre.point.y and 
-	   carre.point.y <= autre_carre.point.y + autre_carre.longeur - 1) or
-	   (carre.point.y + carre.longeur - 1 >= autre_carre.point.y and
-	   carre.point.y + carre.longeur - 1 <= autre_carre.point.y+ autre_carre.longeur - 1)) {
-		if(carre.point.x <= autre_carre.point.x) {
-			if(carre.point.x + carre.longeur - 1 >= autre_carre.point.x) {
-				return true;
-			}
-		}
-	}
-	
-	if((carre.point.x  >= autre_carre.point.x and 
-	    carre.point.x <= autre_carre.point.x + autre_carre.longeur-1) or
-	   (carre.point.x + carre.longeur <= autre_carre.point.x and 
-	    carre.point.x + carre.longeur - 1 <= autre_carre.point.x + autre_carre.longeur - 1)) {
-		if(carre.point.y >= autre_carre.point.y) {
-			if(carre.point.y  <= autre_carre.point.y + autre_carre.longeur -1) {
-				
-				return true;
-			}
-		}
-	}
-	return false;
-}*/
-
-
-
 bool test_diago(const Carre& carre, const Carre& autre_carre) {
 	if(carre.point.x % 2 == 0 and carre.point.y % 2 == 0 and 
 	   autre_carre.point.x % 2 == 0 and autre_carre.point.y % 2 == 0) {
@@ -313,7 +251,6 @@ bool find_place_in_carre(const Carre& carre1, Carre& carre2) {
 				   grid[grid.size()-3-i][j+2] == false  ) {
 					carre2.point.x = j + carre2.longeur/2;
 					carre2.point.y = i + carre2.longeur/2;
-					cout << carre2.point.x << endl;
 					return true;
 				}
 			}

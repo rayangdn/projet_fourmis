@@ -137,6 +137,7 @@ void Fourmi::deplacement_haut() {
 	}
 	initialise_carre_centre(carre);
 }
+
 double Generator::get_total_food() const {
 	return total_food;
 }

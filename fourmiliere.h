@@ -18,22 +18,20 @@ public :
 	bool test_superposition_fourmiliere(const Fourmiliere&, unsigned int,
 										unsigned int);
 	
-	//void test_inf_gauche(const Carre&, unsigned int&);
-	//void test_sup_gauche(const Carre&, unsigned int&);
 	void ajouter_fourmis(Fourmi*);
 	bool test_fourmis(unsigned int, unsigned int);
 	void ecriture_fourmiliere(std::ofstream&) const;
 	void draw_fourmiliere();
 	void calcul_sizeF();
-	bool test_expend(const Fourmiliere&, unsigned int& k);
-	bool superposition_inf_gauche(const Carre&, unsigned int, unsigned int&);
-	bool superposition_sup_gauche(const Carre&, unsigned int, unsigned int&);
-	void expend(unsigned int);
-	void maj_generator();
+	bool test_inf_gauche(Fourmiliere&);
+	bool test_sup_gauche(Fourmiliere&);
+	bool test_sup_droite(Fourmiliere&);
+	bool test_inf_droite(Fourmiliere&);
+	void mise_a_jour(int);
+	void maj_generator(Ensemble_food&);
 	void create_fourmi();
-	void deplacement_generator(Ensemble_food& ensemble_foo);
 	bool recherche_espace_libre(Carre&);
-	void action_autres_fourmis(Ensemble_food& ensemble_foo);
+	void action_autres_fourmis(Ensemble_food&);
 	void destruction_fourmis(Ensemble_food&);
 	bool destruction_fourmiliere();
 private :

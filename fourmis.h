@@ -17,6 +17,7 @@ public :
 	virtual double get_total_food() const { return -1; }
 	virtual bool get_end_of_klan() const { return false; } 
 	virtual bool test_chaque_fourmi(unsigned int, const Carre&)=0;
+	bool fourmis_in_house(const Carre&);
 	virtual void ecriture_frmi(std::ofstream&) const;
 	virtual void draw_fourmis(unsigned int couleur)=0;
 	virtual void consommation(unsigned int) { return; }
@@ -34,7 +35,7 @@ public :
 	unsigned int&)=0;
 protected :
 	void initialise_fourmi();
-	bool fourmis_in_house(const Carre&);
+	
 	Carre carre;
 	unsigned int age;
 	bool end_of_life;

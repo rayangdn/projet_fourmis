@@ -123,18 +123,16 @@ void Simulation::draw_simulation() {
 
 void Simulation::refresh() {
 	//PARTIE CREATION DE NOURRITURE
-	create_food();
+	//create_food();
 	//PARTIE AJUSTEMENT/DEPLACEMENT FOURMILIERE
 	for(size_t i(0); i < ensemble_fourmilieres.size(); ++i) {
-		ensemble_fourmilieres[i].calcul_sizeF();
-		//test_expend_fourmiliere(i);
+		//ensemble_fourmilieres[i].calcul_sizeF();
+		maj_fourmiliere(i);
 	//PARTIE GENERATOR
-	//ensemble_fourmilieres[i].maj_generator(); 
-	//ensemble_fourmilieres[i].create_fourmi();	 
-	ensemble_fourmilieres[i].deplacement_generator(ensemble_food);
+	ensemble_fourmilieres[i].maj_generator(ensemble_food); 
 	//déplacement
 	//PARTIE AUTRES FOURMIS
-	ensemble_fourmilieres[i].action_autres_fourmis(ensemble_food);
+	//ensemble_fourmilieres[i].action_autres_fourmis(ensemble_food);
 	}
 	/*for(size_t i(0); i < ensemble_fourmilieres.size(); ++i) {
 		ensemble_fourmilieres[i].destruction_fourmis(ensemble_food);
@@ -178,59 +176,103 @@ bool Simulation::superposition_food_with_all(const Carre& carre_food) {
 	return false;
 }
 
-bool Simulation::test_expend_fourmiliere(unsigned int i) {
-	unsigned int k(0);
-	for(size_t j(0); j < ensemble_fourmilieres.size(); ++j) {
-		if(i != j) {
-			ensemble_fourmilieres[i].test_expend(ensemble_fourmilieres[j], k);
-				
-			/*Carre carre1 = ensemble_fourmilieres[i].get_carre();
-			unsigned int longeur = carre1.longeur;
-			Carre carre2 = ensemble_fourmilieres[j].get_carre();
-			if(ensemble_fourmilieres[i].superposition_inf_gauche(carre2, longeur, k)) {
-			
-			if(ensemble_fourmilieres[i].superposition_sup_gauche(carre2, longeur, k)) {
-				return true;
-				}*/
-			}
+void Simulation::maj_fourmiliere(unsigned int i) {
+	ensemble_fourmilieres[i].calcul_sizeF();
+	enum Expend_case{IG, SG, SD, ID, RIEN};
+	int expend(RIEN);
+	if(ensemble_fourmilieres.size() ==1) {
+		Carre carre = ensemble_fourmilieres[i].get_carre();
+		if(not(test_validation_inf_gauche(carre))) {
+			expend = IG;
+		} else if(not(test_validation_sup_gauche(carre))) {
+			expend = SG;
+		} else if(not(test_validation_sup_droite(carre))) {
+			expend = SD;
+		} else if(not(test_validation_inf_droite(carre))) {
+			expend =ID;
+		} else {
+			expend = RIEN;
 		}
-	cout << k << endl;
-	ensemble_fourmilieres[i].expend(k);
-}
-	//return false;
-/*bool Simulation::test_fourmiliere(unsigned int i) {
-	cout << "I : " << i << endl;
-	unsigned int k(0);
-	unsigned int taille_f = ensemble_fourmilieres.size();
-	if(taille_f == 1) {
-		if(ensemble_fourmilieres[i].test_inf_gauche()) {
-			if(ensemble_fourmilieres[i].test_sup_gauche()) {
-				if(ensemble_fourmilieres[i].test_sup_droite()) {
-					if(ensemble_fourmilieres[i].test_inf_droite()) {
-						return true;
+		ensemble_fourmilieres[i].mise_a_jour(expend);
+	}
+	/*for(size_t j(0); j < ensemble_fourmilieres.size(); ++j){
+		if(i != j) {
+			if(ensemble_fourmilieres[i].test_inf_gauche(ensemble_fourmilieres[j])){
+				expend=IG;
+			} else {
+				if(ensemble_fourmilieres[i].test_sup_gauche(ensemble_fourmilieres[j])){
+					expend=SG;
+				} else {
+					if(ensemble_fourmilieres[i].test_sup_droite(ensemble_fourmilieres[j])){
+						expend=SD;
+					} else {
+						if(ensemble_fourmilieres[i].test_inf_droite(ensemble_fourmilieres[j])){
+							expend=ID;
+						} else {
+							expend=RIEN;
+						}
 					}
 				}
 			}
 		}
-	} else {
-	for(size_t j(0); j < ensemble_fourmilieres.size(); ++j) {
-			if(i != j) {
-				cout << "J : " << j << endl;
-				Carre carre = ensemble_fourmilieres[j].get_carre();
-				ensemble_fourmilieres[i].test_inf_gauche(carre, k);
-					if(k==0) {
-				   ensemble_fourmilieres[i].test_sup_gauche(carre, k);
-					//return true;
-				}
-			
-				//	}
-				//} 
-			}
-					
-			} 
-		}
-	
-	ensemble_fourmilieres[i].expend_restrict(k);
-	//return false;
+	}
+	ensemble_fourmilieres[i].mise_a_jour(expend);
 }*/
+						
+	int k(0);
+	int l(0);
+	int m(0);
+	int n(0);
+	for(size_t j(0); j < ensemble_fourmilieres.size(); ++j){
+		
+		
+		if(i != j) {
+			//cout << "i= " << i<< ", j= " << j << endl;
+			//cout << "K : " << k << endl;
+			if(k==0) {
+				if(ensemble_fourmilieres[i].test_inf_gauche(ensemble_fourmilieres[j])){
+					expend=IG;
+				//cout << "IG"<< endl;
+				} else {
+					k=1;
+				}
+			} 
+			if(m==0) {
+				if(ensemble_fourmilieres[i].test_sup_gauche(ensemble_fourmilieres[j])){
+					expend=SG;
+				//	cout << "SG"<< endl;
+					
+				} else {
+					m=1;
+				}
+			} 
+			if(l==0) {
+				if(ensemble_fourmilieres[i].test_sup_droite(ensemble_fourmilieres[j])){
+					expend=SD;
+					//cout << "SD"<< endl;
+				} else {
+					l=1;
+				}
+			} 
+			 if(n==0) {
+				//
+				if(ensemble_fourmilieres[i].test_inf_droite(ensemble_fourmilieres[j])){
+					expend=ID;
+				//	cout << "ID"<< endl;
+				} else {
+					n=1;
+				}
+				
+			} 
+			if (k==1 and l==1 and m==1 and n==1) {
+				expend = RIEN;
+				//cout << "ZERO"<< endl;
+			}	
+		}
+	}
+	
+	ensemble_fourmilieres[i].mise_a_jour(expend);
+}
+
+
 

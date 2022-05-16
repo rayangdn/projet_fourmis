@@ -10,7 +10,7 @@ constexpr short unsigned sizeC(3);
 constexpr short unsigned sizeD(3);
 constexpr short unsigned sizeP(1);
 
-constexpr short unsigned bug_life(30);
+constexpr short unsigned bug_life(300);
 
 constexpr short unsigned val_food(50);
 
