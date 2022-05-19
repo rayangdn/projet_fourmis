@@ -97,7 +97,7 @@ bool MyArea::on_draw(const Cairo::RefPtr<Cairo::Context>& cr) {
 MyEvent::MyEvent(Simulation *simulation) : 
 	timer_added(false),
 	disconnect(false),
-	timeout_value(50),
+	timeout_value(20),
 	val(1),
 	indice_frmi(-1),  // valeur avant l'indice de la premiere fourmiliere qui est 0
 	m_Box(Gtk::ORIENTATION_HORIZONTAL,10),

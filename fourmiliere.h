@@ -17,8 +17,8 @@ public :
 	Carre get_carre() const;
 	bool test_superposition_fourmiliere(const Fourmiliere&, unsigned int,
 										unsigned int);
-	
 	void ajouter_fourmis(Fourmi*);
+	void ajouter_fourmis(Fourmi*, unsigned int);
 	bool test_fourmis(unsigned int, unsigned int);
 	void ecriture_fourmiliere(std::ofstream&) const;
 	void draw_fourmiliere();

@@ -50,6 +50,22 @@ void Fourmiliere::ajouter_fourmis(Fourmi* nouveau) {
 	}
 }
 
+
+void Fourmiliere::ajouter_fourmis(Fourmi* nouveau, unsigned int type) {
+	cout << type << endl;
+	if(nouveau!= nullptr) {
+		if(type==0) {
+			ensemble_fourmis.insert(ensemble_fourmis.begin()+nbC, unique_ptr<Fourmi>(nouveau));
+		}
+		if(type==1) {
+			ensemble_fourmis.insert(ensemble_fourmis.begin()+nbC+nbD+1, unique_ptr<Fourmi>(nouveau));
+		}
+		if(type==2) {
+			ensemble_fourmis.push_back(unique_ptr<Fourmi>(nouveau));
+		}	
+	}
+}
+
 bool Fourmiliere::test_fourmis(unsigned  int countF, unsigned int i) {
 	if(ensemble_fourmis[i]->test_chaque_fourmi(countF, carre)) {
 		return true;
@@ -180,18 +196,21 @@ void Fourmiliere::mise_a_jour(int K) {
 
 void Fourmiliere::maj_generator(Ensemble_food& ensemble_food) {
 	ensemble_fourmis[0]->consommation(nbT);
+	Carre null{0, {0, 0}};
 	create_fourmi();
-	double null(0.);
-	ensemble_fourmis[0]->deplacement_fourmi(carre, ensemble_food, null);
+	double null1(0.);
+	ensemble_fourmis[0]->deplacement_fourmi(carre, null, ensemble_food, null1);
 	
 	
 }
 
 void Fourmiliere::create_fourmi() {
 	random_device rd;
+	enum fourmi{C, D, P};
 	//TRIER FOURMI??
 	double total_food = ensemble_fourmis[0]->get_total_food();
-	double p(min(1.0, total_food * birth_rate));
+	//double p(min(1.0, total_food * birth_rate));
+	double p(1.0);
 	bernoulli_distribution b(p);
 	default_random_engine eng(rd());
 	if(b(eng)) {
@@ -200,7 +219,8 @@ void Fourmiliere::create_fourmi() {
 				Carre carre_collector{sizeC, {0,0}};
 				if(recherche_espace_libre(carre_collector)) {
 				unsigned int age(0);
-				ajouter_fourmis(new Collector(carre_collector, age));
+
+				ajouter_fourmis(new Collector(carre_collector, age), C);
 				++nbC; ++nbT;
 				}
 				return;
@@ -208,7 +228,7 @@ void Fourmiliere::create_fourmi() {
 				Carre carre_defensor{sizeD, {0,0}};
 				if(recherche_espace_libre(carre_defensor)) {
 				unsigned int age(0);
-				ajouter_fourmis(new Defensor(carre_defensor, age));
+				ajouter_fourmis(new Defensor(carre_defensor, age), D);
 				++nbD; ++nbT;
 				}
 				return;
@@ -216,7 +236,7 @@ void Fourmiliere::create_fourmi() {
 				Carre carre_predator{sizeP, {0,0}};
 				if(recherche_espace_libre(carre_predator)) {
 				unsigned int age(0);
-				ajouter_fourmis(new Predator(carre_predator, age));
+				ajouter_fourmis(new Predator(carre_predator, age), P);
 				++nbP; ++nbT;
 				}
 				return;
@@ -227,7 +247,7 @@ void Fourmiliere::create_fourmi() {
 				Carre carre_collector{sizeC, {0,0}};
 				if(recherche_espace_libre(carre_collector)) {
 				unsigned int age(0);
-				ajouter_fourmis(new Collector(carre_collector, age));
+				ajouter_fourmis(new Collector(carre_collector, age), C);
 				++nbC; ++nbT;
 				}
 				return;
@@ -235,7 +255,7 @@ void Fourmiliere::create_fourmi() {
 				Carre carre_defensor{sizeD, {0,0}};
 				if(recherche_espace_libre(carre_defensor)) {
 				unsigned int age(0);
-				ajouter_fourmis(new Defensor(carre_defensor, age));
+				ajouter_fourmis(new Defensor(carre_defensor, age), D);
 				++nbD; ++nbT;
 				}
 				return;
@@ -243,7 +263,7 @@ void Fourmiliere::create_fourmi() {
 				Carre carre_predator{sizeP, {0,0}};
 				if(recherche_espace_libre(carre_predator)) {
 				unsigned int age(0);
-				ajouter_fourmis(new Predator(carre_predator, age));
+				ajouter_fourmis(new Predator(carre_predator, age), P);
 				++nbP; ++nbT;
 				}
 				return;
@@ -261,11 +281,12 @@ bool Fourmiliere::recherche_espace_libre(Carre& carre_fourmi) {
 }	
 
 void Fourmiliere::action_autres_fourmis( Ensemble_food& ensemble_food) {
+	Carre carre_fourmi = ensemble_fourmis[0]->get_carre();
 	double total_food = ensemble_fourmis[0]->get_total_food();
 	if(ensemble_fourmis[0]->get_end_of_klan()==false) {
 		 for(size_t i(1); i < ensemble_fourmis.size(); ++i) {
 			ensemble_fourmis[i]->incrementer_age();
-			ensemble_fourmis[i]->deplacement_fourmi(carre, ensemble_food, total_food);
+			ensemble_fourmis[i]->deplacement_fourmi(carre, carre_fourmi, ensemble_food, total_food);
 		}
 	}
 	ensemble_fourmis[0]->set_total_food(total_food);
@@ -336,8 +357,8 @@ bool decodage_line_fourmiliere(string line, Ensemble_fourmilieres& ensemble_four
 		++count_fourmis;
 		countC=0; countD=0; countP=0;
 		if(nbC!=0) {
-			etat_f=COLLECT ;
-			return false ;
+			etat_f=COLLECT;
+			return false;
 		}
 		if(nbD!=0) {
 			etat_f=DEFNS; 
@@ -348,6 +369,7 @@ bool decodage_line_fourmiliere(string line, Ensemble_fourmilieres& ensemble_four
 			return false;
 		} else {
 			count_fourmis=0;
+			++countF;
 			if(ensemble_fourmilieres.size()==total) {
 				color = 1;
 				countF = 0; 
@@ -380,6 +402,7 @@ bool decodage_line_ensemble_fourmis(string line, Fourmiliere *fourmiliere,
 									unsigned int& nbP, unsigned int& color) {
 	Carre carre{0, {0, 0}}; Collector collector(carre, 0);
 	Defensor defensor(carre, 0); Predator predator(carre, 0);
+	enum fourmi{C, D, P};
 	switch(etat_f) {
 		case 1 :
 			decodage_line_fourmis(line, etat_f, collector, defensor, predator);

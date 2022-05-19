@@ -27,6 +27,10 @@ unsigned int Fourmi::get_age() const {
 	return age;
 }
 
+Carre Fourmi::get_carre() const {
+	return carre;
+}
+
 bool Fourmi::get_end_of_life() const {
 	return end_of_life;
 }
@@ -207,8 +211,8 @@ void Generator::consommation(unsigned int nbT) {
 	}
 }
 
-void Generator::deplacement_fourmi(const Carre& carre_f,  Ensemble_food& ensemble_food,
-								   double& null) {
+void Generator::deplacement_fourmi(const Carre& carre_f, Carre& carre_fourmi,
+								   Ensemble_food& ensemble_food, double& null) {
 	if(fourmis_in_house(carre_f)) {
 		end_of_klan = true;
 		return;
@@ -307,20 +311,21 @@ void Collector::draw_fourmis(unsigned int couleur) {
 	}
 }
 
-void Collector::deplacement_fourmi(const Carre& carre_f, Ensemble_food& ensemble_food,
-								   double& total_food) {
+void Collector::deplacement_fourmi(const Carre& carre_f, Carre& carre_generator,
+								   Ensemble_food& ensemble_food, double& total_food) {
 	if(etat_c==EMPTY) {
 		 deplacement_collector_empty(carre_f, ensemble_food);
 	} else if(etat_c==LOADED) {
-		deplacement_collector_loaded(carre_f, total_food);
+		deplacement_collector_loaded(carre_f, carre_generator, total_food);
 	}
 	
 }
 
 
-void Collector::deplacement_collector_loaded(const Carre& carre_f, double& total_food) {
-	int vx = carre_f.point.x+carre_f.longeur-carre.point.x-1;
-	int vy = carre_f.point.y+carre_f.longeur - carre.point.y-1;
+void Collector::deplacement_collector_loaded(const Carre& carre_f, Carre carre_generator,
+											 double& total_food) {
+	int vx = carre_f.point.x+carre_f.longeur/2-carre.point.x-1;
+	int vy = carre_f.point.y+carre_f.longeur/2 - carre.point.y-1;
 	if(abs(vx) == abs(vy) or abs(vy)+1 == abs(vx) or abs(vy) == abs(vx)+1 or 
 	   abs(vy)-1 == abs(vx) or abs(vy) == abs(vx)-1) {
 		if(deplacement_chemin_1_loaded(carre_f, vx, vy)) {
@@ -328,7 +333,7 @@ void Collector::deplacement_collector_loaded(const Carre& carre_f, double& total
 			total_food += val_food;
 		}
 	} else {
-		if(deplacement_chemin_2_loaded(carre_f, vx, vy)) {
+		if(deplacement_chemin_2_loaded(carre_f,carre_generator, vx, vy)) {
 			etat_c = EMPTY;
 			total_food += val_food;
 		}
@@ -337,8 +342,9 @@ void Collector::deplacement_collector_loaded(const Carre& carre_f, double& total
 
 void Collector::deplacement_collector_empty(const Carre& carre_f, Ensemble_food& ensemble_food) {
 	int i(test_diago_proximities(ensemble_food));
+	
 	if( i == -1) {
-		if(!test_superposition_2_carres_non_centre_centre(carre, carre_f)) {
+		if(test_superposition_2_carres_non_centre_centre(carre, carre_f)) {
 			deplacement_collector_out(carre_f);
 		}
 		return;
@@ -623,13 +629,17 @@ bool Collector::deplacement_chemin_1_loaded(const Carre& carre_f, int vx, int vy
 	return false;
 }
 
-bool Collector::deplacement_chemin_2_loaded(const Carre& carre_f, int vx, int vy) {
+bool Collector::deplacement_chemin_2_loaded(const Carre& carre_f, Carre carre_generator,
+											int vx, int vy) {
 	static bool bordure(false);
 	static int j(0);
 	static int i(0);
 	static int saut_bordure(0);
 	int saut1((vx+vy)/2);
 	int saut2((vx-vy)/2);
+	supprimer_carre_centre(carre_generator);
+	unsigned int chemin(best_chemin(saut1, saut2, vx, vy));
+	initialise_carre_centre(carre_generator);
 	if(test_deplacement_bordure(carre, i)) {
 		bordure = true;
 		if(i==1) {
@@ -662,7 +672,6 @@ bool Collector::deplacement_chemin_2_loaded(const Carre& carre_f, int vx, int vy
 		}
 		cout << saut_bordure << endl;
 	}
-	unsigned int chemin(best_chemin(saut1, saut2, vx, vy));
 	if(bordure == false) {
 		if(chemin==1) {
 			if(saut1 > 0 and saut2 > 0) {
@@ -833,8 +842,8 @@ void Defensor::draw_fourmis(unsigned int  couleur) {
 	draw_carre(carre, style, couleur);
 }
 
-void Defensor::deplacement_fourmi(const Carre& carre_f, Ensemble_food& ensemble_food,
-								  double& null) {
+void Defensor::deplacement_fourmi(const Carre& carre_f, Carre& carre_fourmi,
+								  Ensemble_food& ensemble_food, double& null) {
 	if(fourmis_in_house(carre_f)) {
 		end_of_life=true;
 		return;
