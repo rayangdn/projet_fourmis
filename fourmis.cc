@@ -9,9 +9,7 @@
 #include "fourmis.h"
 
 using namespace std;
-
-static int vx_initial(0);
-
+ 
 Fourmi::Fourmi(Carre carre, unsigned int age)
  : carre(carre), age(age), end_of_life(false) {}
 
@@ -63,6 +61,7 @@ void Fourmi::deplacement_droite_haut() {
 	carre.point.x += 1;
 	carre.point.y += 1;
 	if(test_superposition_sans_coord(carre)) {
+		
 		carre.point.x -= 1;
 		carre.point.y -= 1;
 	}
@@ -142,6 +141,10 @@ double Generator::get_total_food() const {
 	return total_food;
 }
 
+void Generator::set_total_food(double total_f) {
+	total_food = total_f;
+}
+
 bool Generator::get_end_of_klan() const {
 	return end_of_klan;
 }
@@ -204,7 +207,8 @@ void Generator::consommation(unsigned int nbT) {
 	}
 }
 
-void Generator::deplacement_fourmi(const Carre& carre_f,  Ensemble_food& ensemble_food) {
+void Generator::deplacement_fourmi(const Carre& carre_f,  Ensemble_food& ensemble_food,
+								   double& null) {
 	if(fourmis_in_house(carre_f)) {
 		end_of_klan = true;
 		return;
@@ -303,18 +307,57 @@ void Collector::draw_fourmis(unsigned int couleur) {
 	}
 }
 
-void Collector::deplacement_fourmi(const Carre& carre_f, Ensemble_food& ensemble_food) {
-	if(test_superposition_2_carres_non_centre_centre(carre, carre_f)) {
+void Collector::deplacement_fourmi(const Carre& carre_f, Ensemble_food& ensemble_food,
+								   double& total_food) {
+	if(etat_c==EMPTY) {
+		 deplacement_collector_empty(carre_f, ensemble_food);
+	} else if(etat_c==LOADED) {
+		deplacement_collector_loaded(carre_f, total_food);
+	}
+	
+}
+
+
+void Collector::deplacement_collector_loaded(const Carre& carre_f, double& total_food) {
+	int vx = carre_f.point.x+carre_f.longeur/2 -carre.point.x;
+	int vy = carre_f.point.y+carre_f.longeur/2 - carre.point.y;
+	
+	if(abs(vx) == abs(vy) or abs(vy)+1 == abs(vx) or abs(vy) == abs(vx)+1 or 
+	   abs(vy)-1 == abs(vx) or abs(vy) == abs(vx)-1) {
+		if(deplacement_chemin_1_loaded(carre_f, vx, vy)) {
+			etat_c = EMPTY;
+			total_food += val_food;
+		}
+	} else {
+		if(deplacement_chemin_2_loaded(carre_f, vx, vy)) {
+			etat_c = EMPTY;
+			total_food += val_food;
+		}
+	}
+}
+
+void Collector::deplacement_collector_empty(const Carre& carre_f, Ensemble_food& ensemble_food) {
+	int i(test_diago_proximities(ensemble_food));
+	if( i == -1) {
 		deplacement_collector_out(carre_f);
 		return;
 	}
-	if(etat_c==LOADED) {
-		deplacement_collector_loaded(carre_f);
-	}
-	if(etat_c==EMPTY) {
-		 deplacement_collector_empty(ensemble_food);
-	}
-}
+	int vx = ensemble_food[i].get_carre().point.x - carre.point.x;
+	int vy = ensemble_food[i].get_carre().point.y - carre.point.y;
+	if(abs(vx) == abs(vy) or abs(vy)+1 == abs(vx) or abs(vy) == abs(vx)+1 or 
+	   abs(vy)-1 == abs(vx) or abs(vy) == abs(vx)-1) {
+		if(deplacement_chemin_1_empty(ensemble_food[i].get_carre(), vx, vy)) {
+			etat_c = LOADED;
+			ensemble_food.erase(ensemble_food.begin()+i);
+			
+		}
+	} else {
+		if(deplacement_chemin_2_empty(ensemble_food[i].get_carre(), vx, vy)) {
+			etat_c = LOADED;
+			ensemble_food.erase(ensemble_food.begin()+i);
+		}
+	}	
+} 
 
 void Collector::deplacement_collector_out(const Carre& carre_f) {
 	int dist1 = carre.point.x+carre.longeur/2+1 - carre_f.point.x;
@@ -328,6 +371,10 @@ void Collector::deplacement_collector_out(const Carre& carre_f) {
 			index = i;
 		}
 	}
+	if(!test_superposition_2_carres_non_centre_centre(carre, carre_f)) {
+		return;
+	}
+	cout << proximities[index] << " " << index << endl;
 	if(index==0) {
 		deplacement_gauche_bas();
 	}
@@ -343,55 +390,11 @@ void Collector::deplacement_collector_out(const Carre& carre_f) {
 	
 }
 
-void Collector::deplacement_collector_loaded(const Carre& carre_f) {
-	int vx(0); int vy(0);
-		
-	 vx = carre_f.point.x+sizeG/2 -carre.point.x;
-	 vy = carre_f.point.y+sizeG/2 - carre.point.y;
-	
-	if(abs(vx) == abs(vy)) {
-		if(deplacement_chemin_1_loaded(carre_f, vx, vy)) {
-			etat_c = EMPTY;
-			vx = 0;
-			vy = 0;
-		}
-	} else {
-		if(deplacement_chemin_2_loaded(carre_f, vx, vy)) {
-			etat_c = EMPTY;
-			vx = 0;
-			vy = 0;
-		}
-	}
-}
-
-void Collector::deplacement_collector_empty(Ensemble_food& ensemble_food) {
-	int i(test_diago_proximities(ensemble_food));
-	if( i == -1) {
-		return;
-	}
-	int vx = ensemble_food[i].get_carre().point.x - carre.point.x;
-	int vy = ensemble_food[i].get_carre().point.y - carre.point.y;
-	if(abs(vx) == abs(vy)) {
-		if(deplacement_chemin_1_empty(ensemble_food[i].get_carre(), vx, vy)) {
-			etat_c = LOADED;
-			vx = 0;
-			vy = 0;
-			ensemble_food.erase(ensemble_food.begin()+i);
-			
-		}
-	} else {
-		if(deplacement_chemin_2_empty(ensemble_food[i].get_carre(), vx, vy)) {
-			etat_c = LOADED;
-			vx = 0;
-			vy = 0;
-			ensemble_food.erase(ensemble_food.begin()+i);
-		}
-	}	
-} 
-
 int Collector::test_diago_proximities(const Ensemble_food& ensemble_food) {
+	int index(0);
 	if(ensemble_food.size() == 0) {
-		return -1;
+		index = -1;
+		return index;
 	}
 	vector<unsigned int> proximities;
 	for(size_t i(0); i < ensemble_food.size(); ++i) {
@@ -399,41 +402,46 @@ int Collector::test_diago_proximities(const Ensemble_food& ensemble_food) {
 		if(test_diago(carre, ensemble_food[i].get_carre())) {
 			int vx = ensemble_food[i].get_carre().point.x - carre.point.x;
 			int vy = ensemble_food[i].get_carre().point.y - carre.point.y;
+			
 			prox = max(abs(vx), abs(vy));
-			proximities.push_back(prox);
+		}
+		proximities.push_back(prox);
+	}
+	
+	for(size_t i(0); i < proximities.size(); ++i) {
+		if(proximities[i]==0) {
+			index = -1;
 		} else {
-			proximities.push_back(prox);
+			index = 0;
+			break;
 		}
 	}
-	unsigned int index = 0;
+	if(index==-1) {
+		return index;
+	}
 	for(size_t i(0); i < proximities.size(); ++i) {
 		if(proximities[i] < proximities[index] and proximities[i] != 0) {
 			index = i;
 		}
 	}
-	proximities.clear();
 	return index;
 }
 
 bool Collector::deplacement_chemin_1_empty(const Carre& carre_food, int vx, int vy) {
-	cout << "EMPTY 1" << endl;
 	supprimer_carre_centre(carre_food);
+	cout << "EMPTY 1" << endl;
 	if(vx < 0 and vy < 0) {
 		deplacement_gauche_bas();
-		
 	} else if(vx > 0 and vy > 0) {
 		deplacement_droite_haut();
-		
 	} else if(vx < 0 and vy > 0) {
 		 deplacement_gauche_haut();
-		 
 	} else if(vx > 0 and vy < 0) {
 		deplacement_droite_bas();
-		
 	}
+	
 	if(test_superposition_2_carres_centre(carre, carre_food)) {
 		supprimer_carre_centre(carre_food);
-		vx_initial = 0;
 		return true;
 	}
 	initialise_carre_centre(carre_food);
@@ -441,36 +449,169 @@ bool Collector::deplacement_chemin_1_empty(const Carre& carre_food, int vx, int 
 }
 
 bool Collector::deplacement_chemin_2_empty(const Carre& carre_food, int vx, int vy) {
-	//sa saxe sur une diago au finale
-	cout << "EMPTY 2 :" << endl;
-	int x(0); int y(0);
-	calcul_itineraire(vx, vy, x, y); //sans superposition
-	
-	if( vx_initial == 0) {
-		vx_initial = vx;
-	}
-	supprimer_carre_centre(carre_food);
-	if(vx_initial < 0) {
-		if (x < 0) {
-			deplacement_gauche_bas();
-		} else if (x > 0) {
-			deplacement_gauche_haut();
+	static bool bordure(false);
+	static int j(0);
+	static int i(0);
+	static int saut_bordure(0);
+	int saut1((vx+vy)/2);
+	int saut2((vx-vy)/2);
+	if(test_deplacement_bordure(carre, i)) {
+		bordure = true;
+		if(i==1) {
+			if(vy > 0) {
+				saut_bordure = saut2;
+			} else {
+				saut_bordure = saut1;
+			}
 		}
+		if(i ==2) {
+			if(vy < 0) {
+				saut_bordure = saut2;
+			} else {
+				saut_bordure = saut1;
+			}
+		}
+		if(i==3) {
+			if(vx < 0) {
+				saut_bordure = saut1;
+			} else {
+				saut_bordure = saut2;
+			}
+		}
+		if(i==4) {
+			if(vx > 0) {
+				saut_bordure = saut1;
+			} else {
+				saut_bordure = saut2;
+			}
+		}
+		cout << saut_bordure << endl;
 	}
-	if(vx_initial > 0) {
-		if ( x < 0) {
-			deplacement_droite_bas();
-		} else if(x > 0) {
-			deplacement_droite_haut();
+	
+	supprimer_carre_centre(carre_food);
+	cout << "saut "<<  saut1 << " " << saut2 << endl;
+	unsigned int chemin(best_chemin(saut1, saut2, vx, vy));
+	if(bordure == false) {
+		if(chemin==1) {
+			if(saut1 > 0 and saut2 > 0) {
+				deplacement_droite_haut();
+			} else if(saut1 < 0 and saut2 < 0) {
+				deplacement_gauche_haut();
+			} else if(saut1 < 0 and saut2 > 0) {
+				deplacement_droite_bas();
+			} else if(saut1 > 0 and saut2 < 0) {
+				deplacement_droite_haut();
+			}	
+		} else if(chemin==2) {
+			if(saut1 > 0 and saut2 > 0) {
+				deplacement_droite_bas();
+			} else if(saut1 < 0 and saut2 < 0) {
+				deplacement_gauche_bas();
+			} else if(saut1 < 0 and saut2 > 0) {
+				deplacement_gauche_bas();
+			} else if(saut1 > 0 and saut2 < 0) {
+				deplacement_gauche_haut();
+			}
+		}
+	} else {
+		if(i==1) {
+			if(saut1 > 0) {
+				if(j<abs(saut_bordure)) {
+				deplacement_droite_haut();
+				++j;
+				} else {
+					j=0;
+					bordure = false;
+					deplacement_gauche_haut();
+				}
+			} else if(saut1 < 0) {
+				if(j<abs(saut_bordure)) {
+				deplacement_droite_bas();
+				++j;
+				} else {
+					j=0;
+					bordure = false;
+					deplacement_gauche_bas();
+				}
+			}
+		}
+		if(i==2) {
+			if(saut1 > 0) {
+				if(j<abs(saut_bordure)) {
+				deplacement_gauche_haut();
+				++j;
+				} else {
+					j=0;
+					bordure = false;
+					deplacement_droite_haut();
+				}
+			} else if(saut1 < 0) {
+				if(j<abs(saut_bordure)) {
+				deplacement_gauche_bas();
+				++j;
+				} else {
+					j=0;
+					bordure = false;
+					deplacement_droite_bas();
+				}
+			}
+		}
+		if(i==3) {
+			if(saut1 > 0) {
+				if(j<abs(saut_bordure)) {
+				deplacement_droite_haut();
+				++j;
+				} else {
+					j=0;
+					bordure = false;
+					deplacement_droite_bas();
+				}
+			} else if(saut1 < 0) {
+				if(j<abs(saut_bordure)) {
+				deplacement_gauche_haut();
+				++j;
+				} else {
+					j=0;
+					bordure = false;
+					deplacement_gauche_bas();
+				}
+			}
+		}
+		if(i==4) {
+			if(saut1 > 0) {
+				if(j<abs(saut_bordure)) {
+				deplacement_droite_bas();
+				++j;
+				} else {
+					j=0;
+					bordure = false;
+					deplacement_droite_haut();
+				}
+			} else if(saut1 < 0) {
+				if(j<abs(saut_bordure)) {
+				deplacement_gauche_bas();
+				++j;
+				} else {
+					j=0;
+					bordure = false;
+					deplacement_gauche_haut();
+				}
+			}
 		}
 	}
 	if(test_superposition_2_carres_centre(carre, carre_food)) {
 		supprimer_carre_centre(carre_food);
-		vx_initial = 0;
 		return true;
 	}
 	initialise_carre_centre(carre_food);
 	return false;
+}
+
+unsigned int Collector::best_chemin(int& saut1, int& saut2, int vx, int vy) {
+	supprimer_carre_centre(carre);
+	unsigned int chemin(test_chemin(carre, saut1, saut2));
+	initialise_carre_centre(carre);
+	return chemin;
 }
 
 bool Collector::deplacement_chemin_1_loaded(const Carre& carre_f, int vx, int vy) {
@@ -485,50 +626,165 @@ bool Collector::deplacement_chemin_1_loaded(const Carre& carre_f, int vx, int vy
 		deplacement_droite_bas();
 	}
 	if(test_superposition_2_carres_non_centre_centre(carre, carre_f)) {
-		vx_initial = 0;
 		return true;
 	}
 	return false;
 }
 
 bool Collector::deplacement_chemin_2_loaded(const Carre& carre_f, int vx, int vy) {
-	cout << "LOADED 2:" << endl;
-	int x(0); int y(0);
-	calcul_itineraire(vx, vy, x, y);
-	if( vx_initial == 0) {
-		vx_initial = vx;
-	}
-	if(vx_initial < 0) {
-		if (x < 0) {
-			deplacement_gauche_bas();
-		} else if (x > 0) {
-			deplacement_gauche_haut();
+	static bool bordure(false);
+	static int j(0);
+	static int i(0);
+	static int saut_bordure(0);
+	int saut1((vx+vy)/2);
+	int saut2((vx-vy)/2);
+	if(test_deplacement_bordure(carre, i)) {
+		bordure = true;
+		if(i==1) {
+			if(vy > 0) {
+				saut_bordure = saut2;
+			} else {
+				saut_bordure = saut1;
+			}
 		}
-	}
-	if(vx_initial > 0) {
-		if ( x < 0) {
-			deplacement_droite_bas();
-		} else if(x > 0) {
-			deplacement_droite_haut();
+		if(i ==2) {
+			if(vy < 0) {
+				saut_bordure = saut2;
+			} else {
+				saut_bordure = saut1;
+			}
 		}
+		if(i==3) {
+			if(vx < 0) {
+				saut_bordure = saut1;
+			} else {
+				saut_bordure = saut2;
+			}
+		}
+		if(i==4) {
+			if(vx > 0) {
+				saut_bordure = saut1;
+			} else {
+				saut_bordure = saut2;
+			}
+		}
+		cout << saut_bordure << endl;
 	}
-	if(test_superposition_2_carres_non_centre_centre(carre, carre_f)) {
-		vx_initial = 0;
-		return true;
-	}
-	return false;
-}
-
-void Collector::calcul_itineraire(int vx, int vy, int& x, int& y) {
-	for(int i(-g_max); i <= g_max; ++i) {
-		for(int  j(-g_max); j <= g_max; ++j) {
-			if( i+j== vx and i-j == vy) {
-				x=i;
-				y=-j; //ou -j selon superposition
+	//unsigned int chemin(best_chemin(saut1, saut2, vx, vy));
+	unsigned int chemin(1);
+	if(bordure == false) {
+		if(chemin==1) {
+			if(saut1 > 0 and saut2 > 0) {
+				deplacement_droite_haut();
+			} else if(saut1 < 0 and saut2 < 0) {
+				deplacement_gauche_haut();
+			} else if(saut1 < 0 and saut2 > 0) {
+				deplacement_droite_bas();
+			} else if(saut1 > 0 and saut2 < 0) {
+				deplacement_droite_haut();
+			}	
+		} else if(chemin==2) {
+			if(saut1 > 0 and saut2 > 0) {
+				deplacement_droite_bas();
+			} else if(saut1 < 0 and saut2 < 0) {
+				deplacement_gauche_bas();
+			} else if(saut1 < 0 and saut2 > 0) {
+				deplacement_gauche_bas();
+			} else if(saut1 > 0 and saut2 < 0) {
+				deplacement_gauche_haut();
+			}
+		}
+	} else {
+		if(i==1) {
+			if(saut1 > 0) {
+				if(j<abs(saut_bordure)) {
+				deplacement_droite_haut();
+				++j;
+				} else {
+					j=0;
+					bordure = false;
+					deplacement_gauche_haut();
+				}
+			} else if(saut1 < 0) {
+				if(j<abs(saut_bordure)) {
+				deplacement_droite_bas();
+				++j;
+				} else {
+					j=0;
+					bordure = false;
+					deplacement_gauche_bas();
+				}
+			}
+		}
+		if(i==2) {
+			if(saut1 > 0) {
+				if(j<abs(saut_bordure)) {
+				deplacement_gauche_haut();
+				++j;
+				} else {
+					j=0;
+					bordure = false;
+					deplacement_droite_haut();
+				}
+			} else if(saut1 < 0) {
+				if(j<abs(saut_bordure)) {
+				deplacement_gauche_bas();
+				++j;
+				} else {
+					j=0;
+					bordure = false;
+					deplacement_droite_bas();
+				}
+			}
+		}
+		if(i==3) {
+			if(saut1 > 0) {
+				if(j<abs(saut_bordure)) {
+				deplacement_droite_haut();
+				++j;
+				} else {
+					j=0;
+					bordure = false;
+					deplacement_droite_bas();
+				}
+			} else if(saut1 < 0) {
+				if(j<abs(saut_bordure)) {
+				deplacement_gauche_haut();
+				++j;
+				} else {
+					j=0;
+					bordure = false;
+					deplacement_gauche_bas();
+				}
+			}
+		}
+		if(i==4) {
+			if(saut1 > 0) {
+				if(j<abs(saut_bordure)) {
+				deplacement_droite_bas();
+				++j;
+				} else {
+					j=0;
+					bordure = false;
+					deplacement_droite_haut();
+				}
+			} else if(saut1 < 0) {
+				if(j<abs(saut_bordure)) {
+				deplacement_gauche_bas();
+				++j;
+				} else {
+					j=0;
+					bordure = false;
+					deplacement_gauche_haut();
+				}
 			}
 		}
 	}
-	//testet avec superposition
+
+	if(test_superposition_2_carres_non_centre_centre(carre, carre_f)) {
+		return true;
+	}
+	return false;
 }
 
 void Collector::destruction_fourmi(Ensemble_food& ensemble_food, unsigned int& nbC, 
@@ -586,16 +842,15 @@ void Defensor::draw_fourmis(unsigned int  couleur) {
 	draw_carre(carre, style, couleur);
 }
 
-void Defensor::deplacement_fourmi(const Carre& carre_f,  Ensemble_food& ensemble_food) {
+void Defensor::deplacement_fourmi(const Carre& carre_f, Ensemble_food& ensemble_food,
+								  double& null) {
 	if(fourmis_in_house(carre_f)) {
 		end_of_life=true;
 		return;
 	}
-	//CALCUL DIST MINIM  A BORDURE ET VA AU PLUS PROCHE OKE??
-	//SI COLLISION PAS DEE DEPLACEMENT OKE??
-	int x_b1 =  (carre.point.x-carre.longeur/2-carre_f.point.x-1);//enlever la bordure
+	int x_b1 =  (carre.point.x-carre.longeur/2-carre_f.point.x-1);
 	int x_b2 =  (carre_f.point.x+carre_f.longeur-2-carre.point.x-carre.longeur/2);
-	int y_b1 =  (carre.point.y-carre.longeur/2-carre_f.point.y-1);//enlever la bordure
+	int y_b1 =  (carre.point.y-carre.longeur/2-carre_f.point.y-1);
 	int y_b2 =  (carre_f.point.y+carre_f.longeur-2-carre.point.y-carre.longeur/2);
 	if(x_b1 == 0 or x_b2 == 0 or y_b1 == 0 or y_b2 == 0) {
 		return;

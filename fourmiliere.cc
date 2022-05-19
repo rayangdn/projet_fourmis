@@ -37,7 +37,7 @@ Carre Fourmiliere::get_carre() const {
 
 bool Fourmiliere::test_superposition_fourmiliere(const Fourmiliere& autre_fourmiliere,
 												 unsigned int countF, unsigned int i) {
-	if(test_superposition_2_carres(carre, autre_fourmiliere.carre)) {
+	if(test_superposition_2_carres_non_centre(carre, autre_fourmiliere.carre)) {
 		cout << message::homes_overlap(i, countF);
 		return true;
 	}
@@ -94,7 +94,8 @@ bool Fourmiliere::test_inf_gauche(Fourmiliere& F) {
 	Carre test;
 	test.longeur = sizeF + 2;
 	test.point = carre.point;
-	if(not(test_superposition_2_carres(test, F.carre)) and not(test_validation_inf_gauche(test))) {
+	if(not(test_superposition_2_carres_non_centre(test, F.carre)) 
+	   and not(test_validation_inf_gauche(test))) {
 		return true;
 	} else {
 		return false;
@@ -107,7 +108,8 @@ bool Fourmiliere::test_sup_gauche(Fourmiliere& F) {			//OK?
 	test.longeur = sizeF + 2;
 	test.point.x = carre.point.x;
 	test.point.y = carre.point.y  + carre.longeur-test.longeur;;
-	if(not(test_superposition_2_carres(test, F.carre)) and not(test_validation_sup_gauche(test))) {
+	if(not(test_superposition_2_carres_non_centre(test, F.carre)) 
+	   and not(test_validation_sup_gauche(test))) {
 		return true;
 	} else {
 		return false;
@@ -119,7 +121,8 @@ bool Fourmiliere::test_sup_droite(Fourmiliere& F) { 			//OK?
 	test.longeur = sizeF + 2;
 	test.point.x = carre.point.x  + carre.longeur-test.longeur;;
 	test.point.y = carre.point.y  + carre.longeur-test.longeur;;
-	if(not(test_superposition_2_carres(test, F.carre)) and not(test_validation_sup_droite(test))) {
+	if(not(test_superposition_2_carres_non_centre(test, F.carre)) 
+	   and not(test_validation_sup_droite(test))) {
 		return true;
 	} else {
 		return false;
@@ -132,7 +135,8 @@ bool Fourmiliere::test_inf_droite(Fourmiliere& F) {			//OK?
 	test.point.x = carre.point.x + carre.longeur-test.longeur;
 	test.point.y = carre.point.y;
 	
-	if(not(test_superposition_2_carres(test, F.carre)) and not(test_validation_inf_droite(test))){
+	if(not(test_superposition_2_carres_non_centre(test, F.carre)) 
+	   and not(test_validation_inf_droite(test))){
 		return true;
 	} else {
 		return false;
@@ -177,7 +181,8 @@ void Fourmiliere::mise_a_jour(int K) {
 void Fourmiliere::maj_generator(Ensemble_food& ensemble_food) {
 	ensemble_fourmis[0]->consommation(nbT);
 	create_fourmi();
-	ensemble_fourmis[0]->deplacement_fourmi(carre, ensemble_food);
+	double null(0.);
+	ensemble_fourmis[0]->deplacement_fourmi(carre, ensemble_food, null);
 	
 	
 }
@@ -185,7 +190,7 @@ void Fourmiliere::maj_generator(Ensemble_food& ensemble_food) {
 void Fourmiliere::create_fourmi() {
 	random_device rd;
 	//TRIER FOURMI??
-	//double total_food = ensemble_fourmis[0]->get_total_food();
+	double total_food = ensemble_fourmis[0]->get_total_food();
 	//double p(min(1.0, total_food * birth_rate));
 	double p(1);
 	bernoulli_distribution b(p);
@@ -257,12 +262,14 @@ bool Fourmiliere::recherche_espace_libre(Carre& carre_fourmi) {
 }	
 
 void Fourmiliere::action_autres_fourmis( Ensemble_food& ensemble_food) {
+	double total_food = ensemble_fourmis[0]->get_total_food();
 	if(ensemble_fourmis[0]->get_end_of_klan()==false) {
 		 for(size_t i(1); i < ensemble_fourmis.size(); ++i) {
 			ensemble_fourmis[i]->incrementer_age();
-			ensemble_fourmis[i]->deplacement_fourmi(carre, ensemble_food);
+			ensemble_fourmis[i]->deplacement_fourmi(carre, ensemble_food, total_food);
 		}
 	}
+	ensemble_fourmis[0]->set_total_food(total_food);
 }
 	
 void Fourmiliere::destruction_fourmis(Ensemble_food& ensemble_food) {

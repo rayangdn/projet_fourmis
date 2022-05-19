@@ -18,7 +18,8 @@ public :
 	void ecriture_fichier(std::ofstream&) const;
 	void draw_simulation();
 	void refresh();
-	void maj_fourmiliere(unsigned int);
+	void maj_fourmiliere(unsigned int i);
+	void defensor_kill_collector(unsigned int i);
 private :
 	Ensemble_food ensemble_food;
 	Ensemble_fourmilieres ensemble_fourmilieres;

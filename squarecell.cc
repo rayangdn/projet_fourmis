@@ -65,9 +65,6 @@ bool test_validation_carre_centre(const Carre& carre) {
 	return false;
 }
 
-bool test_validation_carre_centre_no_mess(const Carre& carre) {
-}
-	
 bool test_validation_carre_no_bound(const Carre& carre) {
 	if(carre.point.x == 0 or  carre.point.x == g_max-1) {
 		cout << "coordinate " << carre.point.x << " does not belong to ] 0, "
@@ -119,7 +116,7 @@ void supprimer_carre_centre(const Carre& carre) {
 	}
 }
 
-bool test_superposition_2_carres(const Carre& carre, const Carre& autre_carre) {
+bool test_superposition_2_carres_non_centre(const Carre& carre, const Carre& autre_carre) {
 	if ((carre.point.x < autre_carre.point.x + autre_carre.longeur) and
 		(carre.point.x + carre.longeur > autre_carre.point.x) and
 		(carre.point.y < autre_carre.point.y + autre_carre.longeur) and
@@ -132,10 +129,10 @@ bool test_superposition_2_carres(const Carre& carre, const Carre& autre_carre) {
 bool test_superposition_2_carres_non_centre_centre(const Carre& carre,
 												   const Carre& autre_carre) {
 													   
-	if ((carre.point.x-carre.longeur/2 < autre_carre.point.x + autre_carre.longeur-1) and 
-		(carre.point.x + carre.longeur/2+1 > autre_carre.point.x+1) and
-		(carre.point.y-carre.longeur/2 < autre_carre.point.y + autre_carre.longeur-1) and
-		(carre.point.y + carre.longeur/2+1 > autre_carre.point.y+1)) {
+	if ((carre.point.x-carre.longeur/2 < autre_carre.point.x + autre_carre.longeur) and 
+		(carre.point.x + carre.longeur/2+1 > autre_carre.point.x) and
+		(carre.point.y-carre.longeur/2 < autre_carre.point.y + autre_carre.longeur) and
+		(carre.point.y + carre.longeur/2+1 > autre_carre.point.y)) {
 		return true;
    }
    return false;								   
@@ -217,6 +214,12 @@ bool test_diago(const Carre& carre, const Carre& autre_carre) {
 	if(carre.point.x % 2 == 0 and carre.point.y % 2 == 0 and 
 	   autre_carre.point.x % 2 == 0 and autre_carre.point.y % 2 == 0) {
 		   return true;
+	 } else if(carre.point.x % 2 == 1 and carre.point.y % 2 == 0 and 
+	          autre_carre.point.x % 2 == 1 and autre_carre.point.y % 2 == 0) {
+				  return true;
+	 } else if(carre.point.x % 2 == 0 and carre.point.y % 2 == 1 and 
+	          autre_carre.point.x % 2 == 0 and autre_carre.point.y % 2 == 1) {
+				  return true;
 	} else if(carre.point.x % 2 == 1 and carre.point.y % 2 == 1 and 
 	          autre_carre.point.x % 2 == 1 and autre_carre.point.y % 2 == 1) {
 				  return true;
@@ -232,6 +235,156 @@ bool test_diago(const Carre& carre, const Carre& autre_carre) {
 	}else if(carre.point.x % 2 == 1 and carre.point.y % 2 == 0 and 
 			 autre_carre.point.x % 2 == 0 and autre_carre.point.y % 2 == 1) {
 				  return true;
+	}
+	return false;
+}
+
+unsigned int test_chemin(Carre test, int saut1, int saut2) {
+	Grid grid1 = grid;
+	Carre autre_carre = test;
+	unsigned int sup1(0);
+	unsigned int sup2(0);
+	unsigned int j(0);
+	bool bordure(false);
+	if(saut1 > 0 and saut2 > 0) {
+		for(size_t i(0); i < abs(saut1); ++i) {
+			if(test_deplacement_bordure(test, j)) {
+				bordure=true;
+			}
+			if(bordure==true) {
+				test.point.x +=1;
+				test.point.y -=1;
+			
+			} else {
+				test.point.x +=1;
+				test.point.y +=1;
+			}
+			test_sup_chemin(test, sup1);
+		}
+		for(size_t i(0); i < abs(saut2); ++i) {
+			test.point.x +=1;
+			test.point.y -= 1;
+			test_sup_chemin(test, sup1);
+		}
+		test = autre_carre;
+		for(size_t i(0); i < abs(saut2); ++i) {
+			test.point.x +=1;
+			test.point.y -= 1;
+			test_sup_chemin(test, sup2);
+		}
+		for(size_t i(0); i < abs(saut1); ++i) {
+			test.point.x +=1;
+			test.point.y += 1;
+			test_sup_chemin(test, sup2);
+		} 
+		test = autre_carre;
+	} else if(saut1 < 0 and saut2 < 0) {
+		for(size_t i(0); i < abs(saut2); ++i) {
+			test.point.x -=1;
+			test.point.y += 1;
+			test_sup_chemin(test, sup1);
+		}
+		for(size_t i(0); i < abs(saut1); ++i) {
+			test.point.x -=1;
+			test.point.y -= 1;
+			test_sup_chemin(test, sup1);
+		}
+		test = autre_carre;
+		for(size_t i(0); i < abs(saut1); ++i) {
+			test.point.x -=1;
+			test.point.y -= 1;
+			test_sup_chemin(test, sup2);
+		}
+		for(size_t i(0); i < abs(saut2); ++i) {
+			test.point.x -=1;
+			test.point.y += 1;
+			test_sup_chemin(test, sup2);
+		} 
+		test = autre_carre;
+	} else if(saut1 < 0 and saut2 > 0) {
+		for(size_t i(0); i < abs(saut2); ++i) {
+			test.point.x +=1;
+			test.point.y -= 1;
+			test_sup_chemin(test, sup1);
+		}
+		for(size_t i(0); i < abs(saut1); ++i) {
+			test.point.x -=1;
+			test.point.y -= 1;
+			test_sup_chemin(test, sup1);
+		}
+		test = autre_carre;
+		for(size_t i(0); i < abs(saut1); ++i) {
+			test.point.x -=1;
+			test.point.y -= 1;
+			test_sup_chemin(test, sup1);
+		}
+		for(size_t i(0); i < abs(saut2); ++i) {
+			test.point.x +=1;
+			test.point.y -= 1;
+			test_sup_chemin(test, sup1);
+		}
+		test = autre_carre;
+	} else if(saut1 > 0 and saut2 < 0 ) {
+		for(size_t i(0); i < abs(saut1); ++i) {
+			test.point.x +=1;
+			test.point.y += 1;
+			test_sup_chemin(test, sup1);
+		}
+		for(size_t i(0); i < abs(saut2); ++i) {
+			test.point.x -=1;
+			test.point.y += 1;
+			test_sup_chemin(test, sup1);
+		}
+		test = autre_carre;
+		for(size_t i(0); i < abs(saut2); ++i) {
+			test.point.x -=1;
+			test.point.y += 1;
+			test_sup_chemin(test, sup1);
+		}
+		for(size_t i(0); i < abs(saut1); ++i) {
+			test.point.x +=1;
+			test.point.y += 1;
+			test_sup_chemin(test, sup1);
+		}
+		test = autre_carre;
+	}
+	cout << sup1 << " " << sup2 << endl;
+	grid = grid1;
+	if(sup2 < sup1) {
+		return 2;
+	}
+	return 1;
+}
+
+void test_sup_chemin(const Carre& carre, unsigned int& sup) {
+	for(size_t i(carre.point.y-carre.longeur/2);
+	    i < carre.point.y + (carre.longeur/2+1); ++i) {
+		for(size_t j(carre.point.x-carre.longeur/2); 
+		    j < carre.point.x + (carre.longeur/2+1); ++j) {
+			if(grid[grid.size()-1-i][j] == true) {
+				grid[grid.size()-1-i][j] = false;
+				++sup;
+			}
+		}
+	}
+}
+
+bool test_deplacement_bordure(const Carre& carre, int& i) {
+	if(carre.point.x-carre.longeur/2 == 0) {
+		i=1;
+		return true;
+	}
+	if(carre.point.x+carre.longeur/2 == g_max-1) {
+		i=2;
+		return true;
+	}
+	if(carre.point.y-carre.longeur/2 == 0) {
+		i=3;
+		return true;
+	}
+	if(carre.point.y+carre.longeur/2 == g_max-1) {
+		i=4;
+		return true;
 	}
 	return false;
 }
@@ -265,7 +418,7 @@ bool find_place_in_carre(const Carre& carre1, Carre& carre2) {
 	}
 	return false;
 }
-	
+
 void draw_carre(const Carre& carre, unsigned int style,
 unsigned int couleur) {
 	if(style==VIDE) {
