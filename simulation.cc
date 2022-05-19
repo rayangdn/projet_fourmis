@@ -130,7 +130,7 @@ void Simulation::refresh() {
 	//PARTIE GENERATOR
 		ensemble_fourmilieres[i].maj_generator(ensemble_food); 
 	//PARTIE AUTRES FOURMIS
-		//ensemble_fourmilieres[i].action_autres_fourmis(ensemble_food);
+		ensemble_fourmilieres[i].action_autres_fourmis(ensemble_food);
 		defensor_kill_collector(i);
 	}
 	for(size_t i(0); i < ensemble_fourmilieres.size(); ++i) {

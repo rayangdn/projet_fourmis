@@ -319,9 +319,8 @@ void Collector::deplacement_fourmi(const Carre& carre_f, Ensemble_food& ensemble
 
 
 void Collector::deplacement_collector_loaded(const Carre& carre_f, double& total_food) {
-	int vx = carre_f.point.x+carre_f.longeur/2 -carre.point.x;
-	int vy = carre_f.point.y+carre_f.longeur/2 - carre.point.y;
-	
+	int vx = carre_f.point.x+carre_f.longeur-carre.point.x-1;
+	int vy = carre_f.point.y+carre_f.longeur - carre.point.y-1;
 	if(abs(vx) == abs(vy) or abs(vy)+1 == abs(vx) or abs(vy) == abs(vx)+1 or 
 	   abs(vy)-1 == abs(vx) or abs(vy) == abs(vx)-1) {
 		if(deplacement_chemin_1_loaded(carre_f, vx, vy)) {
@@ -339,7 +338,9 @@ void Collector::deplacement_collector_loaded(const Carre& carre_f, double& total
 void Collector::deplacement_collector_empty(const Carre& carre_f, Ensemble_food& ensemble_food) {
 	int i(test_diago_proximities(ensemble_food));
 	if( i == -1) {
-		deplacement_collector_out(carre_f);
+		if(!test_superposition_2_carres_non_centre_centre(carre, carre_f)) {
+			deplacement_collector_out(carre_f);
+		}
 		return;
 	}
 	int vx = ensemble_food[i].get_carre().point.x - carre.point.x;
@@ -371,10 +372,6 @@ void Collector::deplacement_collector_out(const Carre& carre_f) {
 			index = i;
 		}
 	}
-	if(!test_superposition_2_carres_non_centre_centre(carre, carre_f)) {
-		return;
-	}
-	cout << proximities[index] << " " << index << endl;
 	if(index==0) {
 		deplacement_gauche_bas();
 	}
@@ -387,7 +384,6 @@ void Collector::deplacement_collector_out(const Carre& carre_f) {
 	if(index==3) {
 		deplacement_droite_haut();
 	}
-	
 }
 
 int Collector::test_diago_proximities(const Ensemble_food& ensemble_food) {
@@ -429,7 +425,6 @@ int Collector::test_diago_proximities(const Ensemble_food& ensemble_food) {
 
 bool Collector::deplacement_chemin_1_empty(const Carre& carre_food, int vx, int vy) {
 	supprimer_carre_centre(carre_food);
-	cout << "EMPTY 1" << endl;
 	if(vx < 0 and vy < 0) {
 		deplacement_gauche_bas();
 	} else if(vx > 0 and vy > 0) {
@@ -485,13 +480,11 @@ bool Collector::deplacement_chemin_2_empty(const Carre& carre_food, int vx, int 
 				saut_bordure = saut2;
 			}
 		}
-		cout << saut_bordure << endl;
 	}
 	
 	supprimer_carre_centre(carre_food);
-	cout << "saut "<<  saut1 << " " << saut2 << endl;
 	unsigned int chemin(best_chemin(saut1, saut2, vx, vy));
-	/*if(bordure == false) {
+	if(bordure == false) {
 		if(chemin==1) {
 			if(saut1 > 0 and saut2 > 0) {
 				deplacement_droite_haut();
@@ -598,7 +591,7 @@ bool Collector::deplacement_chemin_2_empty(const Carre& carre_food, int vx, int 
 				}
 			}
 		}
-	}*/
+	}
 	if(test_superposition_2_carres_centre(carre, carre_food)) {
 		supprimer_carre_centre(carre_food);
 		return true;
@@ -615,7 +608,6 @@ unsigned int Collector::best_chemin(int& saut1, int& saut2, int vx, int vy) {
 }
 
 bool Collector::deplacement_chemin_1_loaded(const Carre& carre_f, int vx, int vy) {
-	cout << "LOADED 1" << endl;
 	if(vx < 0 and vy < 0) {
 		deplacement_gauche_bas();
 	} else if(vx > 0 and vy > 0) {
@@ -670,8 +662,7 @@ bool Collector::deplacement_chemin_2_loaded(const Carre& carre_f, int vx, int vy
 		}
 		cout << saut_bordure << endl;
 	}
-	//unsigned int chemin(best_chemin(saut1, saut2, vx, vy));
-	unsigned int chemin(1);
+	unsigned int chemin(best_chemin(saut1, saut2, vx, vy));
 	if(bordure == false) {
 		if(chemin==1) {
 			if(saut1 > 0 and saut2 > 0) {

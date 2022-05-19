@@ -240,17 +240,56 @@ bool test_diago(const Carre& carre, const Carre& autre_carre) {
 }
 
 unsigned int test_chemin(Carre test, int saut1, int saut2) {
-	cout << test.point.x << " " <<  test.point.y << endl;
 	Grid grid1 = grid;
 	Carre autre_carre = test;
 	unsigned int sup1(0);
 	unsigned int sup2(0);
-	int j(0);
 	bool bordure(false);
 	if(saut1 > 0 and saut2 > 0) {
 		for(size_t i(0); i < abs(saut1); ++i) {
-			if(test_deplacement_bordure(test, j)) {
+			if(test_deplacement_top_bordure(test)) {
 				bordure=true;
+			}
+			if(bordure==true) {
+				test.point.x +=1;
+				test.point.y -=1;
+			} else {
+				test.point.x +=1;
+				test.point.y +=1;
+			}
+			test_sup_chemin(test, sup1);
+		}
+		for(size_t i(0); i < abs(saut2); ++i) {
+			if(test_deplacement_top_bordure(test)) {
+				bordure=false;
+				
+			}
+			if(bordure==true) {
+				test.point.x +=1;
+				test.point.y +=1;
+			} else {
+				test.point.x +=1;
+				test.point.y -=1;
+			}
+			test_sup_chemin(test, sup1);
+		}
+		test = autre_carre;
+		for(size_t i(0); i < abs(saut2); ++i) {
+			if(test_deplacement_bottom_bordure(test)) {
+				bordure=true;
+			}
+			if(bordure==true) {
+				test.point.x +=1;
+				test.point.y +=1;
+			} else {
+				test.point.x +=1;
+				test.point.y -=1;
+			}
+			test_sup_chemin(test, sup2);
+		}
+		for(size_t i(0); i < abs(saut1); ++i) {
+			if(test_deplacement_bottom_bordure(test)) {
+				bordure=false;
 			}
 			if(bordure==true) {
 				test.point.x +=1;
@@ -260,96 +299,176 @@ unsigned int test_chemin(Carre test, int saut1, int saut2) {
 				test.point.x +=1;
 				test.point.y +=1;
 			}
-			test_sup_chemin(test, sup1);
-		}
-		for(size_t i(0); i < abs(saut2); ++i) {
-			test.point.x +=1;
-			test.point.y -= 1;
-			test_sup_chemin(test, sup1);
-		}
-		test = autre_carre;
-		for(size_t i(0); i < abs(saut2); ++i) {
-			test.point.x +=1;
-			test.point.y -= 1;
-			test_sup_chemin(test, sup2);
-		}
-		for(size_t i(0); i < abs(saut1); ++i) {
-			test.point.x +=1;
-			test.point.y += 1;
 			test_sup_chemin(test, sup2);
 		} 
 		test = autre_carre;
 	} else if(saut1 < 0 and saut2 < 0) {
 		for(size_t i(0); i < abs(saut2); ++i) {
-			test.point.x -=1;
-			test.point.y += 1;
+			if(test_deplacement_top_bordure(test)) {
+				
+				bordure = true;
+			}
+			if(bordure==true) {
+				test.point.x -=1;
+				test.point.y -= 1;
+			} else {
+				test.point.x -=1;
+				test.point.y += 1;
+			}	
 			test_sup_chemin(test, sup1);
 		}
 		for(size_t i(0); i < abs(saut1); ++i) {
-			test.point.x -=1;
-			test.point.y -= 1;
+			if(test_deplacement_top_bordure(test)) {
+				bordure= false;
+			}
+			if(bordure==true) {
+				test.point.x -=1;
+				test.point.y += 1;
+			} else {
+				test.point.x -=1;
+				test.point.y -= 1;
+			}
 			test_sup_chemin(test, sup1);
 		}
 		test = autre_carre;
 		for(size_t i(0); i < abs(saut1); ++i) {
-			test.point.x -=1;
-			test.point.y -= 1;
+			if(test_deplacement_bottom_bordure(test)) {
+				bordure = true;
+			}
+			if(bordure==true) {
+				test.point.x -=1;
+				test.point.y += 1;
+			} else {
+				test.point.x -=1;
+				test.point.y -= 1;
+			}	
 			test_sup_chemin(test, sup2);
 		}
 		for(size_t i(0); i < abs(saut2); ++i) {
-			test.point.x -=1;
-			test.point.y += 1;
+			if(test_deplacement_bottom_bordure(test)) {
+				bordure = false;
+			}
+			if(bordure==true) {
+				test.point.x -=1;
+				test.point.y -= 1;
+			} else {
+				test.point.x -=1;
+				test.point.y += 1;
+			}	
 			test_sup_chemin(test, sup2);
 		} 
 		test = autre_carre;
 	} else if(saut1 < 0 and saut2 > 0) {
 		for(size_t i(0); i < abs(saut2); ++i) {
-			test.point.x +=1;
-			test.point.y -= 1;
+			if(test_deplacement_right_bordure(test)) {
+				bordure=true;
+			}
+			if(bordure==true) {
+				test.point.x -=1;
+				test.point.y -= 1;
+			} else {
+				test.point.x +=1;
+				test.point.y -= 1;
+			}
 			test_sup_chemin(test, sup1);
 		}
 		for(size_t i(0); i < abs(saut1); ++i) {
-			test.point.x -=1;
-			test.point.y -= 1;
+			if(test_deplacement_right_bordure(test)) {
+				bordure=false;
+			}
+			if(bordure==true) {
+				test.point.x +=1;
+				test.point.y -= 1;
+			} else {
+				test.point.x -=1;
+				test.point.y -= 1;
+			}
 			test_sup_chemin(test, sup1);
 		}
 		test = autre_carre;
 		for(size_t i(0); i < abs(saut1); ++i) {
-			test.point.x -=1;
-			test.point.y -= 1;
+			if(test_deplacement_left_bordure(test)) {
+				bordure=true;
+			}
+			if(bordure==true) {
+				test.point.x +=1;
+				test.point.y -= 1;
+			} else {
+				test.point.x -=1;
+				test.point.y -= 1;
+			}
 			test_sup_chemin(test, sup1);
 		}
 		for(size_t i(0); i < abs(saut2); ++i) {
-			test.point.x +=1;
-			test.point.y -= 1;
+			if(test_deplacement_left_bordure(test)) {
+				bordure=false;
+			}
+			if(bordure==true) {
+				test.point.x -=1;
+				test.point.y -= 1;
+			} else {
+				test.point.x +=1;
+				test.point.y -= 1;
+			}
 			test_sup_chemin(test, sup1);
 		}
 		test = autre_carre;
 	} else if(saut1 > 0 and saut2 < 0 ) {
 		for(size_t i(0); i < abs(saut1); ++i) {
-			test.point.x +=1;
-			test.point.y += 1;
+			if(test_deplacement_right_bordure(test)) {
+				bordure=true;
+			}
+			if(bordure==true) {
+				test.point.x -=1;
+				test.point.y += 1;
+			} else {
+				test.point.x +=1;
+				test.point.y += 1;
+			}
 			test_sup_chemin(test, sup1);
 		}
 		for(size_t i(0); i < abs(saut2); ++i) {
-			test.point.x -=1;
-			test.point.y += 1;
+			if(test_deplacement_right_bordure(test)) {
+				bordure=false;
+			}
+			if(bordure==true) {
+				test.point.x +=1;
+				test.point.y += 1;
+			} else {
+				test.point.x -=1;
+				test.point.y += 1;
+			}
 			test_sup_chemin(test, sup1);
 		}
 		test = autre_carre;
 		for(size_t i(0); i < abs(saut2); ++i) {
-			test.point.x -=1;
-			test.point.y += 1;
+			if(test_deplacement_left_bordure(test)) {
+				bordure=true;
+			}
+			if(bordure==true) {
+				test.point.x +=1;
+				test.point.y += 1;
+			} else {
+				test.point.x -=1;
+				test.point.y += 1;
+			}
 			test_sup_chemin(test, sup1);
 		}
 		for(size_t i(0); i < abs(saut1); ++i) {
-			test.point.x +=1;
-			test.point.y += 1;
+			if(test_deplacement_left_bordure(test)) {
+				bordure=true;
+			}
+			if(bordure==true) {
+				test.point.x -=1;
+				test.point.y += 1;
+			} else {
+				test.point.x +=1;
+				test.point.y += 1;
+			}
 			test_sup_chemin(test, sup1);
 		}
 		test = autre_carre;
 	}
-	cout << sup1 << " " << sup2 << endl;
 	grid = grid1;
 	if(sup2 < sup1) {
 		return 2;
@@ -389,6 +508,36 @@ bool test_deplacement_bordure(const Carre& carre, int& i) {
 	}
 	return false;
 }
+
+bool test_deplacement_top_bordure(const Carre& carre) {
+	if(carre.point.y+carre.longeur/2 == g_max-1) {
+		return true;
+	}
+	return false;
+}
+
+bool test_deplacement_bottom_bordure(const Carre& carre) {
+	if(carre.point.y+carre.longeur/2 == 0) {
+		return true;
+	}
+	return false;
+}
+
+bool test_deplacement_left_bordure(const Carre& carre) {
+	if(carre.point.x+carre.longeur/2 == 0) {
+		return true;
+	}
+	return false;
+}
+
+bool test_deplacement_right_bordure(const Carre& carre) {
+	if(carre.point.x+carre.longeur/2 == g_max-1) {
+		return true;
+	}
+	return false;
+}
+
+	
 
 bool find_place_in_carre(const Carre& carre1, Carre& carre2) {
 	for(size_t i(carre1.point.y+1); i < carre1.point.y + carre1.longeur-carre2.longeur; ++i) {

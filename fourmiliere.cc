@@ -191,8 +191,7 @@ void Fourmiliere::create_fourmi() {
 	random_device rd;
 	//TRIER FOURMI??
 	double total_food = ensemble_fourmis[0]->get_total_food();
-	//double p(min(1.0, total_food * birth_rate));
-	double p(1);
+	double p(min(1.0, total_food * birth_rate));
 	bernoulli_distribution b(p);
 	default_random_engine eng(rd());
 	if(b(eng)) {

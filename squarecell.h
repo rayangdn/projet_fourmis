@@ -64,6 +64,14 @@ void  test_sup_chemin(const Carre& carre, unsigned int& sup);
 
 bool test_deplacement_bordure(const Carre& carre, int& i);
 
+bool test_deplacement_top_bordure(const Carre& carre);
+
+bool test_deplacement_bottom_bordure(const Carre& carre);
+
+bool test_deplacement_left_bordure(const Carre& carre);
+
+bool test_deplacement_right_bordure(const Carre& carre);
+
 bool find_place_in_carre(const Carre&, Carre&);
 
 void draw_carre(const Carre&, unsigned int, unsigned int);
