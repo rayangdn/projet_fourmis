@@ -199,7 +199,7 @@ void Simulation::maj_fourmiliere(unsigned int i) {
 		if(i != j) {
 			if(k==0) {
 				if(ensemble_fourmilieres[i].test_inf_gauche(ensemble_fourmilieres[j])){
-					expend=IG; s
+					expend=IG; 
 					//cout << "IG"<< endl;
 				} else {
 					k=1;

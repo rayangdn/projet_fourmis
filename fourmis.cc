@@ -491,7 +491,7 @@ bool Collector::deplacement_chemin_2_empty(const Carre& carre_food, int vx, int 
 	supprimer_carre_centre(carre_food);
 	cout << "saut "<<  saut1 << " " << saut2 << endl;
 	unsigned int chemin(best_chemin(saut1, saut2, vx, vy));
-	if(bordure == false) {
+	/*if(bordure == false) {
 		if(chemin==1) {
 			if(saut1 > 0 and saut2 > 0) {
 				deplacement_droite_haut();
@@ -598,7 +598,7 @@ bool Collector::deplacement_chemin_2_empty(const Carre& carre_food, int vx, int 
 				}
 			}
 		}
-	}
+	}*/
 	if(test_superposition_2_carres_centre(carre, carre_food)) {
 		supprimer_carre_centre(carre_food);
 		return true;

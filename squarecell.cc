@@ -240,11 +240,12 @@ bool test_diago(const Carre& carre, const Carre& autre_carre) {
 }
 
 unsigned int test_chemin(Carre test, int saut1, int saut2) {
+	cout << test.point.x << " " <<  test.point.y << endl;
 	Grid grid1 = grid;
 	Carre autre_carre = test;
 	unsigned int sup1(0);
 	unsigned int sup2(0);
-	unsigned int j(0);
+	int j(0);
 	bool bordure(false);
 	if(saut1 > 0 and saut2 > 0) {
 		for(size_t i(0); i < abs(saut1); ++i) {
