@@ -52,10 +52,9 @@ void Fourmiliere::ajouter_fourmis(Fourmi* nouveau) {
 
 
 void Fourmiliere::ajouter_fourmis(Fourmi* nouveau, unsigned int type) {
-	cout << type << endl;
 	if(nouveau!= nullptr) {
 		if(type==0) {
-			ensemble_fourmis.insert(ensemble_fourmis.begin()+nbC, unique_ptr<Fourmi>(nouveau));
+			ensemble_fourmis.insert(ensemble_fourmis.begin()+nbC+1, unique_ptr<Fourmi>(nouveau));
 		}
 		if(type==1) {
 			ensemble_fourmis.insert(ensemble_fourmis.begin()+nbC+nbD+1, unique_ptr<Fourmi>(nouveau));
@@ -81,16 +80,8 @@ void Fourmiliere::ecriture_fourmiliere(ofstream& fichier) const {
 	        << "\n\n";
 	for(size_t i(1); i < ensemble_fourmis.size(); ++i) {
 		ensemble_fourmis[i]->ecriture_frmi(fichier);
-		if(i==nbC) {
-			fichier << "\n";
-		}
-		if(i==nbC+nbD and nbD!= 0) {
-			fichier << "\n";
-		}
-		if(i==nbC+nbD+nbP and nbP!=0) {
-			fichier << "\n";
-		}
 	}
+	fichier << "\n";
 }
 
 void Fourmiliere::draw_fourmiliere() {

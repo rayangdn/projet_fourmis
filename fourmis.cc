@@ -52,8 +52,8 @@ bool Fourmi::fourmis_in_house(const Carre& carre_fourmiliere) {
 }
 
 void Fourmi::ecriture_frmi(ofstream& fichier) const {
-	fichier << "\t" << to_string(carre.point.x) << " " << to_string(carre.point.y)
-	<< "\n";
+	fichier << "\t" << to_string(carre.point.x) << " " << to_string(carre.point.y) 
+	<< " " << to_string(age) << "\n";
 }
 
 void Fourmi::incrementer_age() {
