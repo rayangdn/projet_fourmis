@@ -31,6 +31,10 @@ unsigned int Fourmiliere::get_nbP() const {
 	return nbP;
 }
 
+unsigned int Fourmiliere::get_sizeF() const {
+	return sizeF;
+}
+
 Carre Fourmiliere::get_carre() const {
 	return carre;
 }
@@ -49,7 +53,6 @@ void Fourmiliere::ajouter_fourmis(Fourmi* nouveau) {
 		ensemble_fourmis.push_back(unique_ptr<Fourmi>(nouveau));
 	}
 }
-
 
 void Fourmiliere::ajouter_fourmis(Fourmi* nouveau, unsigned int type) {
 	if(nouveau!= nullptr) {
@@ -108,7 +111,6 @@ bool Fourmiliere::test_inf_gauche(Fourmiliere& F) {
 		return false;
 	}
 }
-
 
 bool Fourmiliere::test_sup_gauche(Fourmiliere& F) {			//OK?
 	Carre test;
@@ -194,13 +196,19 @@ void Fourmiliere::create_fourmi() {
 	random_device rd;
 	enum fourmi{C, D, P};
 	double total_food = ensemble_fourmis[0]->get_total_food();
-	//double p(min(1.0, total_food * birth_rate));
-	double p(1);
+	double p(min(1.0, total_food * birth_rate));
 	bernoulli_distribution b(p);
 	default_random_engine eng(rd());
+	double proba_C(0), proba_D(0);
+	if(nbT-1 ==0) {
+		proba_C=0;
+	} else {
+		proba_C = (double)nbC/nbT-1;
+		proba_D = (double)nbD/nbT-1;
+	}
 	if(b(eng)) {
 		if(etat_f == FREE) {
-			if((double)nbC/nbT <= prop_free_collector) { 
+			if(proba_C <= prop_free_collector) { 
 				Carre carre_collector{sizeC, {0,0}};
 				if(recherche_espace_libre(carre_collector)) {
 				unsigned int age(0);
@@ -209,7 +217,7 @@ void Fourmiliere::create_fourmi() {
 				++nbC; ++nbT;
 				}
 				return;
-			} else if((double)nbD/nbT <= prop_free_defensor) {
+			} else if(proba_D <= prop_free_defensor) {
 				Carre carre_defensor{sizeD, {0,0}};
 				if(recherche_espace_libre(carre_defensor)) {
 				unsigned int age(0);
@@ -228,7 +236,7 @@ void Fourmiliere::create_fourmi() {
 			}
 		}
 		if(etat_f == CONSTRAINED) {
-			if((double)nbC/nbT <= prop_constrained_collector) { 
+			if(proba_C<= prop_constrained_collector) { 
 				Carre carre_collector{sizeC, {0,0}};
 				if(recherche_espace_libre(carre_collector)) {
 				unsigned int age(0);
@@ -236,7 +244,7 @@ void Fourmiliere::create_fourmi() {
 				++nbC; ++nbT;
 				}
 				return;
-			} else if((double)nbD/nbT <= prop_constrained_defensor) {
+			} else if(proba_D <= prop_constrained_defensor) {
 				Carre carre_defensor{sizeD, {0,0}};
 				if(recherche_espace_libre(carre_defensor)) {
 				unsigned int age(0);
@@ -277,13 +285,22 @@ void Fourmiliere::action_autres_fourmis( Ensemble_food& ensemble_food) {
 	ensemble_fourmis[0]->set_total_food(total_food);
 }
 	
+void Fourmiliere::defensor_kill_collector(Fourmiliere& f) {
+	for(size_t i(1); i < nbC+1; ++i) {
+		for(size_t j(f.nbC+1); j < f.nbC+f.nbD+1; ++j) {
+			Carre carre_f = f.ensemble_fourmis[j]->get_carre();
+			ensemble_fourmis[i]->kill(carre_f);
+		}
+	}
+}
 void Fourmiliere::destruction_fourmis(Ensemble_food& ensemble_food) {
 	for(size_t i(1);  i < ensemble_fourmis.size(); ++i) {
 		if(ensemble_fourmis[i]->get_age() >= bug_life or 
 		   ensemble_fourmis[i]->get_end_of_life() == true) {
-				ensemble_fourmis[i]->destruction_fourmi(ensemble_food, nbC, nbD, nbP);
-				ensemble_fourmis.erase(ensemble_fourmis.begin()+i); //supprime pas comme il faut
-				--nbT;
+			ensemble_fourmis[i]->destruction_fourmi(ensemble_food, nbC, nbD, nbP);
+			ensemble_fourmis.erase(ensemble_fourmis.begin()+i); //supprime pas comme il faut
+			--i;
+			--nbT;
 		 }	 
 	} 
 }

@@ -14,6 +14,7 @@ public :
 	unsigned int get_nbC() const;
 	unsigned int get_nbD() const;
 	unsigned int get_nbP() const;
+	unsigned int get_sizeF() const;
 	Carre get_carre() const;
 	bool test_superposition_fourmiliere(const Fourmiliere&, unsigned int,
 										unsigned int);
@@ -31,6 +32,7 @@ public :
 	void maj_generator(Ensemble_food&);
 	void create_fourmi();
 	bool recherche_espace_libre(Carre&);
+	void defensor_kill_collector(Fourmiliere&);
 	void action_autres_fourmis(Ensemble_food&);
 	void destruction_fourmis(Ensemble_food&);
 	bool destruction_fourmiliere();

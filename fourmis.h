@@ -34,6 +34,7 @@ public :
 	void deplacement_gauche();
 	void deplacement_droite();
 	void deplacement_haut();
+	virtual void kill(const Carre& carre_fourmi) { return;}
 	virtual void destruction_fourmi(Ensemble_food&, unsigned int&, unsigned int&,
 	unsigned int&)=0;
 protected :
@@ -95,6 +96,7 @@ public :
 	void deplacement_right_bordure(int& j, int saut1, int saut_bordure, bool& bordure);
 	void deplacement_bottom_bordure(int& j, int saut1, int saut_bordure, bool& bordure);
 	void deplacement_top_bordure(int& j, int saut1, int saut_bordure, bool& bordure);
+	virtual void kill(const Carre& carre_fourmi) override;
 	virtual void destruction_fourmi(Ensemble_food&, unsigned int&, unsigned int&, 
 	unsigned int&) override;
 private :

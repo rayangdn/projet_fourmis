@@ -190,21 +190,21 @@ bool test_validation_inf_gauche(const Carre& carre) {
 }
 
 bool test_validation_sup_gauche(const Carre& carre) {
-	if(carre.point.x + carre.longeur > g_max or carre.point.y < 0) {
+	if(carre.point.x + carre.longeur > g_max  or carre.point.y < 0) {
 		   return true;
 	   }
 	   return false;
 }
 
 bool test_validation_sup_droite(const Carre& carre) {
-	if(carre.point.x < 0 or carre.point.y < 0) {
+	if(carre.point.x <= 0 or carre.point.y <= 0) {
 		return true;
 	}
 	return false;
 }
 
 bool test_validation_inf_droite(const Carre& carre) {
-	if(carre.point.x < 0 or carre.point.y + carre.longeur >= g_max) {
+	if(carre.point.x <= 0 or carre.point.y + carre.longeur > g_max) {
 		return true;
 	}
 	return false;
@@ -257,6 +257,7 @@ unsigned int test_chemin(Carre test, int saut1, int saut2) {
 				test.point.x +=1;
 				test.point.y +=1;
 			}
+			cout << test.point.x << " " << test.point.y << endl;
 			test_sup_chemin(test, sup1);
 		}
 		for(size_t i(0); i < abs(saut2); ++i) {
@@ -271,8 +272,10 @@ unsigned int test_chemin(Carre test, int saut1, int saut2) {
 				test.point.x +=1;
 				test.point.y -=1;
 			}
+			cout << test.point.x << " " << test.point.y << endl;
 			test_sup_chemin(test, sup1);
 		}
+		cout << endl;
 		test = autre_carre;
 		for(size_t i(0); i < abs(saut2); ++i) {
 			if(test_deplacement_bottom_bordure(test)) {
@@ -285,6 +288,7 @@ unsigned int test_chemin(Carre test, int saut1, int saut2) {
 				test.point.x +=1;
 				test.point.y -=1;
 			}
+			cout << test.point.x << " " << test.point.y << endl;
 			test_sup_chemin(test, sup2);
 		}
 		for(size_t i(0); i < abs(saut1); ++i) {
@@ -299,8 +303,10 @@ unsigned int test_chemin(Carre test, int saut1, int saut2) {
 				test.point.x +=1;
 				test.point.y +=1;
 			}
+			cout << test.point.x << " " << test.point.y << endl;
 			test_sup_chemin(test, sup2);
 		} 
+		
 		test = autre_carre;
 	} else if(saut1 < 0 and saut2 < 0) {
 		for(size_t i(0); i < abs(saut2); ++i) {
@@ -315,6 +321,7 @@ unsigned int test_chemin(Carre test, int saut1, int saut2) {
 				test.point.x -=1;
 				test.point.y += 1;
 			}	
+			cout << test.point.x << " " << test.point.y << endl;
 			test_sup_chemin(test, sup1);
 		}
 		for(size_t i(0); i < abs(saut1); ++i) {
@@ -328,8 +335,10 @@ unsigned int test_chemin(Carre test, int saut1, int saut2) {
 				test.point.x -=1;
 				test.point.y -= 1;
 			}
+			cout << test.point.x << " " << test.point.y << endl;
 			test_sup_chemin(test, sup1);
 		}
+		cout << endl;
 		test = autre_carre;
 		for(size_t i(0); i < abs(saut1); ++i) {
 			if(test_deplacement_bottom_bordure(test)) {
@@ -342,6 +351,7 @@ unsigned int test_chemin(Carre test, int saut1, int saut2) {
 				test.point.x -=1;
 				test.point.y -= 1;
 			}	
+			cout << test.point.x << " " << test.point.y << endl;
 			test_sup_chemin(test, sup2);
 		}
 		for(size_t i(0); i < abs(saut2); ++i) {
@@ -355,6 +365,7 @@ unsigned int test_chemin(Carre test, int saut1, int saut2) {
 				test.point.x -=1;
 				test.point.y += 1;
 			}	
+			cout << test.point.x << " " << test.point.y << endl;
 			test_sup_chemin(test, sup2);
 		} 
 		test = autre_carre;
@@ -370,6 +381,7 @@ unsigned int test_chemin(Carre test, int saut1, int saut2) {
 				test.point.x +=1;
 				test.point.y -= 1;
 			}
+			cout << test.point.x << " " << test.point.y << endl;
 			test_sup_chemin(test, sup1);
 		}
 		for(size_t i(0); i < abs(saut1); ++i) {
@@ -383,8 +395,10 @@ unsigned int test_chemin(Carre test, int saut1, int saut2) {
 				test.point.x -=1;
 				test.point.y -= 1;
 			}
+			cout << test.point.x << " " << test.point.y << endl;
 			test_sup_chemin(test, sup1);
 		}
+		cout << endl;
 		test = autre_carre;
 		for(size_t i(0); i < abs(saut1); ++i) {
 			if(test_deplacement_left_bordure(test)) {
@@ -397,6 +411,7 @@ unsigned int test_chemin(Carre test, int saut1, int saut2) {
 				test.point.x -=1;
 				test.point.y -= 1;
 			}
+			cout << test.point.x << " " << test.point.y << endl;
 			test_sup_chemin(test, sup1);
 		}
 		for(size_t i(0); i < abs(saut2); ++i) {
@@ -410,6 +425,7 @@ unsigned int test_chemin(Carre test, int saut1, int saut2) {
 				test.point.x +=1;
 				test.point.y -= 1;
 			}
+			cout << test.point.x << " " << test.point.y << endl;
 			test_sup_chemin(test, sup1);
 		}
 		test = autre_carre;
@@ -425,6 +441,7 @@ unsigned int test_chemin(Carre test, int saut1, int saut2) {
 				test.point.x +=1;
 				test.point.y += 1;
 			}
+			cout << test.point.x << " " << test.point.y << endl;
 			test_sup_chemin(test, sup1);
 		}
 		for(size_t i(0); i < abs(saut2); ++i) {
@@ -438,8 +455,10 @@ unsigned int test_chemin(Carre test, int saut1, int saut2) {
 				test.point.x -=1;
 				test.point.y += 1;
 			}
+			cout << test.point.x << " " << test.point.y << endl;
 			test_sup_chemin(test, sup1);
 		}
+		cout << endl;
 		test = autre_carre;
 		for(size_t i(0); i < abs(saut2); ++i) {
 			if(test_deplacement_left_bordure(test)) {
@@ -452,11 +471,12 @@ unsigned int test_chemin(Carre test, int saut1, int saut2) {
 				test.point.x -=1;
 				test.point.y += 1;
 			}
+			cout << test.point.x << " " << test.point.y << endl;
 			test_sup_chemin(test, sup1);
 		}
 		for(size_t i(0); i < abs(saut1); ++i) {
 			if(test_deplacement_left_bordure(test)) {
-				bordure=true;
+				bordure=false;
 			}
 			if(bordure==true) {
 				test.point.x -=1;
@@ -465,6 +485,7 @@ unsigned int test_chemin(Carre test, int saut1, int saut2) {
 				test.point.x +=1;
 				test.point.y += 1;
 			}
+			cout << test.point.x << " " << test.point.y << endl;
 			test_sup_chemin(test, sup1);
 		}
 		test = autre_carre;
@@ -517,14 +538,14 @@ bool test_deplacement_top_bordure(const Carre& carre) {
 }
 
 bool test_deplacement_bottom_bordure(const Carre& carre) {
-	if(carre.point.y+carre.longeur/2 == 0) {
+	if(carre.point.y-carre.longeur/2 == 0) {
 		return true;
 	}
 	return false;
 }
 
 bool test_deplacement_left_bordure(const Carre& carre) {
-	if(carre.point.x+carre.longeur/2 == 0) {
+	if(carre.point.x-carre.longeur/2 == 0) {
 		return true;
 	}
 	return false;

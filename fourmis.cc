@@ -460,8 +460,7 @@ bool Collector::deplacement_chemin_2_empty(const Carre& carre_food, int vx, int 
 		test_saut_bordure(i, saut_bordure, vx, vy , saut1, saut2);
 	}
 	supprimer_carre_centre(carre_food);
-	//unsigned int chemin(best_chemin(saut1, saut2, vx, vy));
-	unsigned int chemin(2);
+	unsigned int chemin(best_chemin(saut1, saut2, vx, vy));
 	if(bordure == false) {
 		deplacement_no_bordure(chemin, saut1, saut2);
 	} else {
@@ -483,8 +482,7 @@ bool Collector::deplacement_chemin_2_loaded(const Carre& carre_f, Carre carre_ge
 	int saut1((vx+vy)/2);
 	int saut2((vx-vy)/2);
 	supprimer_carre_centre(carre_generator);
-	//unsigned int chemin(best_chemin(saut1, saut2, vx, vy));
-	unsigned int chemin(1);
+	unsigned int chemin(best_chemin(saut1, saut2, vx, vy));
 	initialise_carre_centre(carre_generator);
 	if(test_deplacement_bordure(carre, i)) {
 		bordure = true;
@@ -533,14 +531,13 @@ void Collector::test_saut_bordure(int i, int& saut_bordure, int vx, int vy, int 
 		}
 }
 
-
-
 unsigned int Collector::best_chemin(int& saut1, int& saut2, int vx, int vy) {
 	supprimer_carre_centre(carre);
 	unsigned int chemin(test_chemin(carre, saut1, saut2));
 	initialise_carre_centre(carre);
 	return chemin;
 }
+
 void Collector::deplacement_no_bordure(int chemin, int saut1, int saut2) {
 	if(chemin==1) {
 		if(saut1 > 0 and saut2 > 0) {
@@ -685,6 +682,14 @@ bool Collector::deplacement_chemin_1_loaded(const Carre& carre_f, int vx, int vy
 	return false;
 }
 
+void Collector::kill(const Carre& carre_fourmi) {
+	int vx = carre.point.x - carre_fourmi.point.x;
+	int vy = carre.point.y - carre_fourmi.point.y;
+	cout << vx << " " << vy << endl;
+	if(abs(vx) <= 3 and abs(vy) <= 3) {
+		end_of_life=true;
+	}
+}
 void Collector::destruction_fourmi(Ensemble_food& ensemble_food, unsigned int& nbC, 
 								   unsigned int& nbD, unsigned int& nbP) {
 	--nbC;

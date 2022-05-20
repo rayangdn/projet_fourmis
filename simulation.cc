@@ -123,20 +123,21 @@ void Simulation::draw_simulation() {
 
 void Simulation::refresh() {
 	//PARTIE CREATION DE NOURRITURE
-	//create_food();
+	create_food();
 	//PARTIE AJUSTEMENT/DEPLACEMENT FOURMILIERE
 	for(size_t i(0); i < ensemble_fourmilieres.size(); ++i) {
 		maj_fourmiliere(i);
 	//PARTIE GENERATOR
 		ensemble_fourmilieres[i].maj_generator(ensemble_food); 
 	//PARTIE AUTRES FOURMIS
-		//ensemble_fourmilieres[i].action_autres_fourmis(ensemble_food);
-		defensor_kill_collector(i);
+		fourmis_kill(i);
+		ensemble_fourmilieres[i].action_autres_fourmis(ensemble_food);
+		
 	}
 	for(size_t i(0); i < ensemble_fourmilieres.size(); ++i) {
 		ensemble_fourmilieres[i].destruction_fourmis(ensemble_food);
 		if(ensemble_fourmilieres[i].destruction_fourmiliere()) {
-			//ensemble_fourmilieres.erase(ensemble_fourmilieres.begin()+i);
+			ensemble_fourmilieres.erase(ensemble_fourmilieres.begin()+i);
 		}
 	}
 }
@@ -181,6 +182,7 @@ void Simulation::maj_fourmiliere(unsigned int i) {
 	int expend(IG);
 	if(ensemble_fourmilieres.size() ==1) {
 		Carre carre = ensemble_fourmilieres[i].get_carre();
+		carre.longeur = ensemble_fourmilieres[i].get_sizeF()+2;
 		if(not(test_validation_inf_gauche(carre))) {
 			expend = IG;
 		} else if(not(test_validation_sup_gauche(carre))) {
@@ -193,6 +195,7 @@ void Simulation::maj_fourmiliere(unsigned int i) {
 			expend = RIEN;
 		}
 		ensemble_fourmilieres[i].mise_a_jour(expend);
+		return;
 	}					
 	bool inf_gauche(true), sup_gauche(true), sup_droite(true), inf_droite(true);
 	for(size_t j(0); j < ensemble_fourmilieres.size(); ++j){
@@ -233,6 +236,11 @@ void Simulation::maj_fourmiliere(unsigned int i) {
 	ensemble_fourmilieres[i].mise_a_jour(expend);
 }
 
-void Simulation::defensor_kill_collector(unsigned int i) {
+void Simulation::fourmis_kill(unsigned int i) {
+	for(size_t j(0); j < ensemble_fourmilieres.size(); ++j) {
+		if(i!=j) {
+			ensemble_fourmilieres[i].defensor_kill_collector(ensemble_fourmilieres[j]);
+		}
+	}
 }
 
