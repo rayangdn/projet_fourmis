@@ -182,7 +182,7 @@ bool test_superposition_sans_coord(const Carre& carre) {
 }
 
 bool test_validation_inf_gauche(const Carre& carre) {
-	if(carre.point.x + carre.longeur > g_max or 
+	if(carre.point.x + carre.longeur >  g_max or 
 	   carre.point.y + carre.longeur > g_max) {
 		return true;
 	}
@@ -204,7 +204,7 @@ bool test_validation_sup_droite(const Carre& carre) {
 }
 
 bool test_validation_inf_droite(const Carre& carre) {
-	if(carre.point.x < 0 or carre.point.y + carre.longeur > g_max) {
+	if(carre.point.x < 0 or carre.point.y + carre.longeur >= g_max) {
 		return true;
 	}
 	return false;
@@ -542,32 +542,17 @@ bool test_deplacement_right_bordure(const Carre& carre) {
 bool find_place_in_carre(const Carre& carre1, Carre& carre2) {
 	for(size_t i(carre1.point.y+1); i < carre1.point.y + carre1.longeur-carre2.longeur; ++i) {
 		for(size_t j(carre1.point.x+1); j < carre1.point.x + carre1.longeur-carre2.longeur; ++j) {
-			if(carre2.longeur == 3) {
-				if(grid[grid.size()-1-i][j] == false and
-				   grid[grid.size()-1-i][j] == false and
-				   grid[grid.size()-2-i][j] == false and
-				   grid[grid.size()-2-i][j+1] == false and
-				   grid[grid.size()-2-i][j+1] == false and
-				   grid[grid.size()-3-i][j+1] == false and
-				   grid[grid.size()-3-i][j+2] == false and
-				   grid[grid.size()-3-i][j+2] == false and
-				   grid[grid.size()-3-i][j+2] == false  ) {
-					carre2.point.x = j + carre2.longeur/2;
-					carre2.point.y = i + carre2.longeur/2;
-					return true;
-				}
-			}
-			if(carre2.longeur == 1) {
-				if(grid[grid.size()-1-i][j]) {
-					carre2.point.x = j;
-					carre2.point.y = i;
-					return true;
-				}
+			carre2.point.x = j+carre2.longeur/2;
+			carre2.point.y = i+carre2.longeur/2;
+			if(!test_superposition_sans_coord(carre2)) {
+				return true;
 			}
 		}
 	}
 	return false;
 }
+	
+
 
 void draw_carre(const Carre& carre, unsigned int style,
 unsigned int couleur) {
@@ -589,6 +574,15 @@ unsigned int couleur) {
 		graphic_draw_carre_grille(carre.point.x-carre.longeur/2,
 			carre.point.y-carre.longeur/2, carre.longeur, couleur);
 	}
+}
+void affiche() {
+	for(auto c : grid) {
+		for(auto d : c) {
+			cout << d ;
+		}
+		cout << endl;
+	}
+	cout << endl;
 }
 
 

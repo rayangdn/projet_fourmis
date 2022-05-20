@@ -451,14 +451,59 @@ bool Collector::deplacement_chemin_1_empty(const Carre& carre_food, int vx, int 
 
 bool Collector::deplacement_chemin_2_empty(const Carre& carre_food, int vx, int vy) {
 	static bool bordure(false);
-	static int j(0);
 	static int i(0);
 	static int saut_bordure(0);
 	int saut1((vx+vy)/2);
 	int saut2((vx-vy)/2);
 	if(test_deplacement_bordure(carre, i)) {
 		bordure = true;
-		if(i==1) {
+		test_saut_bordure(i, saut_bordure, vx, vy , saut1, saut2);
+	}
+	supprimer_carre_centre(carre_food);
+	//unsigned int chemin(best_chemin(saut1, saut2, vx, vy));
+	unsigned int chemin(2);
+	if(bordure == false) {
+		deplacement_no_bordure(chemin, saut1, saut2);
+	} else {
+		deplacement_bordure(i, saut1, saut_bordure, bordure);
+	}
+	if(test_superposition_2_carres_centre(carre, carre_food)) {
+		supprimer_carre_centre(carre_food);
+		return true;
+	}
+	initialise_carre_centre(carre_food);
+	return false;
+}
+
+bool Collector::deplacement_chemin_2_loaded(const Carre& carre_f, Carre carre_generator,
+											int vx, int vy) {
+	static bool bordure(false);
+	static int i(0);
+	static int saut_bordure(0);
+	int saut1((vx+vy)/2);
+	int saut2((vx-vy)/2);
+	supprimer_carre_centre(carre_generator);
+	//unsigned int chemin(best_chemin(saut1, saut2, vx, vy));
+	unsigned int chemin(1);
+	initialise_carre_centre(carre_generator);
+	if(test_deplacement_bordure(carre, i)) {
+		bordure = true;
+		test_saut_bordure(i, saut_bordure, vx, vy , saut1, saut2);
+	}
+	if(bordure == false) {
+		deplacement_no_bordure(chemin, saut1, saut2);
+	} else {
+		deplacement_bordure(i, saut1, saut_bordure, bordure);
+	}
+	if(test_superposition_2_carres_non_centre_centre(carre, carre_f)) {
+		return true;
+	}
+	return false;
+}
+
+void Collector::test_saut_bordure(int i, int& saut_bordure, int vx, int vy, int saut1,
+								  int saut2) {
+		 if(i==1) {
 			if(vy > 0) {
 				saut_bordure = saut2;
 			} else {
@@ -486,125 +531,9 @@ bool Collector::deplacement_chemin_2_empty(const Carre& carre_food, int vx, int 
 				saut_bordure = saut2;
 			}
 		}
-	}
-	
-	supprimer_carre_centre(carre_food);
-	unsigned int chemin(best_chemin(saut1, saut2, vx, vy));
-	if(bordure == false) {
-		if(chemin==1) {
-			if(saut1 > 0 and saut2 > 0) {
-				deplacement_droite_haut();
-			} else if(saut1 < 0 and saut2 < 0) {
-				deplacement_gauche_haut();
-			} else if(saut1 < 0 and saut2 > 0) {
-				deplacement_droite_bas();
-			} else if(saut1 > 0 and saut2 < 0) {
-				deplacement_droite_haut();
-			}	
-		} else if(chemin==2) {
-			if(saut1 > 0 and saut2 > 0) {
-				deplacement_droite_bas();
-			} else if(saut1 < 0 and saut2 < 0) {
-				deplacement_gauche_bas();
-			} else if(saut1 < 0 and saut2 > 0) {
-				deplacement_gauche_bas();
-			} else if(saut1 > 0 and saut2 < 0) {
-				deplacement_gauche_haut();
-			}
-		}
-	} else {
-		if(i==1) {
-			if(saut1 > 0) {
-				if(j<abs(saut_bordure)) {
-				deplacement_droite_haut();
-				++j;
-				} else {
-					j=0;
-					bordure = false;
-					deplacement_gauche_haut();
-				}
-			} else if(saut1 < 0) {
-				if(j<abs(saut_bordure)) {
-				deplacement_droite_bas();
-				++j;
-				} else {
-					j=0;
-					bordure = false;
-					deplacement_gauche_bas();
-				}
-			}
-		}
-		if(i==2) {
-			if(saut1 > 0) {
-				if(j<abs(saut_bordure)) {
-				deplacement_gauche_haut();
-				++j;
-				} else {
-					j=0;
-					bordure = false;
-					deplacement_droite_haut();
-				}
-			} else if(saut1 < 0) {
-				if(j<abs(saut_bordure)) {
-				deplacement_gauche_bas();
-				++j;
-				} else {
-					j=0;
-					bordure = false;
-					deplacement_droite_bas();
-				}
-			}
-		}
-		if(i==3) {
-			if(saut1 > 0) {
-				if(j<abs(saut_bordure)) {
-				deplacement_droite_haut();
-				++j;
-				} else {
-					j=0;
-					bordure = false;
-					deplacement_droite_bas();
-				}
-			} else if(saut1 < 0) {
-				if(j<abs(saut_bordure)) {
-				deplacement_gauche_haut();
-				++j;
-				} else {
-					j=0;
-					bordure = false;
-					deplacement_gauche_bas();
-				}
-			}
-		}
-		if(i==4) {
-			if(saut1 > 0) {
-				if(j<abs(saut_bordure)) {
-				deplacement_droite_bas();
-				++j;
-				} else {
-					j=0;
-					bordure = false;
-					deplacement_droite_haut();
-				}
-			} else if(saut1 < 0) {
-				if(j<abs(saut_bordure)) {
-				deplacement_gauche_bas();
-				++j;
-				} else {
-					j=0;
-					bordure = false;
-					deplacement_gauche_haut();
-				}
-			}
-		}
-	}
-	if(test_superposition_2_carres_centre(carre, carre_food)) {
-		supprimer_carre_centre(carre_food);
-		return true;
-	}
-	initialise_carre_centre(carre_food);
-	return false;
 }
+
+
 
 unsigned int Collector::best_chemin(int& saut1, int& saut2, int vx, int vy) {
 	supprimer_carre_centre(carre);
@@ -612,7 +541,134 @@ unsigned int Collector::best_chemin(int& saut1, int& saut2, int vx, int vy) {
 	initialise_carre_centre(carre);
 	return chemin;
 }
+void Collector::deplacement_no_bordure(int chemin, int saut1, int saut2) {
+	if(chemin==1) {
+		if(saut1 > 0 and saut2 > 0) {
+			deplacement_droite_haut();
+		} else if(saut1 < 0 and saut2 < 0) {
+			deplacement_gauche_haut();
+		} else if(saut1 < 0 and saut2 > 0) {
+			deplacement_droite_bas();
+		} else if(saut1 > 0 and saut2 < 0) {
+			deplacement_droite_haut();
+		}	
+	} else if(chemin==2) {
+		if(saut1 > 0 and saut2 > 0) {
+			deplacement_droite_bas();
+		} else if(saut1 < 0 and saut2 < 0) {
+			deplacement_gauche_bas();
+		} else if(saut1 < 0 and saut2 > 0) {
+			deplacement_gauche_bas();
+		} else if(saut1 > 0 and saut2 < 0) {
+			deplacement_gauche_haut();
+		}
+	}
+}
 
+void Collector::deplacement_bordure(int i, int saut1, int saut_bordure, bool& bordure) {
+	static int j(0);
+	if(i==1) {
+		deplacement_left_bordure(j, saut1, saut_bordure, bordure);	
+	}
+	if(i==2) {
+		deplacement_right_bordure(j, saut1, saut_bordure, bordure);
+	}
+	if(i==3) {
+		deplacement_bottom_bordure(j, saut1, saut_bordure, bordure);
+	}
+	if(i==4) {
+		deplacement_top_bordure(j, saut1, saut_bordure, bordure);
+	}
+}
+
+void Collector::deplacement_left_bordure(int& j, int saut1, int saut_bordure, bool& b) {
+	if(saut1 > 0) {
+		if(j<abs(saut_bordure)) {
+			deplacement_droite_haut();
+			++j;
+		} else {
+			j=0;
+			b = false;
+			deplacement_gauche_haut();
+		}
+	} else if(saut1 < 0) {
+		if(j<abs(saut_bordure)) {
+			deplacement_droite_bas();
+			++j;
+		} else {
+			j=0;
+			b = false;
+			deplacement_gauche_bas();
+		}
+	}
+}
+
+void Collector::deplacement_right_bordure(int& j, int saut1, int saut_bordure, bool& b) {
+	if(saut1 > 0) {
+		if(j<abs(saut_bordure)) {
+			deplacement_gauche_haut();
+			++j;
+		} else {
+			j=0;
+			b = false;
+			deplacement_droite_haut();
+		}
+	} else if(saut1 < 0) {
+		if(j<abs(saut_bordure)) {
+			deplacement_gauche_bas();
+			++j;
+		} else {
+			j=0;
+			b = false;
+			deplacement_droite_bas();
+		}
+	}
+}
+
+void Collector::deplacement_bottom_bordure(int& j, int saut1, int saut_bordure, bool& b) {
+	if(saut1 > 0) {
+		if(j<abs(saut_bordure)) {
+			deplacement_droite_haut();
+			++j;
+		} else {
+			j=0;
+			b = false;
+			deplacement_droite_bas();
+		}
+	} else if(saut1 < 0) {
+		if(j<abs(saut_bordure)) {
+			deplacement_gauche_haut();
+			++j;
+		} else {
+			j=0;
+			b = false;
+			deplacement_gauche_bas();
+		}
+	}
+}
+
+void Collector::deplacement_top_bordure(int& j, int saut1, int saut_bordure, bool& b) {
+	if(saut1 > 0) {
+		if(j<abs(saut_bordure)) {
+			deplacement_droite_bas();
+			++j;
+		} else {
+			j=0;
+			b = false;
+			deplacement_droite_haut();
+		}
+	} else if(saut1 < 0) {
+		if(j<abs(saut_bordure)) {
+			deplacement_gauche_bas();
+			++j;
+		} else {
+			j=0;
+			b = false;
+			deplacement_gauche_haut();
+		}
+	}
+}
+	
 bool Collector::deplacement_chemin_1_loaded(const Carre& carre_f, int vx, int vy) {
 	if(vx < 0 and vy < 0) {
 		deplacement_gauche_bas();
@@ -623,164 +679,6 @@ bool Collector::deplacement_chemin_1_loaded(const Carre& carre_f, int vx, int vy
 	} else if(vx > 0 and vy < 0) {
 		deplacement_droite_bas();
 	}
-	if(test_superposition_2_carres_non_centre_centre(carre, carre_f)) {
-		return true;
-	}
-	return false;
-}
-
-bool Collector::deplacement_chemin_2_loaded(const Carre& carre_f, Carre carre_generator,
-											int vx, int vy) {
-	static bool bordure(false);
-	static int j(0);
-	static int i(0);
-	static int saut_bordure(0);
-	int saut1((vx+vy)/2);
-	int saut2((vx-vy)/2);
-	supprimer_carre_centre(carre_generator);
-	unsigned int chemin(best_chemin(saut1, saut2, vx, vy));
-	initialise_carre_centre(carre_generator);
-	if(test_deplacement_bordure(carre, i)) {
-		bordure = true;
-		if(i==1) {
-			if(vy > 0) {
-				saut_bordure = saut2;
-			} else {
-				saut_bordure = saut1;
-			}
-		}
-		if(i ==2) {
-			if(vy < 0) {
-				saut_bordure = saut2;
-			} else {
-				saut_bordure = saut1;
-			}
-		}
-		if(i==3) {
-			if(vx < 0) {
-				saut_bordure = saut1;
-			} else {
-				saut_bordure = saut2;
-			}
-		}
-		if(i==4) {
-			if(vx > 0) {
-				saut_bordure = saut1;
-			} else {
-				saut_bordure = saut2;
-			}
-		}
-		cout << saut_bordure << endl;
-	}
-	if(bordure == false) {
-		if(chemin==1) {
-			if(saut1 > 0 and saut2 > 0) {
-				deplacement_droite_haut();
-			} else if(saut1 < 0 and saut2 < 0) {
-				deplacement_gauche_haut();
-			} else if(saut1 < 0 and saut2 > 0) {
-				deplacement_droite_bas();
-			} else if(saut1 > 0 and saut2 < 0) {
-				deplacement_droite_haut();
-			}	
-		} else if(chemin==2) {
-			if(saut1 > 0 and saut2 > 0) {
-				deplacement_droite_bas();
-			} else if(saut1 < 0 and saut2 < 0) {
-				deplacement_gauche_bas();
-			} else if(saut1 < 0 and saut2 > 0) {
-				deplacement_gauche_bas();
-			} else if(saut1 > 0 and saut2 < 0) {
-				deplacement_gauche_haut();
-			}
-		}
-	} else {
-		if(i==1) {
-			if(saut1 > 0) {
-				if(j<abs(saut_bordure)) {
-				deplacement_droite_haut();
-				++j;
-				} else {
-					j=0;
-					bordure = false;
-					deplacement_gauche_haut();
-				}
-			} else if(saut1 < 0) {
-				if(j<abs(saut_bordure)) {
-				deplacement_droite_bas();
-				++j;
-				} else {
-					j=0;
-					bordure = false;
-					deplacement_gauche_bas();
-				}
-			}
-		}
-		if(i==2) {
-			if(saut1 > 0) {
-				if(j<abs(saut_bordure)) {
-				deplacement_gauche_haut();
-				++j;
-				} else {
-					j=0;
-					bordure = false;
-					deplacement_droite_haut();
-				}
-			} else if(saut1 < 0) {
-				if(j<abs(saut_bordure)) {
-				deplacement_gauche_bas();
-				++j;
-				} else {
-					j=0;
-					bordure = false;
-					deplacement_droite_bas();
-				}
-			}
-		}
-		if(i==3) {
-			if(saut1 > 0) {
-				if(j<abs(saut_bordure)) {
-				deplacement_droite_haut();
-				++j;
-				} else {
-					j=0;
-					bordure = false;
-					deplacement_droite_bas();
-				}
-			} else if(saut1 < 0) {
-				if(j<abs(saut_bordure)) {
-				deplacement_gauche_haut();
-				++j;
-				} else {
-					j=0;
-					bordure = false;
-					deplacement_gauche_bas();
-				}
-			}
-		}
-		if(i==4) {
-			if(saut1 > 0) {
-				if(j<abs(saut_bordure)) {
-				deplacement_droite_bas();
-				++j;
-				} else {
-					j=0;
-					bordure = false;
-					deplacement_droite_haut();
-				}
-			} else if(saut1 < 0) {
-				if(j<abs(saut_bordure)) {
-				deplacement_gauche_bas();
-				++j;
-				} else {
-					j=0;
-					bordure = false;
-					deplacement_gauche_haut();
-				}
-			}
-		}
-	}
-
 	if(test_superposition_2_carres_non_centre_centre(carre, carre_f)) {
 		return true;
 	}

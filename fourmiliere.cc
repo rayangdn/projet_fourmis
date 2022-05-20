@@ -150,35 +150,30 @@ bool Fourmiliere::test_inf_droite(Fourmiliere& F) {			//OK?
 	}
 }
 
-void Fourmiliere::mise_a_jour(int K) {
-	
-	if(K == 0){
+void Fourmiliere::mise_a_jour(int k) {
+	if(k== 0){
 		carre.longeur = sizeF+2;
 		etat_f = FREE;
-		//cout << "IG" << endl;
 	}
-	else if(K == 1){
+	else if(k == 1){
 		etat_f = FREE;
 		unsigned int longeur = carre.longeur;
 		carre.longeur = sizeF+2;
 		carre.point.y -= carre.longeur-longeur;
-		//cout << "SG" << endl;
 	}
-	else if(K == 2){
+	else if(k== 2){
 		etat_f = FREE;
 		unsigned int longeur = carre.longeur;
 		carre.longeur = sizeF+2;
 		carre.point.x -= carre.longeur-longeur;
 		carre.point.y -= carre.longeur-longeur;
-		//cout << "SD" << endl;
 		
 	}
-	else if(K == 3){
+	else if(k == 3){
 		etat_f = FREE;
 		unsigned int longeur = carre.longeur;
 		carre.longeur = sizeF+2;
 		carre.point.x -= carre.longeur-longeur;
-		//cout << "ID" << endl;
 	}
 	else {
 		etat_f = CONSTRAINED;
@@ -198,10 +193,9 @@ void Fourmiliere::maj_generator(Ensemble_food& ensemble_food) {
 void Fourmiliere::create_fourmi() {
 	random_device rd;
 	enum fourmi{C, D, P};
-	//TRIER FOURMI??
 	double total_food = ensemble_fourmis[0]->get_total_food();
 	//double p(min(1.0, total_food * birth_rate));
-	double p(1.0);
+	double p(1);
 	bernoulli_distribution b(p);
 	default_random_engine eng(rd());
 	if(b(eng)) {
@@ -284,7 +278,6 @@ void Fourmiliere::action_autres_fourmis( Ensemble_food& ensemble_food) {
 }
 	
 void Fourmiliere::destruction_fourmis(Ensemble_food& ensemble_food) {
-	
 	for(size_t i(1);  i < ensemble_fourmis.size(); ++i) {
 		if(ensemble_fourmis[i]->get_age() >= bug_life or 
 		   ensemble_fourmis[i]->get_end_of_life() == true) {

@@ -123,14 +123,14 @@ void Simulation::draw_simulation() {
 
 void Simulation::refresh() {
 	//PARTIE CREATION DE NOURRITURE
-	create_food();
+	//create_food();
 	//PARTIE AJUSTEMENT/DEPLACEMENT FOURMILIERE
 	for(size_t i(0); i < ensemble_fourmilieres.size(); ++i) {
 		maj_fourmiliere(i);
 	//PARTIE GENERATOR
 		ensemble_fourmilieres[i].maj_generator(ensemble_food); 
 	//PARTIE AUTRES FOURMIS
-	//	ensemble_fourmilieres[i].action_autres_fourmis(ensemble_food);
+		//ensemble_fourmilieres[i].action_autres_fourmis(ensemble_food);
 		defensor_kill_collector(i);
 	}
 	for(size_t i(0); i < ensemble_fourmilieres.size(); ++i) {
@@ -178,7 +178,7 @@ bool Simulation::superposition_food_with_all(const Carre& carre_food) {
 void Simulation::maj_fourmiliere(unsigned int i) {
 	ensemble_fourmilieres[i].calcul_sizeF();
 	enum Expend_case{IG, SG, SD, ID, RIEN};
-	int expend(RIEN);
+	int expend(IG);
 	if(ensemble_fourmilieres.size() ==1) {
 		Carre carre = ensemble_fourmilieres[i].get_carre();
 		if(not(test_validation_inf_gauche(carre))) {
@@ -194,49 +194,42 @@ void Simulation::maj_fourmiliere(unsigned int i) {
 		}
 		ensemble_fourmilieres[i].mise_a_jour(expend);
 	}					
-	int k(0); int l(0); int m(0); int n(0);
+	bool inf_gauche(true), sup_gauche(true), sup_droite(true), inf_droite(true);
 	for(size_t j(0); j < ensemble_fourmilieres.size(); ++j){
 		if(i != j) {
-			if(k==0) {
-				if(ensemble_fourmilieres[i].test_inf_gauche(ensemble_fourmilieres[j])){
-					expend=IG; 
-					//cout << "IG"<< endl;
-				} else {
-					k=1;
+			if(inf_gauche) {
+				if(!ensemble_fourmilieres[i].test_inf_gauche(ensemble_fourmilieres[j])){
+					inf_gauche=false;
 				}
 			} 
-			if( m==0) {
-				if(ensemble_fourmilieres[i].test_sup_gauche(ensemble_fourmilieres[j])){
-					expend=SG;
-					//cout << "SG"<< endl;
-				} else {
-					m=1;
+			if(sup_gauche) {
+				if(!ensemble_fourmilieres[i].test_sup_gauche(ensemble_fourmilieres[j])){
+					sup_gauche=false;
 				}
 			} 
-			if(l==0) {
-				if(ensemble_fourmilieres[i].test_sup_droite(ensemble_fourmilieres[j])){
-					expend=SD;
-					//cout << "SD"<< endl;
-				} else {
-					l=1;
+			if(sup_droite) {
+				if(!ensemble_fourmilieres[i].test_sup_droite(ensemble_fourmilieres[j])){
+					sup_droite=false;  
 				}
 			} 
-			 if(n==0) {
-				//
-				if(ensemble_fourmilieres[i].test_inf_droite(ensemble_fourmilieres[j])){
-					expend=ID;
-				//	cout << "ID"<< endl;
-				} else {
-					n=1;
+			 if(inf_droite) {
+				if(!ensemble_fourmilieres[i].test_inf_droite(ensemble_fourmilieres[j])){
+					inf_droite=false;;
 				}
-				
 			} 
-			if (k==1 and l==1 and m==1 and n==1) {
-				expend = RIEN;
-				//cout << "ZERO"<< endl;
-			}	
 		}
 	}
+			if(inf_gauche) {
+				expend=IG;
+			} else if(sup_gauche) {
+				expend=SG;
+			} else if(sup_droite) {
+				expend=SD;
+			} else if(inf_droite) {
+				expend=ID;
+			} else {
+				expend = RIEN;
+			}	
 	ensemble_fourmilieres[i].mise_a_jour(expend);
 }
 

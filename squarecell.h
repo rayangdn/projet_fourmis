@@ -76,7 +76,7 @@ bool find_place_in_carre(const Carre&, Carre&);
 
 void draw_carre(const Carre&, unsigned int, unsigned int);
 
-
+void affiche();
 
 #endif
 
