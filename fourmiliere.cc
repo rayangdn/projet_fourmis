@@ -143,7 +143,6 @@ bool Fourmiliere::test_inf_droite(Fourmiliere& F) {			//OK?
 	test.longeur = sizeF + 2;
 	test.point.x = carre.point.x + carre.longeur-test.longeur;
 	test.point.y = carre.point.y;
-	
 	if(not(test_superposition_2_carres_non_centre(test, F.carre)) 
 	   and not(test_validation_inf_droite(test))){
 		return true;
@@ -194,77 +193,96 @@ void Fourmiliere::maj_generator(Ensemble_food& ensemble_food) {
 
 void Fourmiliere::create_fourmi() {
 	random_device rd;
-	enum fourmi{C, D, P};
+	
 	double total_food = ensemble_fourmis[0]->get_total_food();
 	double p(min(1.0, total_food * birth_rate));
 	bernoulli_distribution b(p);
 	default_random_engine eng(rd());
+	if(b(eng)) {
+		if(etat_f == FREE) {
+			create_fourmi_free();
+			
+		}
+		if(etat_f == CONSTRAINED) {
+			create_fourmi_free();
+			
+		}
+	}
+}
+void Fourmiliere::create_fourmi_free() {
+	enum fourmi{C, D, P};
 	double proba_C(0), proba_D(0);
 	if(nbT-1 ==0) {
 		proba_C=0;
 	} else {
-		proba_C = (double)nbC/nbT-1;
-		proba_D = (double)nbD/nbT-1;
+		proba_C = (double)nbC/(nbT-1);
+		proba_D = (double)nbD/(nbT-1);
 	}
-	if(b(eng)) {
-		if(etat_f == FREE) {
-			if(proba_C <= prop_free_collector) { 
-				Carre carre_collector{sizeC, {0,0}};
-				if(recherche_espace_libre(carre_collector)) {
-				unsigned int age(0);
-
-				ajouter_fourmis(new Collector(carre_collector, age), C);
-				++nbC; ++nbT;
-				}
-				return;
-			} else if(proba_D <= prop_free_defensor) {
-				Carre carre_defensor{sizeD, {0,0}};
-				if(recherche_espace_libre(carre_defensor)) {
-				unsigned int age(0);
-				ajouter_fourmis(new Defensor(carre_defensor, age), D);
-				++nbD; ++nbT;
-				}
-				return;
-			} else {
-				Carre carre_predator{sizeP, {0,0}};
-				if(recherche_espace_libre(carre_predator)) {
-				unsigned int age(0);
-				ajouter_fourmis(new Predator(carre_predator, age), P);
-				++nbP; ++nbT;
-				}
-				return;
-			}
+	if(proba_C <= prop_free_collector) {
+		Carre carre_collector{sizeC, {0,0}};
+		if(recherche_espace_libre(carre_collector)) {
+			unsigned int age(0);
+			ajouter_fourmis(new Collector(carre_collector, age), C);
+			++nbC; ++nbT;
+		return;
 		}
-		if(etat_f == CONSTRAINED) {
-			if(proba_C<= prop_constrained_collector) { 
-				Carre carre_collector{sizeC, {0,0}};
-				if(recherche_espace_libre(carre_collector)) {
-				unsigned int age(0);
-				ajouter_fourmis(new Collector(carre_collector, age), C);
-				++nbC; ++nbT;
-				}
-				return;
-			} else if(proba_D <= prop_constrained_defensor) {
-				Carre carre_defensor{sizeD, {0,0}};
-				if(recherche_espace_libre(carre_defensor)) {
-				unsigned int age(0);
-				ajouter_fourmis(new Defensor(carre_defensor, age), D);
-				++nbD; ++nbT;
-				}
-				return;
-			} else {
-				Carre carre_predator{sizeP, {0,0}};
-				if(recherche_espace_libre(carre_predator)) {
-				unsigned int age(0);
-				ajouter_fourmis(new Predator(carre_predator, age), P);
-				++nbP; ++nbT;
-				}
-				return;
-			}
+		
+	} else if(proba_D <= prop_free_defensor) {
+		Carre carre_defensor{sizeD, {0,0}};
+		if(recherche_espace_libre(carre_defensor)) {
+			unsigned int age(0);
+			ajouter_fourmis(new Defensor(carre_defensor, age), D);
+			++nbD; ++nbT;
+		return;
+		}
+		
+	} else {
+		Carre carre_predator{sizeP, {0,0}};
+		if(recherche_espace_libre(carre_predator)) {
+			unsigned int age(0);
+			ajouter_fourmis(new Predator(carre_predator, age), P);
+			++nbP; ++nbT;
+		return;
 		}
 	}
 }
 
+void Fourmiliere::create_fourmi_constrained() {
+	enum fourmi{C, D, P};
+	double proba_C(0), proba_D(0);
+	if(nbT-1 ==0) {
+		proba_C=0;
+	} else {
+		proba_C = (double)nbC/(nbT-1);
+		proba_D = (double)nbD/(nbT-1);
+	}
+	if(proba_C<= prop_constrained_collector) { 
+		Carre carre_collector{sizeC, {0,0}};
+		if(recherche_espace_libre(carre_collector)) {
+			unsigned int age(0);
+			ajouter_fourmis(new Collector(carre_collector, age), C);
+			++nbC; ++nbT;
+			return;
+		}	
+	} else if(proba_D <= prop_constrained_defensor) {
+		Carre carre_defensor{sizeD, {0,0}};
+		if(recherche_espace_libre(carre_defensor)) {
+			unsigned int age(0);
+			ajouter_fourmis(new Defensor(carre_defensor, age), D);
+				++nbD; ++nbT;
+				return;
+			}
+	} else {
+		Carre carre_predator{sizeP, {0,0}};
+		if(recherche_espace_libre(carre_predator)) {
+			unsigned int age(0);
+			ajouter_fourmis(new Predator(carre_predator, age), P);
+			++nbP; ++nbT;
+			return;
+		}	
+	}
+}
+	
 bool Fourmiliere::recherche_espace_libre(Carre& carre_fourmi) {
 	if(find_place_in_carre(carre, carre_fourmi)) {
 		initialise_carre_centre(carre_fourmi);
@@ -278,8 +296,11 @@ void Fourmiliere::action_autres_fourmis( Ensemble_food& ensemble_food) {
 	double total_food = ensemble_fourmis[0]->get_total_food();
 	if(ensemble_fourmis[0]->get_end_of_klan()==false) {
 		 for(size_t i(1); i < ensemble_fourmis.size(); ++i) {
+			 cout << "FOURMI " << i << endl;
+			if(ensemble_fourmis[i]->get_age() > 0) {
+				ensemble_fourmis[i]->deplacement_fourmi(carre, carre_fourmi, ensemble_food, total_food);
+			}
 			ensemble_fourmis[i]->incrementer_age();
-			ensemble_fourmis[i]->deplacement_fourmi(carre, carre_fourmi, ensemble_food, total_food);
 		}
 	}
 	ensemble_fourmis[0]->set_total_food(total_food);
@@ -289,10 +310,11 @@ void Fourmiliere::defensor_kill_collector(Fourmiliere& f) {
 	for(size_t i(1); i < nbC+1; ++i) {
 		for(size_t j(f.nbC+1); j < f.nbC+f.nbD+1; ++j) {
 			Carre carre_f = f.ensemble_fourmis[j]->get_carre();
-			ensemble_fourmis[i]->kill(carre_f);
+			ensemble_fourmis[i]->kill_defensor(carre_f);
 		}
 	}
 }
+
 void Fourmiliere::destruction_fourmis(Ensemble_food& ensemble_food) {
 	for(size_t i(1);  i < ensemble_fourmis.size(); ++i) {
 		if(ensemble_fourmis[i]->get_age() >= bug_life or 
@@ -358,6 +380,7 @@ bool decodage_line_fourmiliere(string line, Ensemble_fourmilieres& ensemble_four
 		++count_fourmis;
 		countC=0; countD=0; countP=0;
 		if(nbC!=0) {
+			
 			etat_f=COLLECT;
 			return false;
 		}

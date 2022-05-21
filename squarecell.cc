@@ -239,275 +239,293 @@ bool test_diago(const Carre& carre, const Carre& autre_carre) {
 	return false;
 }
 
-unsigned int test_chemin(Carre test, int saut1, int saut2) {
+unsigned int test_chemin(Carre test, int saut1, int saut2, bool& bordure) {
 	Grid grid1 = grid;
 	Carre autre_carre = test;
 	unsigned int sup1(0);
 	unsigned int sup2(0);
-	bool bordure(false);
 	if(saut1 > 0 and saut2 > 0) {
-		for(size_t i(0); i < abs(saut1); ++i) {
-			if(test_deplacement_top_bordure(test)) {
-				bordure=true;
-			}
-			if(bordure==true) {
-				test.point.x +=1;
-				test.point.y -=1;
-			} else {
-				test.point.x +=1;
-				test.point.y +=1;
-			}
-			cout << test.point.x << " " << test.point.y << endl;
-			test_sup_chemin(test, sup1);
-		}
-		for(size_t i(0); i < abs(saut2); ++i) {
-			if(test_deplacement_top_bordure(test)) {
-				bordure=false;
-				
-			}
-			if(bordure==true) {
-				test.point.x +=1;
-				test.point.y +=1;
-			} else {
-				test.point.x +=1;
-				test.point.y -=1;
-			}
-			cout << test.point.x << " " << test.point.y << endl;
-			test_sup_chemin(test, sup1);
-		}
-		cout << endl;
-		test = autre_carre;
-		for(size_t i(0); i < abs(saut2); ++i) {
-			if(test_deplacement_bottom_bordure(test)) {
-				bordure=true;
-			}
-			if(bordure==true) {
-				test.point.x +=1;
-				test.point.y +=1;
-			} else {
-				test.point.x +=1;
-				test.point.y -=1;
-			}
-			cout << test.point.x << " " << test.point.y << endl;
-			test_sup_chemin(test, sup2);
-		}
-		for(size_t i(0); i < abs(saut1); ++i) {
-			if(test_deplacement_bottom_bordure(test)) {
-				bordure=false;
-			}
-			if(bordure==true) {
-				test.point.x +=1;
-				test.point.y -=1;
-			
-			} else {
-				test.point.x +=1;
-				test.point.y +=1;
-			}
-			cout << test.point.x << " " << test.point.y << endl;
-			test_sup_chemin(test, sup2);
-		} 
+		test_deplacement_1(autre_carre, test, saut1, saut2, sup1, sup2, bordure);
 		
-		test = autre_carre;
 	} else if(saut1 < 0 and saut2 < 0) {
-		for(size_t i(0); i < abs(saut2); ++i) {
-			if(test_deplacement_top_bordure(test)) {
-				
-				bordure = true;
-			}
-			if(bordure==true) {
-				test.point.x -=1;
-				test.point.y -= 1;
-			} else {
-				test.point.x -=1;
-				test.point.y += 1;
-			}	
-			cout << test.point.x << " " << test.point.y << endl;
-			test_sup_chemin(test, sup1);
-		}
-		for(size_t i(0); i < abs(saut1); ++i) {
-			if(test_deplacement_top_bordure(test)) {
-				bordure= false;
-			}
-			if(bordure==true) {
-				test.point.x -=1;
-				test.point.y += 1;
-			} else {
-				test.point.x -=1;
-				test.point.y -= 1;
-			}
-			cout << test.point.x << " " << test.point.y << endl;
-			test_sup_chemin(test, sup1);
-		}
-		cout << endl;
-		test = autre_carre;
-		for(size_t i(0); i < abs(saut1); ++i) {
-			if(test_deplacement_bottom_bordure(test)) {
-				bordure = true;
-			}
-			if(bordure==true) {
-				test.point.x -=1;
-				test.point.y += 1;
-			} else {
-				test.point.x -=1;
-				test.point.y -= 1;
-			}	
-			cout << test.point.x << " " << test.point.y << endl;
-			test_sup_chemin(test, sup2);
-		}
-		for(size_t i(0); i < abs(saut2); ++i) {
-			if(test_deplacement_bottom_bordure(test)) {
-				bordure = false;
-			}
-			if(bordure==true) {
-				test.point.x -=1;
-				test.point.y -= 1;
-			} else {
-				test.point.x -=1;
-				test.point.y += 1;
-			}	
-			cout << test.point.x << " " << test.point.y << endl;
-			test_sup_chemin(test, sup2);
-		} 
-		test = autre_carre;
+		test_deplacement_2(autre_carre, test, saut1, saut2, sup1, sup2, bordure);
+	
 	} else if(saut1 < 0 and saut2 > 0) {
-		for(size_t i(0); i < abs(saut2); ++i) {
-			if(test_deplacement_right_bordure(test)) {
-				bordure=true;
-			}
-			if(bordure==true) {
-				test.point.x -=1;
-				test.point.y -= 1;
-			} else {
-				test.point.x +=1;
-				test.point.y -= 1;
-			}
-			cout << test.point.x << " " << test.point.y << endl;
-			test_sup_chemin(test, sup1);
-		}
-		for(size_t i(0); i < abs(saut1); ++i) {
-			if(test_deplacement_right_bordure(test)) {
-				bordure=false;
-			}
-			if(bordure==true) {
-				test.point.x +=1;
-				test.point.y -= 1;
-			} else {
-				test.point.x -=1;
-				test.point.y -= 1;
-			}
-			cout << test.point.x << " " << test.point.y << endl;
-			test_sup_chemin(test, sup1);
-		}
-		cout << endl;
-		test = autre_carre;
-		for(size_t i(0); i < abs(saut1); ++i) {
-			if(test_deplacement_left_bordure(test)) {
-				bordure=true;
-			}
-			if(bordure==true) {
-				test.point.x +=1;
-				test.point.y -= 1;
-			} else {
-				test.point.x -=1;
-				test.point.y -= 1;
-			}
-			cout << test.point.x << " " << test.point.y << endl;
-			test_sup_chemin(test, sup1);
-		}
-		for(size_t i(0); i < abs(saut2); ++i) {
-			if(test_deplacement_left_bordure(test)) {
-				bordure=false;
-			}
-			if(bordure==true) {
-				test.point.x -=1;
-				test.point.y -= 1;
-			} else {
-				test.point.x +=1;
-				test.point.y -= 1;
-			}
-			cout << test.point.x << " " << test.point.y << endl;
-			test_sup_chemin(test, sup1);
-		}
-		test = autre_carre;
+		test_deplacement_3(autre_carre, test, saut1, saut2, sup1, sup2, bordure);
+		
 	} else if(saut1 > 0 and saut2 < 0 ) {
-		for(size_t i(0); i < abs(saut1); ++i) {
-			if(test_deplacement_right_bordure(test)) {
-				bordure=true;
-			}
-			if(bordure==true) {
-				test.point.x -=1;
-				test.point.y += 1;
-			} else {
-				test.point.x +=1;
-				test.point.y += 1;
-			}
-			cout << test.point.x << " " << test.point.y << endl;
-			test_sup_chemin(test, sup1);
-		}
-		for(size_t i(0); i < abs(saut2); ++i) {
-			if(test_deplacement_right_bordure(test)) {
-				bordure=false;
-			}
-			if(bordure==true) {
-				test.point.x +=1;
-				test.point.y += 1;
-			} else {
-				test.point.x -=1;
-				test.point.y += 1;
-			}
-			cout << test.point.x << " " << test.point.y << endl;
-			test_sup_chemin(test, sup1);
-		}
-		cout << endl;
-		test = autre_carre;
-		for(size_t i(0); i < abs(saut2); ++i) {
-			if(test_deplacement_left_bordure(test)) {
-				bordure=true;
-			}
-			if(bordure==true) {
-				test.point.x +=1;
-				test.point.y += 1;
-			} else {
-				test.point.x -=1;
-				test.point.y += 1;
-			}
-			cout << test.point.x << " " << test.point.y << endl;
-			test_sup_chemin(test, sup1);
-		}
-		for(size_t i(0); i < abs(saut1); ++i) {
-			if(test_deplacement_left_bordure(test)) {
-				bordure=false;
-			}
-			if(bordure==true) {
-				test.point.x -=1;
-				test.point.y += 1;
-			} else {
-				test.point.x +=1;
-				test.point.y += 1;
-			}
-			cout << test.point.x << " " << test.point.y << endl;
-			test_sup_chemin(test, sup1);
-		}
-		test = autre_carre;
+		test_deplacement_4(autre_carre, test, saut1, saut2, sup1, sup2, bordure);
 	}
 	grid = grid1;
+	cout << "SUP " <<  sup1 << " " << sup2 << endl;
 	if(sup2 < sup1) {
 		return 2;
 	}
 	return 1;
 }
 
-void test_sup_chemin(const Carre& carre, unsigned int& sup) {
-	for(size_t i(carre.point.y-carre.longeur/2);
-	    i < carre.point.y + (carre.longeur/2+1); ++i) {
-		for(size_t j(carre.point.x-carre.longeur/2); 
-		    j < carre.point.x + (carre.longeur/2+1); ++j) {
-			if(grid[grid.size()-1-i][j] == true) {
-				grid[grid.size()-1-i][j] = false;
-				++sup;
-			}
+void test_deplacement_1(const Carre& autre_carre, Carre test, int saut1, int saut2, 
+						unsigned int& sup1, unsigned int& sup2, bool& b) {
+	bool bordure(false);
+	for(size_t i(0); i < abs(saut1); ++i) {
+		if(test_deplacement_top_bordure(test)) {
+			bordure=true;
+			b=true;
 		}
+		if(bordure==true) {
+			test.point.x +=1;
+			test.point.y -=1;
+		} else {
+			test.point.x +=1;
+			test.point.y +=1;
+		}
+		cout << test.point.x << " " << test.point.y << endl;
+		test_sup_chemin(test, sup1);
 	}
+	for(size_t i(0); i < abs(saut2); ++i) {
+		if(test_deplacement_top_bordure(test)) {
+			bordure=false;
+				
+		}
+		if(bordure==true) {
+			test.point.x +=1;
+			test.point.y +=1;
+		} else {
+			test.point.x +=1;
+			test.point.y -=1;
+		}
+		cout << test.point.x << " " << test.point.y << endl;
+		test_sup_chemin(test, sup1);
+	}
+	cout << endl;
+	test = autre_carre;
+	for(size_t i(0); i < abs(saut2); ++i) {
+		if(test_deplacement_bottom_bordure(test)) {
+			bordure=true;
+			b=true;
+		}
+		if(bordure==true) {
+			test.point.x +=1;
+			test.point.y +=1;
+		} else {
+			test.point.x +=1;
+			test.point.y -=1;
+		}
+		cout << test.point.x << " " << test.point.y << endl;
+		test_sup_chemin(test, sup2);
+	}
+	for(size_t i(0); i < abs(saut1); ++i) {
+		if(test_deplacement_bottom_bordure(test)) {
+			bordure=false;
+		}
+		if(bordure==true) {
+			test.point.x +=1;
+			test.point.y -=1;
+			
+		} else {
+			test.point.x +=1;
+			test.point.y +=1;
+		}
+		cout << test.point.x << " " << test.point.y << endl;
+		test_sup_chemin(test, sup2);
+	} 
+}
+
+void test_deplacement_2(const Carre& autre_carre, Carre test, int saut1, int saut2, 
+						unsigned int& sup1, unsigned int& sup2,  bool& b) {
+	bool bordure(false);
+	for(size_t i(0); i < abs(saut2); ++i) {
+		if(test_deplacement_top_bordure(test)) {
+			bordure = true;
+			b=true;
+		}
+		if(bordure==true) {
+			test.point.x -=1;
+			test.point.y -= 1;
+		} else {
+			test.point.x -=1;
+			test.point.y += 1;
+		}	
+		cout << test.point.x << " " << test.point.y << endl;
+		test_sup_chemin(test, sup1);
+	}
+	for(size_t i(0); i < abs(saut1); ++i) {
+		if(test_deplacement_top_bordure(test)) {
+			bordure= false;
+		}
+		if(bordure==true) {
+			test.point.x -=1;
+			test.point.y += 1;
+		} else {
+			test.point.x -=1;
+			test.point.y -= 1;
+		}
+		cout << test.point.x << " " << test.point.y << endl;
+		test_sup_chemin(test, sup1);
+	}
+	cout << endl;
+	test = autre_carre;
+	for(size_t i(0); i < abs(saut1); ++i) {
+		if(test_deplacement_bottom_bordure(test)) {
+			bordure = true;
+			b=true;
+		}
+		if(bordure==true) {
+			test.point.x -=1;
+			test.point.y += 1;
+		} else {
+			test.point.x -=1;
+			test.point.y -= 1;
+		}	
+		cout << test.point.x << " " << test.point.y << endl;
+		test_sup_chemin(test, sup2);
+	}
+	for(size_t i(0); i < abs(saut2); ++i) {
+		if(test_deplacement_bottom_bordure(test)) {
+			bordure = false;
+		}
+		if(bordure==true) {
+			test.point.x -=1;
+			test.point.y -= 1;
+		} else {
+			test.point.x -=1;
+			test.point.y += 1;
+		}	
+		cout << test.point.x << " " << test.point.y << endl;
+		test_sup_chemin(test, sup2);
+	} 
+
+}
+
+void test_deplacement_3(const Carre& autre_carre, Carre test, int saut1, int saut2, 
+						unsigned int& sup1, unsigned int& sup2,  bool& b) {
+	bool bordure(false);
+	for(size_t i(0); i < abs(saut2); ++i) {
+		if(test_deplacement_right_bordure(test)) {
+			bordure=true;
+			b=true;
+		}
+		if(bordure==true) {
+			test.point.x -=1;
+			test.point.y -= 1;
+		} else {
+			test.point.x +=1;
+			test.point.y -= 1;
+		}
+		cout << test.point.x << " " << test.point.y << endl;
+		test_sup_chemin(test, sup1);
+	}
+	for(size_t i(0); i < abs(saut1); ++i) {
+		if(test_deplacement_right_bordure(test)) {
+			bordure=false;
+		}
+		if(bordure==true) {
+			test.point.x +=1;
+			test.point.y -= 1;
+		} else {
+			test.point.x -=1;
+			test.point.y -= 1;
+		}
+		cout << test.point.x << " " << test.point.y << endl;
+		test_sup_chemin(test, sup1);
+	}
+	cout << endl;
+	test = autre_carre;
+	for(size_t i(0); i < abs(saut1); ++i) {
+		if(test_deplacement_left_bordure(test)) {
+			bordure=true;
+			b=true;
+		}
+		if(bordure==true) {
+			test.point.x +=1;
+			test.point.y -= 1;
+		} else {
+			test.point.x -=1;
+			test.point.y -= 1;
+		}
+		cout << test.point.x << " " << test.point.y << endl;
+		test_sup_chemin(test, sup1);
+	}
+	for(size_t i(0); i < abs(saut2); ++i) {
+		if(test_deplacement_left_bordure(test)) {
+			bordure=false;
+		}
+		if(bordure==true) {
+			test.point.x -=1;
+			test.point.y -= 1;
+		} else {
+			test.point.x +=1;
+			test.point.y -= 1;
+		}
+		cout << test.point.x << " " << test.point.y << endl;
+		test_sup_chemin(test, sup1);
+	}
+}
+
+void test_deplacement_4(const Carre& autre_carre, Carre test, int saut1, int saut2, 
+						unsigned int& sup1, unsigned int& sup2, bool& b) {
+	bool bordure(false);
+	for(size_t i(0); i < abs(saut1); ++i) {
+		if(test_deplacement_right_bordure(test)) {
+				bordure=true;
+				b=true;
+			}
+		if(bordure==true) {
+			test.point.x -=1;
+			test.point.y += 1;
+		} else {
+			test.point.x +=1;
+			test.point.y += 1;
+		}
+		cout << test.point.x << " " << test.point.y << endl;
+		test_sup_chemin(test, sup1);
+	}
+	for(size_t i(0); i < abs(saut2); ++i) {
+		if(test_deplacement_right_bordure(test)) {
+			bordure=false;
+		}
+		if(bordure==true) {
+			test.point.x +=1;
+			test.point.y += 1;
+		} else {
+			test.point.x -=1;
+			test.point.y += 1;
+		}
+		cout << test.point.x << " " << test.point.y << endl;
+		test_sup_chemin(test, sup1);
+	}
+	cout << endl;
+	test = autre_carre;
+	for(size_t i(0); i < abs(saut2); ++i) {
+		if(test_deplacement_left_bordure(test)) {
+			bordure=true;
+			b=true;
+		}
+		if(bordure==true) {
+			test.point.x +=1;
+			test.point.y += 1;
+		} else {
+			test.point.x -=1;
+			test.point.y += 1;
+		}
+		cout << test.point.x << " " << test.point.y << endl;
+		test_sup_chemin(test, sup1);
+	}
+	for(size_t i(0); i < abs(saut1); ++i) {			
+		if(test_deplacement_left_bordure(test)) {
+			bordure=false;
+		}
+		if(bordure==true) {
+			test.point.x -=1;
+			test.point.y += 1;
+		} else {
+			test.point.x +=1;
+			test.point.y += 1;
+		}
+		cout << test.point.x << " " << test.point.y << endl;
+		test_sup_chemin(test, sup1);
+	}
+	
 }
 
 bool test_deplacement_bordure(const Carre& carre, int& i) {
@@ -558,7 +576,18 @@ bool test_deplacement_right_bordure(const Carre& carre) {
 	return false;
 }
 
-	
+void test_sup_chemin(const Carre& carre, unsigned int& sup) {
+	for(size_t i(carre.point.y-carre.longeur/2);
+	    i < carre.point.y + (carre.longeur/2+1); ++i) {
+		for(size_t j(carre.point.x-carre.longeur/2); 
+		    j < carre.point.x + (carre.longeur/2+1); ++j) {
+			if(grid[grid.size()-1-i][j] == true) {
+				grid[grid.size()-1-i][j] = false;
+				++sup;
+			}
+		}
+	}
+}
 
 bool find_place_in_carre(const Carre& carre1, Carre& carre2) {
 	for(size_t i(carre1.point.y+1); i < carre1.point.y + carre1.longeur-carre2.longeur; ++i) {

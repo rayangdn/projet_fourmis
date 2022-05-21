@@ -31,6 +31,8 @@ public :
 	void mise_a_jour(int);
 	void maj_generator(Ensemble_food&);
 	void create_fourmi();
+	void create_fourmi_free();
+	void create_fourmi_constrained();
 	bool recherche_espace_libre(Carre&);
 	void defensor_kill_collector(Fourmiliere&);
 	void action_autres_fourmis(Ensemble_food&);

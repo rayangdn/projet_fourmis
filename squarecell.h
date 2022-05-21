@@ -58,11 +58,21 @@ bool test_validation_inf_droite(const Carre&);
 
 bool test_diago(const Carre&, const Carre&);
 
-unsigned int test_chemin(Carre, int, int);
-
-void  test_sup_chemin(const Carre& carre, unsigned int& sup);
+unsigned int test_chemin(Carre, int, int, bool&);
 
 bool test_deplacement_bordure(const Carre& carre, int& i);
+
+void test_deplacement_1(const Carre& autre_carre, Carre test, int saut1, int saut2, 
+						unsigned int& sup1, unsigned int& sup2, bool& bordure);
+						
+void test_deplacement_2(const Carre& autre_carre, Carre test, int saut1, int saut2, 
+						unsigned int& sup1, unsigned int& sup2, bool& bordure);
+
+void test_deplacement_3(const Carre& autre_carre, Carre test, int saut1, int saut2, 
+						unsigned int& sup1, unsigned int& sup2, bool& bordure);
+
+void test_deplacement_4(const Carre& autre_carre, Carre test, int saut1, int saut2, 
+						unsigned int& sup1, unsigned int& sup2, bool& bordure);
 
 bool test_deplacement_top_bordure(const Carre& carre);
 
@@ -71,6 +81,8 @@ bool test_deplacement_bottom_bordure(const Carre& carre);
 bool test_deplacement_left_bordure(const Carre& carre);
 
 bool test_deplacement_right_bordure(const Carre& carre);
+
+void test_sup_chemin(const Carre& carre, unsigned int& sup);
 
 bool find_place_in_carre(const Carre&, Carre&);
 

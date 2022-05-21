@@ -34,7 +34,7 @@ public :
 	void deplacement_gauche();
 	void deplacement_droite();
 	void deplacement_haut();
-	virtual void kill(const Carre& carre_fourmi) { return;}
+	virtual void kill_defensor(const Carre& carre_fourmi) { return;}
 	virtual void destruction_fourmi(Ensemble_food&, unsigned int&, unsigned int&,
 	unsigned int&)=0;
 protected :
@@ -89,14 +89,14 @@ public :
 	bool deplacement_chemin_1_loaded(const Carre& carre_f,  int vx, int vy);
 	bool deplacement_chemin_2_loaded(const Carre&, Carre carre_generator, int, int);
 	void test_saut_bordure(int i, int& saut_bordure, int vx, int vy, int saut1, int saut2);
-	unsigned int best_chemin(int& saut1, int& saut2, int vx, int vy);
+	unsigned int best_chemin(int& saut1, int& saut2, bool& bordure);
 	void deplacement_no_bordure(int chemin , int saut1, int saut2);
-	void deplacement_bordure(int i, int saut1, int saut_bordure, bool& bordure);
-	void deplacement_left_bordure(int& j, int saut1, int saut_bordure, bool& bordure);
-	void deplacement_right_bordure(int& j, int saut1, int saut_bordure, bool& bordure);
-	void deplacement_bottom_bordure(int& j, int saut1, int saut_bordure, bool& bordure);
-	void deplacement_top_bordure(int& j, int saut1, int saut_bordure, bool& bordure);
-	virtual void kill(const Carre& carre_fourmi) override;
+	void deplacement_bordure(int chemin, int saut1, int saut2, int vx, int vy);
+	void deplacement_left_bordure(int& i, int saut1, int saut_bordure);
+	void deplacement_right_bordure(int& i, int saut1, int saut_bordure);
+	void deplacement_bottom_bordure(int& i, int saut1, int saut_bordure);
+	void deplacement_top_bordure(int& i, int saut1, int saut_bordure);
+	virtual void kill_defensor(const Carre& carre_fourmi) override;
 	virtual void destruction_fourmi(Ensemble_food&, unsigned int&, unsigned int&, 
 	unsigned int&) override;
 private :

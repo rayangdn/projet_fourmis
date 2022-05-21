@@ -128,6 +128,7 @@ void Simulation::refresh() {
 	for(size_t i(0); i < ensemble_fourmilieres.size(); ++i) {
 		maj_fourmiliere(i);
 	//PARTIE GENERATOR
+	cout << "FOURMILIERE " << i << endl;
 		ensemble_fourmilieres[i].maj_generator(ensemble_food); 
 	//PARTIE AUTRES FOURMIS
 		fourmis_kill(i);
@@ -222,17 +223,17 @@ void Simulation::maj_fourmiliere(unsigned int i) {
 			} 
 		}
 	}
-			if(inf_gauche) {
-				expend=IG;
-			} else if(sup_gauche) {
-				expend=SG;
-			} else if(sup_droite) {
-				expend=SD;
-			} else if(inf_droite) {
-				expend=ID;
-			} else {
-				expend = RIEN;
-			}	
+	if(inf_gauche) {
+		expend=IG;
+	} else if(sup_gauche) {
+		expend=SG;
+	} else if(sup_droite) {
+		expend=SD;
+	} else if(inf_droite) {
+		expend=ID;
+	} else {
+		expend = RIEN;
+	}	
 	ensemble_fourmilieres[i].mise_a_jour(expend);
 }
 
