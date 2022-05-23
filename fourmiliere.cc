@@ -15,6 +15,10 @@ Fourmiliere::Fourmiliere(Carre carre, unsigned int nbC, unsigned int nbD, unsign
 : carre(carre),  nbC(nbC), nbD(nbD), nbP(nbP), nbT(nbT), sizeF(sizeF), 
   color(color), etat_f(FREE) {}
 
+unsigned int Fourmiliere::get_etat_f() const {
+	return etat_f;
+}
+
 double Fourmiliere::get_total_food() const {
 	return ensemble_fourmis[0]->get_total_food(); //par def generator est la fourmi 0
 }
@@ -91,6 +95,7 @@ void Fourmiliere::draw_fourmiliere() {
 	unsigned int style(VIDE);
 	draw_carre(carre, style, color);
 	for(const auto& fourmi : ensemble_fourmis) {
+	
 		fourmi->draw_fourmis(color);
 	}
 }
@@ -183,17 +188,12 @@ void Fourmiliere::mise_a_jour(int k) {
 
 void Fourmiliere::maj_generator(Ensemble_food& ensemble_food) {
 	ensemble_fourmis[0]->consommation(nbT);
-	Carre null{0, {0, 0}};
 	create_fourmi();
-	double null1(0.);
-	ensemble_fourmis[0]->deplacement_fourmi(carre, null, ensemble_food, null1);
-	
-	
+	ensemble_fourmis[0]->deplacement_generator(carre);
 }
 
 void Fourmiliere::create_fourmi() {
 	random_device rd;
-	
 	double total_food = ensemble_fourmis[0]->get_total_food();
 	double p(min(1.0, total_food * birth_rate));
 	bernoulli_distribution b(p);
@@ -201,14 +201,14 @@ void Fourmiliere::create_fourmi() {
 	if(b(eng)) {
 		if(etat_f == FREE) {
 			create_fourmi_free();
-			
 		}
 		if(etat_f == CONSTRAINED) {
-			create_fourmi_free();
+			create_fourmi_constrained();
 			
 		}
 	}
 }
+
 void Fourmiliere::create_fourmi_free() {
 	enum fourmi{C, D, P};
 	double proba_C(0), proba_D(0);
@@ -218,7 +218,7 @@ void Fourmiliere::create_fourmi_free() {
 		proba_C = (double)nbC/(nbT-1);
 		proba_D = (double)nbD/(nbT-1);
 	}
-	if(proba_C <= prop_free_collector) {
+	if(proba_C < prop_free_collector) {
 		Carre carre_collector{sizeC, {0,0}};
 		if(recherche_espace_libre(carre_collector)) {
 			unsigned int age(0);
@@ -227,7 +227,7 @@ void Fourmiliere::create_fourmi_free() {
 		return;
 		}
 		
-	} else if(proba_D <= prop_free_defensor) {
+	} else if(proba_D < prop_free_defensor) {
 		Carre carre_defensor{sizeD, {0,0}};
 		if(recherche_espace_libre(carre_defensor)) {
 			unsigned int age(0);
@@ -256,7 +256,8 @@ void Fourmiliere::create_fourmi_constrained() {
 		proba_C = (double)nbC/(nbT-1);
 		proba_D = (double)nbD/(nbT-1);
 	}
-	if(proba_C<= prop_constrained_collector) { 
+	cout << proba_C << " " << proba_D << endl;
+	if(proba_C < prop_constrained_collector) { 
 		Carre carre_collector{sizeC, {0,0}};
 		if(recherche_espace_libre(carre_collector)) {
 			unsigned int age(0);
@@ -264,7 +265,7 @@ void Fourmiliere::create_fourmi_constrained() {
 			++nbC; ++nbT;
 			return;
 		}	
-	} else if(proba_D <= prop_constrained_defensor) {
+	} else if(proba_D < prop_constrained_defensor) {
 		Carre carre_defensor{sizeD, {0,0}};
 		if(recherche_espace_libre(carre_defensor)) {
 			unsigned int age(0);
@@ -295,23 +296,72 @@ void Fourmiliere::action_autres_fourmis( Ensemble_food& ensemble_food) {
 	Carre carre_fourmi = ensemble_fourmis[0]->get_carre();
 	double total_food = ensemble_fourmis[0]->get_total_food();
 	if(ensemble_fourmis[0]->get_end_of_klan()==false) {
-		 for(size_t i(1); i < ensemble_fourmis.size(); ++i) {
-			 cout << "FOURMI " << i << endl;
+		 for(size_t i(1); i < nbC+1; ++i) {
+			cout << "COLLECTOR " << i << endl;
 			if(ensemble_fourmis[i]->get_age() > 0) {
-				ensemble_fourmis[i]->deplacement_fourmi(carre, carre_fourmi, ensemble_food, total_food);
+				ensemble_fourmis[i]->deplacement_collector(carre, carre_fourmi, ensemble_food, total_food);
 			}
-			ensemble_fourmis[i]->incrementer_age();
 		}
+		for(size_t i(nbC+1); i < nbC+nbD+1; ++i) {
+			cout << "DEFENSOR  " << i << endl;
+			if(ensemble_fourmis[i]->get_age() > 0) {
+				ensemble_fourmis[i]->deplacement_defensor(carre);
+			}
+		}
+	}
+	for(size_t i(1); i < ensemble_fourmis.size();++i) {
+		ensemble_fourmis[i]->incrementer_age();
 	}
 	ensemble_fourmis[0]->set_total_food(total_food);
 }
 	
-void Fourmiliere::defensor_kill_collector(Fourmiliere& f) {
+void Fourmiliere::fourmi_kill(Fourmiliere& f, unsigned int etat_kill) {
 	for(size_t i(1); i < nbC+1; ++i) {
-		for(size_t j(f.nbC+1); j < f.nbC+f.nbD+1; ++j) {
+		for(size_t j(f.nbC+1); j < f.ensemble_fourmis.size(); ++j) {
 			Carre carre_f = f.ensemble_fourmis[j]->get_carre();
-			ensemble_fourmis[i]->kill_defensor(carre_f);
+			ensemble_fourmis[i]->get_kill(carre_f, etat_kill);
 		}
+	}
+	for(size_t i(nbC + nbD + 1); i < ensemble_fourmis.size(); ++i) {
+		for(size_t j(f.nbC + f.nbD + 1); j < f.ensemble_fourmis.size(); ++j) {
+			Carre carre_f = f.ensemble_fourmis[j]->get_carre();
+			ensemble_fourmis[i]->get_kill(carre_f, etat_kill);
+		}
+	}
+
+}
+
+void Fourmiliere::intrusion_fourmi(Fourmiliere& f, vector<Carre>& fourmis_infiltres) {
+	for(size_t i(0); i < f.ensemble_fourmis.size(); ++i) {
+		Carre carre_f = f.ensemble_fourmis[i]->get_carre();
+		if(test_superposition_2_carres_non_centre_centre(carre_f, carre)) {
+			fourmis_infiltres.push_back(carre_f);
+		}
+	}	
+}
+
+void Fourmiliere::closest_fourmi(Fourmiliere& f, vector<Carre>& closest_fourmis) {
+	for(size_t i(1); i < f.nbC+1; ++i) {
+		Carre carre_f = f.ensemble_fourmis[i]->get_carre();
+		closest_fourmis.push_back(carre_f);
+	}
+	for(size_t i(f.nbC+f.nbD+1); i < f.ensemble_fourmis.size(); ++i) {
+		Carre carre_f = f.ensemble_fourmis[i]->get_carre();
+		closest_fourmis.push_back(carre_f);
+	}
+}
+
+void Fourmiliere::predator_in_house() {
+	for(size_t i(nbC + nbD + 1); i < ensemble_fourmis.size(); ++i) {
+		if(ensemble_fourmis[i]->fourmis_in_house(carre)) {
+			ensemble_fourmis[i]->deplacement_predator_in_house(carre);
+		}
+	}
+}
+
+void Fourmiliere::deplacement_predator(vector<Carre> fourmis) {
+	for(size_t i(nbC + nbD + 1); i < ensemble_fourmis.size(); ++i) {
+		ensemble_fourmis[i]->deplacement_predator(fourmis);
 	}
 }
 
@@ -380,7 +430,6 @@ bool decodage_line_fourmiliere(string line, Ensemble_fourmilieres& ensemble_four
 		++count_fourmis;
 		countC=0; countD=0; countP=0;
 		if(nbC!=0) {
-			
 			etat_f=COLLECT;
 			return false;
 		}
@@ -444,6 +493,9 @@ bool decodage_line_ensemble_fourmis(string line, Fourmiliere *fourmiliere,
 				count_fourmis=0; 
 				++countF; 
 				break;
+			} else if(countC==nbC and nbD==0) {
+				etat_f = 3;
+				break;
 			} else if(countC==nbC) { 
 				etat_f = 2 ; 
 			}
@@ -472,6 +524,7 @@ bool decodage_line_ensemble_fourmis(string line, Fourmiliere *fourmiliere,
 			} else if (countD ==nbD) { 
 				etat_f= 3; 
 			}
+			
 			break;
 		case 3 :
 			if(nbP==0) { 

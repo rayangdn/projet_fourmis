@@ -1,37 +1,26 @@
-# Collector overlap ; should result in the error message
-#
-# collector with coordinates 14 18 overlaps with another exclusive entity at least on 15 17
-#
+
 
 # nb food
-1
+2
 
 # food
-80 90
+20 20
+78 65
 
-
-1# nb anthill
+3 # nb anthill
+	100 100 13 106 106 99 4 0 0 # anthill #1
 	
-	50 50 13 54 54 200 1 0 0
-
-	48 50 4 false
+	# collectors:
+	100 100 3 false
+	1 45 4 3 true
+	80 20 3 false
+	10 20 100 false
 	
+	0 0 14 5 5 100 1 1 1
+	45 30 40 true
+	10 10 10 
+	70 80 10
 	
-	
-
-	
-
-
-
-	
-
-	
-
-	
-	
-	
-
-	
-	
-	
+	0 15 12 4 18 100 1 0 0
+	56 78 3 false
 	

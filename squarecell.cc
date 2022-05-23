@@ -533,7 +533,7 @@ bool test_deplacement_bordure(const Carre& carre, int& i) {
 		i=1;
 		return true;
 	}
-	if(carre.point.x+carre.longeur/2 == g_max-1) {
+	if(carre.point.x+carre.longeur/2 >= g_max-1) {
 		i=2;
 		return true;
 	}
@@ -541,7 +541,7 @@ bool test_deplacement_bordure(const Carre& carre, int& i) {
 		i=3;
 		return true;
 	}
-	if(carre.point.y+carre.longeur/2 == g_max-1) {
+	if(carre.point.y+carre.longeur/2 >= g_max-1) {
 		i=4;
 		return true;
 	}

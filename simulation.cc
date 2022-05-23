@@ -122,17 +122,16 @@ void Simulation::draw_simulation() {
 }
 
 void Simulation::refresh() {
-	//PARTIE CREATION DE NOURRITURE
+	enum etat_kill{DEFENSOR, PREDATOR};
 	create_food();
-	//PARTIE AJUSTEMENT/DEPLACEMENT FOURMILIERE
 	for(size_t i(0); i < ensemble_fourmilieres.size(); ++i) {
 		maj_fourmiliere(i);
-	//PARTIE GENERATOR
-	cout << "FOURMILIERE " << i << endl;
+		cout << "FOURMILIERE " << i<< endl;
 		ensemble_fourmilieres[i].maj_generator(ensemble_food); 
-	//PARTIE AUTRES FOURMIS
-		fourmis_kill(i);
+		fourmis_kill(i, DEFENSOR);
 		ensemble_fourmilieres[i].action_autres_fourmis(ensemble_food);
+		fourmis_kill(i, PREDATOR);
+		predator_maj(i);
 		
 	}
 	for(size_t i(0); i < ensemble_fourmilieres.size(); ++i) {
@@ -237,11 +236,42 @@ void Simulation::maj_fourmiliere(unsigned int i) {
 	ensemble_fourmilieres[i].mise_a_jour(expend);
 }
 
-void Simulation::fourmis_kill(unsigned int i) {
+void Simulation::fourmis_kill(unsigned int i, unsigned int etat_kill) {
 	for(size_t j(0); j < ensemble_fourmilieres.size(); ++j) {
 		if(i!=j) {
-			ensemble_fourmilieres[i].defensor_kill_collector(ensemble_fourmilieres[j]);
+			ensemble_fourmilieres[i].fourmi_kill(ensemble_fourmilieres[j], etat_kill);
 		}
 	}
 }
 
+void Simulation::predator_maj(unsigned int i) {
+	if(ensemble_fourmilieres[i].get_etat_f()==FREE) {
+		vector<Carre> fourmis_infiltres;
+		for(size_t j(0); j < ensemble_fourmilieres.size(); ++j) {
+			if(i!=j) {
+				ensemble_fourmilieres[i].intrusion_fourmi(ensemble_fourmilieres[j],
+														  fourmis_infiltres);
+			}
+		}
+		if(fourmis_infiltres.size() == 0) {
+			ensemble_fourmilieres[i].predator_in_house();
+			return;
+		}
+		ensemble_fourmilieres[i].deplacement_predator(fourmis_infiltres);
+	} else if(ensemble_fourmilieres[i].get_etat_f()==CONSTRAINED) {
+		vector<Carre> closest_fourmis;
+		for(size_t j(0); j < ensemble_fourmilieres.size(); ++j) {
+			if(i!=j) {
+				ensemble_fourmilieres[i].closest_fourmi(ensemble_fourmilieres[j],
+														  closest_fourmis);
+			}
+		}
+		if(closest_fourmis.size() == 0) {
+			ensemble_fourmilieres[i].predator_in_house();
+			return;
+		}
+		ensemble_fourmilieres[i].deplacement_predator(closest_fourmis);
+	}
+		
+}
+	

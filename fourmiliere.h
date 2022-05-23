@@ -10,6 +10,7 @@ class Fourmiliere {
 public :
 	Fourmiliere(Carre ,unsigned int, unsigned int ,unsigned int, unsigned int,
 	unsigned int, unsigned int);
+	unsigned int get_etat_f() const;
 	double get_total_food() const;
 	unsigned int get_nbC() const;
 	unsigned int get_nbD() const;
@@ -34,7 +35,11 @@ public :
 	void create_fourmi_free();
 	void create_fourmi_constrained();
 	bool recherche_espace_libre(Carre&);
-	void defensor_kill_collector(Fourmiliere&);
+	void fourmi_kill(Fourmiliere&, unsigned int);
+	void intrusion_fourmi(Fourmiliere&, std::vector<Carre>&);
+	void closest_fourmi(Fourmiliere&, std::vector<Carre>&);
+	void predator_in_house();
+	void deplacement_predator(std::vector<Carre>);
 	void action_autres_fourmis(Ensemble_food&);
 	void destruction_fourmis(Ensemble_food&);
 	bool destruction_fourmiliere();

@@ -23,8 +23,12 @@ public :
 	virtual void ecriture_frmi(std::ofstream&) const;
 	virtual void draw_fourmis(unsigned int couleur)=0;
 	virtual void consommation(unsigned int) { return; }
-	virtual void deplacement_fourmi(const Carre&, Carre& carre_fourmi,
-									Ensemble_food&, double& null) { return; }
+	virtual void deplacement_generator(const Carre& ) { return ; }
+	virtual void deplacement_defensor(const Carre&) { return ; }
+	virtual void deplacement_collector(const Carre&, Carre&,
+									Ensemble_food&, double&) { return; }
+	virtual void deplacement_predator(std::vector<Carre>) { return; }
+	virtual void deplacement_predator_in_house(const Carre& carre_f) { return; }
 	void incrementer_age();
 	void deplacement_droite_haut();
 	void deplacement_droite_bas();
@@ -34,7 +38,7 @@ public :
 	void deplacement_gauche();
 	void deplacement_droite();
 	void deplacement_haut();
-	virtual void kill_defensor(const Carre& carre_fourmi) { return;}
+	void get_kill(const Carre&, unsigned int);
 	virtual void destruction_fourmi(Ensemble_food&, unsigned int&, unsigned int&,
 	unsigned int&)=0;
 protected :
@@ -57,8 +61,7 @@ public :
 	virtual void ecriture_frmi(std::ofstream&) const override;
 	virtual void draw_fourmis(unsigned int) override;
 	virtual void consommation(unsigned int) override;
-	virtual void deplacement_fourmi(const Carre& carre_f, Carre& carre_fourmi,
-									Ensemble_food&, double& null) override;
+	virtual void deplacement_generator(const Carre& carre_f) override;
 	virtual void destruction_fourmi(Ensemble_food&, unsigned int&, unsigned int&, 
 	unsigned int&) override;
 private :
@@ -77,7 +80,7 @@ public :
 	virtual bool test_chaque_fourmi(unsigned int, const Carre&) override;
 	virtual void ecriture_frmi(std::ofstream&) const override;
 	virtual void draw_fourmis(unsigned int) override;
-	virtual void deplacement_fourmi(const Carre&, Carre& carre_fourmi,
+	virtual void deplacement_collector(const Carre&, Carre& carre_generator,
 									Ensemble_food&, double& total_food) override;
 	void deplacement_collector_loaded(const Carre& carre_f, Carre carre_generator, 
 									  double& total_food);
@@ -96,7 +99,6 @@ public :
 	void deplacement_right_bordure(int& i, int saut1, int saut_bordure);
 	void deplacement_bottom_bordure(int& i, int saut1, int saut_bordure);
 	void deplacement_top_bordure(int& i, int saut1, int saut_bordure);
-	virtual void kill_defensor(const Carre& carre_fourmi) override;
 	virtual void destruction_fourmi(Ensemble_food&, unsigned int&, unsigned int&, 
 	unsigned int&) override;
 private :
@@ -111,8 +113,7 @@ public :
 	void initialise_defens(const Carre&, unsigned int);
 	virtual bool test_chaque_fourmi(unsigned int, const Carre&) override;
 	virtual void draw_fourmis(unsigned int) override;
-	virtual void deplacement_fourmi(const Carre&, Carre& carre_fourmi,
-									Ensemble_food&, double& null) override;
+	virtual void deplacement_defensor(const Carre& carre_f) override;
 	virtual void destruction_fourmi(Ensemble_food&, unsigned int&, unsigned int&, 
 									unsigned int&) override;
 private :
@@ -127,7 +128,17 @@ public :
 	void initialise_predat(const Carre&, unsigned int);
 	virtual bool test_chaque_fourmi(unsigned int, const Carre&) override;
 	virtual void draw_fourmis(unsigned int) override;
-	//virtual void deplacement_fourmi(const Carre&, Ensemble_food&, Fourmi*) override;
+	virtual void deplacement_predator(std::vector<Carre> fourmis_infiltres) override;
+	virtual void deplacement_predator_in_house(const Carre& carre_f) override;
+	unsigned int test_proximities(std::vector<Carre> fourmis_infiltres);
+	void deplacement_haut_gauche_1();
+	void deplacement_haut_gauche_2();
+	void deplacement_haut_droite_1();
+	void deplacement_haut_droite_2();
+	void deplacement_bas_droite_1();
+	void deplacement_bas_droite_2();
+	void deplacement_bas_gauche_1();
+	void deplacement_bas_gauche_2();
 	virtual void destruction_fourmi(Ensemble_food&, unsigned int&, unsigned int&, 
 	unsigned int&) override;
 private :

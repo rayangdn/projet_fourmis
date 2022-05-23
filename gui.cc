@@ -258,7 +258,7 @@ bool MyEvent::on_timeout() {
 	m_area.refresh();
 	maj_nombre_food();
 	maj_info_frmi(indice_frmi);
-	//cout << val << endl;
+	cout << val << endl;
 	++val;
 	
 	return true; 
@@ -269,7 +269,7 @@ void MyEvent::on_button_clicked_Step() {
 		m_area.refresh();		
 		maj_nombre_food();
 		maj_info_frmi(indice_frmi);
-	//	cout << val << endl;												
+		cout << val << endl;												
 		++val; 
 		
 	}
